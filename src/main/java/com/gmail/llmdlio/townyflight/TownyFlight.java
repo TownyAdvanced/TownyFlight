@@ -9,9 +9,9 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.gmail.llmdlio.townflight.listeners.PlayerEnterTownListener;
-import com.gmail.llmdlio.townflight.listeners.PlayerLeaveTownListener;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
+import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
