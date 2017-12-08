@@ -1,23 +1,19 @@
 name: TownyFlight
 author: LlmDl
 main: com.gmail.llmdlio.townyflight.TownyFlight
-version: 1.0.1
+version: 1.1.0
 depend: [Towny]
 
 commands:
   tfly:
     description: Turns flight on and off
-    permission: townyflight.command.tfly
-    permission-message: Unable to use command, you don't have <permission>    
-  tfly reload
+  tfly reload:
     description: reload the config
-    permission: townyflight.command.tfly.reload
-    permission-message: Unable to use command, you don't have <permission>
 
 permissions:
-  townyflight.command.tfly
+  townyflight.command.tfly:
     description: User is able to toggle flight on while in their town.
-    default: false
-  townyflight.command.tfly.reload
+    default: op
+  townyflight.command.tfly.reload:
     description: User is able to reload the config.
     default: op

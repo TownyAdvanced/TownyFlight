@@ -22,7 +22,7 @@ public class TownyFlightConfig {
 		loadConfig();
 	}
 	
-	// Method to load UndeadRiders\config.yml
+	// Method to load TownyFlight\config.yml
     private void loadConfig(){ 
         File f = new File(plugin.getDataFolder(), "config.yml"); 
          
@@ -48,22 +48,40 @@ public class TownyFlightConfig {
         
         addComment("Version","# TownyFlight by LlmDl.");          
         addDefault("Version", plugin.getDescription().getVersion()); 
-        
-        
     	addComment("pluginPrefix","# Prefix to messages seen in game.");
     	addDefault("pluginPrefix", "&8[&3TownyFlight&8] ");
     	
-    	addComment("flightOnMsg","# Message shown when flight activated.");
-    	addDefault("flightOnMsg", "Flight Activated.");
-    	addComment("flightOffMsg","# Message shown when flight de-activated.");
-    	addDefault("flightOffMsg", "Flight De-activated.");
-    	addComment("noTownMsg","# Message shown when player lacks a town.");
-    	addDefault("noTownMsg", "Flight cannot be activated, you don't belong to a town.");
-    	addComment("notInTownMsg","# Message shown when flight cannot be turned on.");
-    	addDefault("notInTownMsg", "Flight cannot be activated, return to your town and try again.");
-    	addComment("flightDeactivatedMsg","# Message shown when a player has flight taken away.");
-    	addDefault("flightDeactivatedMsg", "Left town boundaries, flight deactivated.");
+    	addComment("language", "", "",
+				"####################",
+				"# Language Strings #",
+				"####################","");
     	
+    	addComment("language.flightOnMsg","# Message shown when flight activated.");
+    	addDefault("language.flightOnMsg", "Flight Activated.");
+    	addComment("language.flightOffMsg","# Message shown when flight de-activated.");
+    	addDefault("language.flightOffMsg", "Flight De-activated.");
+    	addComment("language.noTownMsg","# Message shown when player lacks a town.");
+    	addDefault("language.noTownMsg", "Flight cannot be activated, you don't belong to a town.");
+    	addComment("language.notInTownMsg","# Message shown when flight cannot be turned on.");
+    	addDefault("language.notInTownMsg", "Flight cannot be activated, return to your town and try again.");
+    	addComment("language.flightDeactivatedMsg","# Message shown when a player has flight taken away.");
+    	addDefault("language.flightDeactivatedMsg", "Left town boundaries. ");
+    	addComment("language.noPermission","# Message shown when a player lacks a permission node.");
+    	addDefault("language.noPermission", "You do not have permission for this command, missing: ");
+    	addComment("language.notDuringWar", "# Message shown when war is active and flight is disallowed.");
+    	addDefault("language.notDuringWar", "You cannot use flight while Towny war is active.");
+    	
+    	addComment("options", "", "",
+    						"#################",
+    						"#    Options    #",
+    						"#################","");
+    	addComment("options.auto_Enable_Flight","# If set to true, players entering their town will have flight auto-enabled.",
+                                                "# When set to true, the plugin will use slightly more resources due to the EnterTown listener.");
+    	addDefault("options.auto_Enable_Flight","false");
+    	addComment("options.auto_Enable_Silent","# If set to true, players entering their town will have flight auto-enabled without being notified in chat.");
+    	addDefault("options.auto_Enable_Silent","false");
+    	addComment("options.disable_During_Wartime","# If set to false, players can still fly in their town while war is active.");
+    	addDefault("options.disable_During_Wartime","true");
         // Write back config 
         try { 
             config.save(f); 

@@ -4,32 +4,40 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
+import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.gmail.llmdlio.townflight.listeners.PlayerEnterTownListener;
+import com.gmail.llmdlio.townflight.listeners.PlayerLeaveTownListener;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
-import com.palmergames.bukkit.towny.event.PlayerLeaveTownEvent;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
 
-public class TownyFlight extends JavaPlugin implements Listener {
+public class TownyFlight extends JavaPlugin {
+	
+	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
+	private final PlayerLeaveTownListener playerLeaveListener = new PlayerLeaveTownListener(this);
 
-	private static String pluginPrefix;
+	public static String pluginPrefix;
 	private static String flightOnMsg;
 	private static String flightOffMsg;
 	private static String noTownMsg;
 	private static String notInTownMsg;
-	private static String flightDeactivatedMsg;	
+	public static String flightDeactivatedMsg;	
+	private static String noPermission;
+	private static String notDuringWar;
+	
+	private static Boolean autoEnableFlight;
+	public static Boolean autoEnableSilent;
+	private static Boolean disableDuringWar;
 	
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	
 	public void onEnable() {
-		getServer().getPluginManager().registerEvents(this, this);
+		
     	reloadConfig();  
 		
     	if (!LoadSettings()) {
@@ -50,6 +58,7 @@ public class TownyFlight extends JavaPlugin implements Listener {
     		}
     	}   		
 
+    	registerEvents();
 	    getLogger().info(this.getDescription().getFullName() + " by LlmDl Enabled.");
 	}
     
@@ -64,67 +73,56 @@ public class TownyFlight extends JavaPlugin implements Listener {
     }
 	
     private boolean LoadSettings() {		
-		pluginPrefix = ChatColor.translateAlternateColorCodes('&', config.getConfig().getString("pluginPrefix"));		
-		flightOnMsg = config.getConfig().getString("flightOnMsg");
-		flightOffMsg = config.getConfig().getString("flightOffMsg");
-		noTownMsg = config.getConfig().getString("noTownMsg");
-		notInTownMsg = config.getConfig().getString("notInTownMsg");
-		flightDeactivatedMsg = config.getConfig().getString("flightDeactivatedMsg");
+		pluginPrefix = ChatColor.translateAlternateColorCodes('&', config.getConfig().getString("pluginPrefix"));
+
+		// Language Strings
+		flightOnMsg = config.getConfig().getConfigurationSection("language").getString("flightOnMsg");
+		flightOffMsg = config.getConfig().getConfigurationSection("language").getString("flightOffMsg");
+		noTownMsg = config.getConfig().getConfigurationSection("language").getString("noTownMsg");
+		notInTownMsg = config.getConfig().getConfigurationSection("language").getString("notInTownMsg");
+		flightDeactivatedMsg = config.getConfig().getConfigurationSection("language").getString("flightDeactivatedMsg");
+		noPermission = config.getConfig().getConfigurationSection("language").getString("noPermission");
+		notDuringWar = config.getConfig().getConfigurationSection("language").getString("notDuringWar");
+
+		// Options
+		autoEnableFlight = config.getConfig().getConfigurationSection("options").getString("auto_Enable_Flight").equalsIgnoreCase("true");
+		autoEnableSilent = config.getConfig().getConfigurationSection("options").getString("auto_Enable_Silent").equalsIgnoreCase("true");
+		disableDuringWar = config.getConfig().getConfigurationSection("options").getString("disable_During_Wartime").equalsIgnoreCase("true");
+				
 		return true;		
 	}
+    
+    private void registerEvents(){
+    	final PluginManager pluginManager = getServer().getPluginManager();
+    	HandlerList.unregisterAll(playerEnterListener);
+    	if (autoEnableFlight)
+    		pluginManager.registerEvents(playerEnterListener, this);
+    	pluginManager.registerEvents(playerLeaveListener, this);
+    }
     
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (command.getName().equalsIgnoreCase("tfly")) {
 			if (args.length == 0) {
-				
 				if (!(sender instanceof Player))
 					return false;
-				
                 if (!sender.hasPermission("townyflight.command.tfly")) {
-                	sender.sendMessage(pluginPrefix + ChatColor.RED + "Insufficient Permissions.");
+                	sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + "townyflight.command.tfly");
                 	return false;
                 }
-
-                Player player = (Player) sender;
-                Resident resident = null;
-                try {
-					resident= TownyUniverse.getDataSource().getResident(player.getName());
-				} catch (NotRegisteredException e1) {
-				}
-                if (!resident.hasTown()) {
-                	sender.sendMessage(pluginPrefix + noTownMsg);
-                	return false;
-                }                
-                
-                if (TownyUniverse.isWilderness(player.getLocation().getBlock())) {
-                	sender.sendMessage(pluginPrefix + notInTownMsg);
-                	return false;
-                }
-                
-                Town town = null;
-                try {
-					town = TownyUniverse.getTownBlock(player.getLocation()).getTown();
-				} catch (NotRegisteredException e) {
-				}
-                
-            	try {
-					if (!resident.getTown().equals(town)) {
-						sender.sendMessage(pluginPrefix + notInTownMsg);
-						return false;
-					}
-				} catch (NotRegisteredException e) {
-				}
-                toggleFlight(player);
+                if (!canFly((Player) sender))
+                	return false;                
+                toggleFlight((Player) sender, false, false);
                 return true;
 	        }
 			
 			if (args[0].equalsIgnoreCase("reload")) {
 				if (!sender.hasPermission("townyflight.command.tfly.reload")) {
-					sender.sendMessage(pluginPrefix + ChatColor.RED + "Insufficient Permissions.");
+					sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + "townyflight.command.tfly.reload");
 					return false;
 				}
 				config.reload();
-				LoadSettings();
+		    	LoadSettings();
+		    	registerEvents();
 				sender.sendMessage(pluginPrefix + "Config.yml reloaded");
 				return true;
 			}
@@ -132,23 +130,54 @@ public class TownyFlight extends JavaPlugin implements Listener {
 		return false;
     }
     
-    @EventHandler(priority = EventPriority.LOWEST)
-    private void playerLeftTownEvent (PlayerLeaveTownEvent event) {    	
-    	Player player = event.getPlayer();
-    	if (player.isFlying()){    		
-    		toggleFlight(player);
-    		player.sendMessage(pluginPrefix + flightDeactivatedMsg);
-    	}
+    /*
+     * Take care of whether or not a player can fly here.
+     */
+    public static boolean canFly(Player player) {
+    	try {
+			Resident resident = null;
+			resident= TownyUniverse.getDataSource().getResident(player.getName());
+			if (disableDuringWar)
+				if (TownyUniverse.isWarTime()) {
+					player.sendMessage(pluginPrefix + notDuringWar);
+					return false;
+				}
+			if (!resident.hasTown()) {
+				player.sendMessage(pluginPrefix + noTownMsg);
+				return false;
+			}        
+			if (TownyUniverse.isWilderness(player.getLocation().getBlock())) {
+				player.sendMessage(pluginPrefix + notInTownMsg);
+				return false;
+			}        
+			Town town = null;
+			town = TownyUniverse.getTownBlock(player.getLocation()).getTown();
+			if (!resident.getTown().equals(town)) {
+				player.sendMessage(pluginPrefix + notInTownMsg);
+				return false;
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return true;    	
     }
-    
-    private void toggleFlight(Player player) {
+
+    /*
+     * If flight is on, turn it off and vice versa
+     */    
+    public static void toggleFlight(Player player, boolean silent, boolean forced) {
     	if (player.getAllowFlight()) {
-    		player.sendMessage(pluginPrefix + flightOffMsg);
+    		if (!silent)
+    			if (forced) 
+    				player.sendMessage(pluginPrefix + flightDeactivatedMsg + flightOffMsg);
+    			else
+    				player.sendMessage(pluginPrefix + flightOffMsg);
     		if (player.isFlying())
     			player.setFallDistance(-100000);
     		player.setAllowFlight(false);
     	} else {
-    		player.sendMessage(pluginPrefix + flightOnMsg);
+    		if (!silent)
+    			player.sendMessage(pluginPrefix + flightOnMsg);
     		player.setAllowFlight(true);
     	}    		
     }  
