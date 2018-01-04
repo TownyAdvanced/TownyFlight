@@ -46,7 +46,7 @@ public class TownyFlightConfig {
             e.printStackTrace(); 
         } 
         
-        addComment("Version","# TownyFlight by LlmDl.");          
+        addComment("Version","# TownyFlight by LlmDl.");        
         addDefault("Version", plugin.getDescription().getVersion()); 
     	addComment("pluginPrefix","# Prefix to messages seen in game.");
     	addDefault("pluginPrefix", "&8[&3TownyFlight&8] ");

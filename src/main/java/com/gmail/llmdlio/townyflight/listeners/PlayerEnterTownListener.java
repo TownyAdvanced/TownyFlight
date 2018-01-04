@@ -4,6 +4,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+
 import com.gmail.llmdlio.townyflight.TownyFlight;
 import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
 
@@ -22,12 +23,14 @@ public class PlayerEnterTownListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     private void playerEnterTownEvent (PlayerEnterTownEvent event) {    	
     	final Player player = event.getPlayer();
-    	plugin.getServer().getScheduler().runTaskLaterAsynchronously(plugin, new Runnable() {			
-			public void run() {			
+    	    	
+    	plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {			
+			public void run() {
 				if (!TownyFlight.canFly(player))
 		    		return;
 		    	TownyFlight.toggleFlight(player, TownyFlight.autoEnableSilent, false);				
-			}
-		}, 20);    	
+			};
+    	},20);
+	
     }
 }

@@ -24,6 +24,8 @@ public class PlayerLeaveTownListener implements Listener{
     @EventHandler(priority = EventPriority.LOWEST)
     private void playerLeftTownEvent (PlayerLeaveTownEvent event) {    	
     	Player player = event.getPlayer();
+    	if (player.hasPermission("townyflight.bypass"))
+    		return;
     	if (player.getAllowFlight())    		
     		TownyFlight.toggleFlight(player, false, true);
     }

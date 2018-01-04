@@ -1,7 +1,7 @@
 name: TownyFlight
 author: LlmDl
 main: com.gmail.llmdlio.townyflight.TownyFlight
-version: 1.1.0
+version: 1.1.5
 depend: [Towny]
 
 commands:
@@ -16,4 +16,7 @@ permissions:
     default: op
   townyflight.command.tfly.reload:
     description: User is able to reload the config.
+    default: op
+  townyflight.bypass:
+    description: Bypass permission node for admins to not have their flight disabled while they travel the server.
     default: op

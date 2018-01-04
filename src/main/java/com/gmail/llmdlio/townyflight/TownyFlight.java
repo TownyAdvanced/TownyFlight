@@ -12,6 +12,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
 import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
+import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
@@ -20,6 +21,7 @@ public class TownyFlight extends JavaPlugin {
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
 	private final PlayerLeaveTownListener playerLeaveListener = new PlayerLeaveTownListener(this);
+	private final TownUnclaimListener townUnclaimListener = new TownUnclaimListener(this);
 
 	public static String pluginPrefix;
 	private static String flightOnMsg;
@@ -98,17 +100,14 @@ public class TownyFlight extends JavaPlugin {
     	if (autoEnableFlight)
     		pluginManager.registerEvents(playerEnterListener, this);
     	pluginManager.registerEvents(playerLeaveListener, this);
+    	pluginManager.registerEvents(townUnclaimListener, this);
     }
     
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		if (command.getName().equalsIgnoreCase("tfly")) {
 			if (args.length == 0) {
 				if (!(sender instanceof Player))
-					return false;
-                if (!sender.hasPermission("townyflight.command.tfly")) {
-                	sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + "townyflight.command.tfly");
-                	return false;
-                }
+					return false;                
                 if (!canFly((Player) sender))
                 	return false;                
                 toggleFlight((Player) sender, false, false);
@@ -134,6 +133,12 @@ public class TownyFlight extends JavaPlugin {
      * Take care of whether or not a player can fly here.
      */
     public static boolean canFly(Player player) {
+    	if (player.hasPermission("townyflight.bypass"))
+    		return true;    	
+    	if (!player.hasPermission("townyflight.command.tfly")) {
+        	player.sendMessage(pluginPrefix + ChatColor.RED + noPermission + "townyflight.command.tfly");
+        	return false;
+        }
     	try {
 			Resident resident = null;
 			resident= TownyUniverse.getDataSource().getResident(player.getName());
