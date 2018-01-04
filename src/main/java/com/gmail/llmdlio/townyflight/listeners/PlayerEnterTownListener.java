@@ -26,9 +26,9 @@ public class PlayerEnterTownListener implements Listener {
     	    	
     	plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {			
 			public void run() {
-				if (!TownyFlight.canFly(player))
+				if (!TownyFlight.canFly(player, true))
 		    		return;
-		    	TownyFlight.toggleFlight(player, TownyFlight.autoEnableSilent, false);				
+		    	TownyFlight.toggleFlight(player, TownyFlight.autoEnableSilent, false, "");				
 			};
     	},20);
 	

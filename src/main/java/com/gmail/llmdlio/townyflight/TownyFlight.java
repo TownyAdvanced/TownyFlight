@@ -11,7 +11,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
 import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -20,7 +22,9 @@ import com.palmergames.bukkit.towny.object.TownyUniverse;
 public class TownyFlight extends JavaPlugin {
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
-	private final PlayerLeaveTownListener playerLeaveListener = new PlayerLeaveTownListener(this);
+	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
+	private final PlayerLeaveTownListener playerLeaveListener = new PlayerLeaveTownListener(this);	
+	private final PlayerPVPListener playerPVPListener = new PlayerPVPListener(this);
 	private final TownUnclaimListener townUnclaimListener = new TownUnclaimListener(this);
 
 	public static String pluginPrefix;
@@ -28,11 +32,12 @@ public class TownyFlight extends JavaPlugin {
 	private static String flightOffMsg;
 	private static String noTownMsg;
 	private static String notInTownMsg;
-	public static String flightDeactivatedMsg;	
+	private static String flightDeactivatedMsg;
+	private static String flightDeactivatedPVPMsg;
 	private static String noPermission;
 	private static String notDuringWar;
 	
-	private static Boolean autoEnableFlight;
+	public static Boolean autoEnableFlight;
 	public static Boolean autoEnableSilent;
 	private static Boolean disableDuringWar;
 	
@@ -83,6 +88,7 @@ public class TownyFlight extends JavaPlugin {
 		noTownMsg = config.getConfig().getConfigurationSection("language").getString("noTownMsg");
 		notInTownMsg = config.getConfig().getConfigurationSection("language").getString("notInTownMsg");
 		flightDeactivatedMsg = config.getConfig().getConfigurationSection("language").getString("flightDeactivatedMsg");
+		flightDeactivatedPVPMsg = config.getConfig().getConfigurationSection("language").getString("flightDeactivatedPVPMsg");
 		noPermission = config.getConfig().getConfigurationSection("language").getString("noPermission");
 		notDuringWar = config.getConfig().getConfigurationSection("language").getString("notDuringWar");
 
@@ -99,7 +105,9 @@ public class TownyFlight extends JavaPlugin {
     	HandlerList.unregisterAll(playerEnterListener);
     	if (autoEnableFlight)
     		pluginManager.registerEvents(playerEnterListener, this);
+    	pluginManager.registerEvents(playerJoinListener, this);
     	pluginManager.registerEvents(playerLeaveListener, this);
+    	pluginManager.registerEvents(playerPVPListener, this);
     	pluginManager.registerEvents(townUnclaimListener, this);
     }
     
@@ -108,9 +116,9 @@ public class TownyFlight extends JavaPlugin {
 			if (args.length == 0) {
 				if (!(sender instanceof Player))
 					return false;                
-                if (!canFly((Player) sender))
+                if (!canFly((Player) sender, false))
                 	return false;                
-                toggleFlight((Player) sender, false, false);
+                toggleFlight((Player) sender, false, false, "");
                 return true;
 	        }
 			
@@ -129,14 +137,17 @@ public class TownyFlight extends JavaPlugin {
 		return false;
     }
     
-    /*
-     * Take care of whether or not a player can fly here.
-     */
-    public static boolean canFly(Player player) {
+    /** 
+     * Returns true if a player can fly according to TownyFlight's rules.
+     * 
+     * @param player
+     * @param silent - show messages to player.
+     **/
+    public static boolean canFly(Player player, boolean silent) {
     	if (player.hasPermission("townyflight.bypass"))
     		return true;    	
     	if (!player.hasPermission("townyflight.command.tfly")) {
-        	player.sendMessage(pluginPrefix + ChatColor.RED + noPermission + "townyflight.command.tfly");
+    		if (!silent) player.sendMessage(pluginPrefix + ChatColor.RED + noPermission + "townyflight.command.tfly");
         	return false;
         }
     	try {
@@ -144,21 +155,21 @@ public class TownyFlight extends JavaPlugin {
 			resident= TownyUniverse.getDataSource().getResident(player.getName());
 			if (disableDuringWar)
 				if (TownyUniverse.isWarTime()) {
-					player.sendMessage(pluginPrefix + notDuringWar);
+					if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
 					return false;
 				}
 			if (!resident.hasTown()) {
-				player.sendMessage(pluginPrefix + noTownMsg);
+				if (!silent) player.sendMessage(pluginPrefix + noTownMsg);
 				return false;
 			}        
 			if (TownyUniverse.isWilderness(player.getLocation().getBlock())) {
-				player.sendMessage(pluginPrefix + notInTownMsg);
+				if (!silent) player.sendMessage(pluginPrefix + notInTownMsg);
 				return false;
 			}        
 			Town town = null;
 			town = TownyUniverse.getTownBlock(player.getLocation()).getTown();
 			if (!resident.getTown().equals(town)) {
-				player.sendMessage(pluginPrefix + notInTownMsg);
+				if (!silent) player.sendMessage(pluginPrefix + notInTownMsg);
 				return false;
 			}
 		} catch (Exception e) {
@@ -167,15 +178,24 @@ public class TownyFlight extends JavaPlugin {
 		return true;    	
     }
 
-    /*
+    /**
      * If flight is on, turn it off and vice versa
+     * 
+     * @param player
+     * @param silent - show messages to player
+     * @param forced - whether this is a forced deactivation or not
+     * @param cause - cause of disabling flight
      */    
-    public static void toggleFlight(Player player, boolean silent, boolean forced) {
+    public static void toggleFlight(Player player, boolean silent, boolean forced, String cause) {    	    	
     	if (player.getAllowFlight()) {
     		if (!silent)
-    			if (forced) 
-    				player.sendMessage(pluginPrefix + flightDeactivatedMsg + flightOffMsg);
-    			else
+    			if (forced) {
+    				String reason = flightDeactivatedMsg;
+    				if (cause == "pvp")
+    					reason = flightDeactivatedPVPMsg;    						
+    		
+    				player.sendMessage(pluginPrefix + reason + flightOffMsg);
+    			} else
     				player.sendMessage(pluginPrefix + flightOffMsg);
     		if (player.isFlying())
     			player.setFallDistance(-100000);

@@ -27,6 +27,6 @@ public class PlayerLeaveTownListener implements Listener{
     	if (player.hasPermission("townyflight.bypass"))
     		return;
     	if (player.getAllowFlight())    		
-    		TownyFlight.toggleFlight(player, false, true);
+    		TownyFlight.toggleFlight(player, false, true, "");
     }
 }

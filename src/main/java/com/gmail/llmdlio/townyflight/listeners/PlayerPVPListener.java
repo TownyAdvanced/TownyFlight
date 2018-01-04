@@ -1,0 +1,55 @@
+package com.gmail.llmdlio.townyflight.listeners;
+
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
+
+import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.palmergames.bukkit.towny.Towny;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
+import com.palmergames.bukkit.towny.utils.CombatUtil;
+
+
+public class PlayerPVPListener implements Listener {
+	
+	@SuppressWarnings("unused")
+	private final TownyFlight plugin;
+	private Towny towny;
+	
+	public PlayerPVPListener(TownyFlight instance) {
+		plugin = instance;
+	}
+	
+    /*
+     * Listener for a player who joins the server successfully.
+     * Check if flight is allowed where they are currently and if not, remove it.
+     */
+    @EventHandler(priority = EventPriority.LOWEST)
+    private void playerPVPEvent (EntityDamageByEntityEvent event) throws NotRegisteredException {
+    	Entity attacker = event.getDamager();
+    	Entity defender = event.getEntity();
+    	
+    	if ( !(attacker instanceof Player) || !(defender instanceof Player))
+    		return;
+    	
+    	Player player = (Player) attacker; 
+    	
+    	if (!player.getAllowFlight())
+    		return;
+
+    	if (!TownyUniverse.getDataSource().getWorld(player.getLocation().getWorld().getName()).isUsingTowny())
+    		return;
+    	
+    	if (CombatUtil.preventDamageCall(towny, attacker, defender))
+    		return;    		
+    	
+    	if (!event.isCancelled()) {
+    		TownyFlight.toggleFlight(player, false, true, "pvp");
+    		event.setCancelled(true);
+    	}    	
+    }
+}

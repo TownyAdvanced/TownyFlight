@@ -42,7 +42,7 @@ public class TownUnclaimListener implements Listener {
     		if (!pwc.equals(wc))
     			return;
     		
-    		TownyFlight.toggleFlight(player, false, true);
+    		TownyFlight.toggleFlight(player, false, true, "");
     	}	
     }
 }
