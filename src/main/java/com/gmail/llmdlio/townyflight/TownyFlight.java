@@ -175,7 +175,7 @@ public class TownyFlight extends JavaPlugin {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return true;    	
+		return true;
     }
 
     /**
@@ -188,15 +188,17 @@ public class TownyFlight extends JavaPlugin {
      */    
     public static void toggleFlight(Player player, boolean silent, boolean forced, String cause) {    	    	
     	if (player.getAllowFlight()) {
-    		if (!silent)
+    		if (!silent) {
     			if (forced) {
     				String reason = flightDeactivatedMsg;
-    				if (cause == "pvp")
+    				if (cause == "pvp") {
     					reason = flightDeactivatedPVPMsg;    						
-    		
+    				}
     				player.sendMessage(pluginPrefix + reason + flightOffMsg);
-    			} else
+    			} else {
     				player.sendMessage(pluginPrefix + flightOffMsg);
+    			}
+    		}
     		if (player.isFlying())
     			player.setFallDistance(-100000);
     		player.setAllowFlight(false);

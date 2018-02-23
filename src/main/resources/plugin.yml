@@ -1,12 +1,13 @@
 name: TownyFlight
 author: LlmDl
 main: com.gmail.llmdlio.townyflight.TownyFlight
-version: 1.2.0
+version: 1.2.2
 depend: [Towny]
 
 commands:
   tfly:
     description: Turns flight on and off
+    aliases: [townyfly, townyflight]
   tfly reload:
     description: reload the config
 
