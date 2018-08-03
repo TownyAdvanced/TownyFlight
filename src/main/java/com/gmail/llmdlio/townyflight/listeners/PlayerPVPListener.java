@@ -37,6 +37,9 @@ public class PlayerPVPListener implements Listener {
     	Entity attacker = event.getDamager();
     	Entity defender = event.getEntity();
     	
+    	if (!TownyFlight.disableCombatPrevention)
+    		return;
+    	
     	if (attacker instanceof Projectile) {
 			ProjectileSource shooter = ((Projectile) attacker).getShooter();
 			if (shooter instanceof Entity)

@@ -40,6 +40,7 @@ public class TownyFlight extends JavaPlugin {
 	public static Boolean autoEnableFlight;
 	public static Boolean autoEnableSilent;
 	private static Boolean disableDuringWar;
+	public static Boolean disableCombatPrevention;
 	
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	
@@ -96,6 +97,7 @@ public class TownyFlight extends JavaPlugin {
 		autoEnableFlight = config.getConfig().getConfigurationSection("options").getString("auto_Enable_Flight").equalsIgnoreCase("true");
 		autoEnableSilent = config.getConfig().getConfigurationSection("options").getString("auto_Enable_Silent").equalsIgnoreCase("true");
 		disableDuringWar = config.getConfig().getConfigurationSection("options").getString("disable_During_Wartime").equalsIgnoreCase("true");
+		disableCombatPrevention = config.getConfig().getConfigurationSection("options").getString("disable_Combat_Prevention").equalsIgnoreCase("true");
 				
 		return true;		
 	}

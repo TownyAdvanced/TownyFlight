@@ -84,6 +84,8 @@ public class TownyFlightConfig {
     	addDefault("options.auto_Enable_Silent","false");
     	addComment("options.disable_During_Wartime","# If set to false, players can still fly in their town while war is active.");
     	addDefault("options.disable_During_Wartime","true");
+    	addComment("options.disable_Combat_Prevention","# If set to false, TownyFlight will not prevent combat of flying people.");
+    	addDefault("options.disable_Combat_Prevention","false");
         // Write back config 
         try { 
             config.save(f); 
