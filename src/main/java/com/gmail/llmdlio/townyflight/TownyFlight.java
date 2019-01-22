@@ -160,7 +160,7 @@ public class TownyFlight extends JavaPlugin {
 			} catch (NotRegisteredException e) {
 				// Sometimes when a player joins for the first time, there can be a canFly test run before Towny has 
 				// the chance to save the player properly.
-				
+				return false;				
 			}
 			if (disableDuringWar)
 				if (TownyUniverse.isWarTime()) {
