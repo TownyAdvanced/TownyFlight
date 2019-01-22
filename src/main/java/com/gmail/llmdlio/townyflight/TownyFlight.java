@@ -15,6 +15,7 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.TownyUniverse;
@@ -154,7 +155,13 @@ public class TownyFlight extends JavaPlugin {
         }
     	try {
 			Resident resident = null;
-			resident= TownyUniverse.getDataSource().getResident(player.getName());
+			try {
+				resident = TownyUniverse.getDataSource().getResident(player.getName());
+			} catch (NotRegisteredException e) {
+				// Sometimes when a player joins for the first time, there can be a canFly test run before Towny has 
+				// the chance to save the player properly.
+				
+			}
 			if (disableDuringWar)
 				if (TownyUniverse.isWarTime()) {
 					if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
