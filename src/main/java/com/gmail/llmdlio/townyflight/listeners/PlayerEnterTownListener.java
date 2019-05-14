@@ -23,7 +23,8 @@ public class PlayerEnterTownListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     private void playerEnterTownEvent (PlayerEnterTownEvent event) {    	
     	final Player player = event.getPlayer();
-    	    	
+    	if (player.hasPermission("townyflight.bypass"))
+    		return;    	
     	plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {			
 			public void run() {
 				if (!TownyFlight.canFly(player, true))
