@@ -182,8 +182,13 @@ public class TownyFlight extends JavaPlugin {
 			if (!resident.getTown().equals(town)) {
 				if (!silent) player.sendMessage(pluginPrefix + notInTownMsg);
 				return false;
-			}
-		} catch (Exception e) {
+			}			
+			if (player.hasPermission("townyflight.alliedtowns") && resident.getTown().hasNation()) {				
+				if (resident.getTown().getNation().hasTown(town)) return true;
+				else if (town.hasNation())
+					if (town.getNation().hasAlly(resident.getTown().getNation())) return true;
+    		}
+    	} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return true;
