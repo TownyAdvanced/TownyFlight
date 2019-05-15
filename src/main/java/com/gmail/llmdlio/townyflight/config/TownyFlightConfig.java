@@ -86,6 +86,8 @@ public class TownyFlightConfig {
     	addDefault("options.disable_During_Wartime","true");
     	addComment("options.disable_Combat_Prevention","# If set to false, TownyFlight will not prevent combat of flying people.");
     	addDefault("options.disable_Combat_Prevention","false");
+	addComment("options.show_Permission_After_No_Permission_Message","# If set to false, the language.noPermission message will not display the permission node.");
+	addDefault("options.show_Permission_After_No_Permission_Message","true");
         // Write back config 
         try { 
             config.save(f); 
