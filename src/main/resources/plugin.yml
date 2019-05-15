@@ -1,7 +1,7 @@
 name: TownyFlight
 author: LlmDl
 main: com.gmail.llmdlio.townyflight.TownyFlight
-version: 1.2.4
+version: 1.2.5
 depend: [Towny]
 
 commands:
@@ -20,4 +20,7 @@ permissions:
     default: op
   townyflight.bypass:
     description: Bypass permission node for admins to not have their flight disabled while they travel the server.
+    default: op
+  townyflight.alliedtowns:
+    description: Allows players to use /townyflight in towns which are allied to their own.
     default: op

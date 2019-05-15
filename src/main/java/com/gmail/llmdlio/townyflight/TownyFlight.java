@@ -100,7 +100,7 @@ public class TownyFlight extends JavaPlugin {
 		autoEnableSilent = config.getConfig().getConfigurationSection("options").getString("auto_Enable_Silent").equalsIgnoreCase("true");
 		disableDuringWar = config.getConfig().getConfigurationSection("options").getString("disable_During_Wartime").equalsIgnoreCase("true");
 		disableCombatPrevention = config.getConfig().getConfigurationSection("options").getString("disable_Combat_Prevention").equalsIgnoreCase("true");
-	        showPermissionInMessage = config.getConfig().getConfigurationSection("options").getString("show_Permission_After_No_Permission_Message").equalsIgnoreCase("true");	
+	    showPermissionInMessage = config.getConfig().getConfigurationSection("options").getString("show_Permission_After_No_Permission_Message").equalsIgnoreCase("true");	
 	    
 		return true;		
 	}
@@ -129,7 +129,7 @@ public class TownyFlight extends JavaPlugin {
 			
 			if (args[0].equalsIgnoreCase("reload")) {
 				if (!sender.hasPermission("townyflight.command.tfly.reload")) {
-					sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly.reload" : "");
+					sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly.reload" : ""));
 					return false;
 				}
 				config.reload();
