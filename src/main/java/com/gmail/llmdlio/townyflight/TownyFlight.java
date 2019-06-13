@@ -152,7 +152,7 @@ public class TownyFlight extends JavaPlugin {
     	if (player.hasPermission("townyflight.bypass"))
     		return true;    	
     	if (!player.hasPermission("townyflight.command.tfly")) {
-    		if (!silent) player.sendMessage(pluginPrefix + ChatColor.RED + noPermission + "townyflight.command.tfly");
+    		if (!silent) player.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly.reload" : ""));
         	return false;
         }
     	try {
