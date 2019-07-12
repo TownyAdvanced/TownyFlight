@@ -1,7 +1,7 @@
 name: TownyFlight
 author: LlmDl
 main: com.gmail.llmdlio.townyflight.TownyFlight
-version: 1.2.5
+version: 1.2.6
 depend: [Towny]
 
 commands:
