@@ -68,6 +68,8 @@ public class TownyFlightConfig {
     	addDefault("language.flightDeactivatedMsg", "Left town boundaries. ");
     	addComment("language.flightDeactivatedPVPMsg","# Message shown when a player has flight taken away because of PVP.");
     	addDefault("language.flightDeactivatedPVPMsg", "Entering PVP combat. ");
+    	addComment("language.flightDeactivatedConsoleMsg","# Message shown when a player has flight taken away by console.");
+    	addDefault("language.flightDeactivatedConsoleMsg", "Flight priviledges removed. ");
     	addComment("language.noPermission","# Message shown when a player lacks a permission node.");
     	addDefault("language.noPermission", "You do not have permission for this command, missing: ");
     	addComment("language.notDuringWar", "# Message shown when war is active and flight is disallowed.");
