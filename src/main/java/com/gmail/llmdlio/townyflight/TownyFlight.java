@@ -2,6 +2,7 @@ package com.gmail.llmdlio.townyflight;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -134,6 +135,7 @@ public class TownyFlight extends JavaPlugin {
 					return true;
 				} else {
 					// It's not any other subcommand of /tfly so handle removing flight via /tfly {name}
+					@SuppressWarnings("deprecation")
 					OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
 					if (player.isOnline()) {
 				    	if (!player.getPlayer().getAllowFlight()) {
@@ -191,47 +193,59 @@ public class TownyFlight extends JavaPlugin {
     		if (!silent) player.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly" : ""));
         	return false;
         }
-    	try {
-			Resident resident = null;
-			try {
-				resident = TownyUniverse.getDataSource().getResident(player.getName());
-			} catch (NotRegisteredException e) {
-				// Sometimes when a player joins for the first time, there can be a canFly test run before Towny has 
-				// the chance to save the player properly.
-				return false;
-			}
-			if (disableDuringWar)
-				if (TownyUniverse.isWarTime()) {
-					if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
-					return false;
-				}
-			if (!resident.hasTown()) {
-				if (!silent) player.sendMessage(pluginPrefix + noTownMsg);
-				return false;
-			}
-			if (TownyUniverse.isWilderness(player.getLocation().getBlock())) {
-				if (!silent) player.sendMessage(pluginPrefix + notInTownMsg);
-				return false;
-			}
-			Town town = null;
-			town = TownyUniverse.getTownBlock(player.getLocation()).getTown();
-			if (!resident.getTown().equals(town)) {
-				if (player.hasPermission("townyflight.alliedtowns") && resident.getTown().hasNation()) {
-					if (resident.getTown().getNation().hasTown(town)) return true;
-					else if (town.hasNation())
-						if (town.getNation().hasAlly(resident.getTown().getNation())) return true;
-	    		}
-				if (!silent) player.sendMessage(pluginPrefix + notInTownMsg);
-				return false;
-			}
-			return true;
-    	} catch (Exception e) {
-			e.printStackTrace();
+		Resident resident = null;
+		try {
+			resident = TownyUniverse.getDataSource().getResident(player.getName());
+		} catch (NotRegisteredException e) {
+			// Sometimes when a player joins for the first time, there can be a canFly test run before Towny has 
+			// the chance to save the player properly.
+			return false;
+		}
+		if (disableDuringWar && TownyUniverse.isWarTime()) {
+			if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
+			return false;
+		}
+		if (!resident.hasTown()) {
+			if (!silent) player.sendMessage(pluginPrefix + noTownMsg);
+			return false;
+		}
+		if (!allowedLocation(player, resident)) {
+			if (!silent) player.sendMessage(pluginPrefix + notInTownMsg);
+			return false;
 		}
 		return true;
     }
 
     /**
+     * Returns true if a player is allowed to fly at their current location.
+     * Blocks wilderness flight, then check if they are in their own town and if not,
+     * whether they have the alliedtowns permission and if they are in an allied area.
+     * 
+     * @param player
+     * @param resident
+     * @return
+     */
+    private static boolean allowedLocation(Player player, Resident resident) {
+		if (TownyUniverse.isWilderness(player.getLocation().getBlock()))
+			return false;
+
+		try {
+			Town town = TownyUniverse.getTownBlock(player.getLocation()).getTown();
+			if (!resident.getTown().equals(town)) {
+				if (player.hasPermission("townyflight.alliedtowns") && resident.getTown().hasNation()) {
+					if (resident.getTown().getNation().hasTown(town)) return true;
+					else if (town.hasNation())
+						if (town.getNation().hasAlly(resident.getTown().getNation())) return true;
+				}
+				return false;
+			}
+		} catch (NotRegisteredException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+
+	/**
      * If flight is on, turn it off and vice versa
      * 
      * @param player

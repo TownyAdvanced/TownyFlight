@@ -13,7 +13,6 @@ import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 public class PlayerJoinListener implements Listener {
 
 
-	@SuppressWarnings("unused")
 	private final TownyFlight plugin;
 
 	public PlayerJoinListener(TownyFlight instance) {
