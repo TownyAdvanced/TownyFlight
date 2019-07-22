@@ -47,6 +47,7 @@ public class TownyFlight extends JavaPlugin {
 	public static Boolean disableCombatPrevention;
 	private static Boolean disableDuringWar;
 	private static Boolean showPermissionInMessage;
+	private static Boolean warsForTownyFound;
 
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 
@@ -61,6 +62,10 @@ public class TownyFlight extends JavaPlugin {
     	}
 
     	Plugin towny = getServer().getPluginManager().getPlugin("Towny");
+    	
+    	Plugin test = getServer().getPluginManager().getPlugin("WarsForTowny");
+		if (test != null)
+			warsForTownyFound = true;
 
     	// Events used to make this plugin work didn't exist prior to Towny 0.92.0.0
     	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {
@@ -200,7 +205,7 @@ public class TownyFlight extends JavaPlugin {
 			// the chance to save the player properly.
 			return false;
 		}
-		if (disableDuringWar && TownyUniverse.isWarTime()) {
+		if (disableDuringWar && (TownyUniverse.isWarTime() || warsForTowny(resident))) {
 			if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
 			return false;
 		}
@@ -215,7 +220,23 @@ public class TownyFlight extends JavaPlugin {
 		return true;
     }
 
-    /**
+    private static boolean warsForTowny(Resident resident) {
+    	if (!warsForTownyFound)
+    		return false;
+    	if (!resident.hasTown())
+    		return false;
+    	try {
+			if (!resident.getTown().hasNation())
+				return false;
+			if (com.aurgiyalgo.WarsForTowny.WarManager.getWarForNation(resident.getTown().getNation()) != null)
+				return true;
+		} catch (NotRegisteredException e) {
+			e.printStackTrace();
+		}
+    	return false;
+	}
+
+	/**
      * Returns true if a player is allowed to fly at their current location.
      * Blocks wilderness flight, then check if they are in their own town and if not,
      * whether they have the alliedtowns permission and if they are in an allied area.
