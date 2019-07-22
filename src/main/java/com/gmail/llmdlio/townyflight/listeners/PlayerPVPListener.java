@@ -14,7 +14,7 @@ import org.bukkit.projectiles.ProjectileSource;
 import com.gmail.llmdlio.townyflight.TownyFlight;
 import com.palmergames.bukkit.towny.Towny;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
+import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
 
 
@@ -59,7 +59,7 @@ public class PlayerPVPListener implements Listener {
     	if (!player.getAllowFlight())
     		return;
 
-    	if (!TownyUniverse.getDataSource().getWorld(player.getLocation().getWorld().getName()).isUsingTowny())
+    	if (!TownyUniverse.getInstance().getDatabase().getWorld(player.getLocation().getWorld().getName()).isUsingTowny())
     		return;
 
     	if (CombatUtil.preventDamageCall(towny, attacker, defender))

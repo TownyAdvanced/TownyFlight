@@ -1,7 +1,7 @@
 name: TownyFlight
 author: LlmDl
 main: com.gmail.llmdlio.townyflight.TownyFlight
-version: 1.4.0
+version: 1.4.1
 depend: [Towny]
 softdepend: [WarsForTowny]
 api-version: 1.13

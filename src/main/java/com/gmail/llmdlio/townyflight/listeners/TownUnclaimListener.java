@@ -6,10 +6,10 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.Coord;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 
 
@@ -32,7 +32,7 @@ public class TownUnclaimListener implements Listener {
     	WorldCoord wc = event.getWorldCoord();
 
     	// Cycle through players of the affected town, because multiple players could be in a plot that is unclaimed.
-    	for (final Player player : TownyUniverse.getOnlinePlayers(town)) {
+    	for (final Player player : TownyAPI.getInstance().getOnlinePlayers(town)) {
     		if (player.hasPermission("townyflight.bypass"))
 	    		return;
     		if (!player.getAllowFlight())

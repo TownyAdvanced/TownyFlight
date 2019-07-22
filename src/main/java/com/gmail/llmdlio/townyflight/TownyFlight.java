@@ -18,10 +18,11 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.TownyUniverse;
+import com.palmergames.bukkit.towny.TownyUniverse;
 
 public class TownyFlight extends JavaPlugin {
 	
@@ -67,13 +68,11 @@ public class TownyFlight extends JavaPlugin {
 		if (test != null)
 			warsForTownyFound = true;
 
-    	// Events used to make this plugin work didn't exist prior to Towny 0.92.0.0
+    	// Towny's API change as of 0.94.0.1 means this check has to change.
     	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {
-    		String version = towny.getDescription().getVersion().substring(1, 4);
-    		version = version.replace(".","");
-    		Integer ver = Integer.parseInt(version);
-    		if (ver < 92) {
-    			getLogger().severe("Towny version inadequate: 0.92.0.0 or newer required.");
+    		String [] ver = towny.getDescription().getVersion().split(".");
+    		if ((Integer.parseInt(ver[1]) < 94) || (ver[1].equals("94") && ver[2].equals("0") && ver[3].equals("0"))) {
+    			getLogger().severe("Towny version inadequate: 0.94.0.1 or newer required.");
 				this.getServer().getPluginManager().disablePlugin(this);
 				return;
     		}
@@ -199,13 +198,13 @@ public class TownyFlight extends JavaPlugin {
         }
 		Resident resident = null;
 		try {
-			resident = TownyUniverse.getDataSource().getResident(player.getName());
+			resident = TownyUniverse.getInstance().getDatabase().getResident(player.getName());
 		} catch (NotRegisteredException e) {
 			// Sometimes when a player joins for the first time, there can be a canFly test run before Towny has 
 			// the chance to save the player properly.
 			return false;
 		}
-		if (disableDuringWar && (TownyUniverse.isWarTime() || warsForTowny(resident))) {
+		if (disableDuringWar && (TownyAPI.getInstance().isWarTime() || warsForTowny(resident))) {
 			if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
 			return false;
 		}
@@ -246,11 +245,11 @@ public class TownyFlight extends JavaPlugin {
      * @return
      */
     private static boolean allowedLocation(Player player, Resident resident) {
-		if (TownyUniverse.isWilderness(player.getLocation().getBlock()))
+		if (TownyAPI.getInstance().isWilderness(player.getLocation()))
 			return false;
 
 		try {
-			Town town = TownyUniverse.getTownBlock(player.getLocation()).getTown();
+			Town town = TownyAPI.getInstance().getTownBlock(player.getLocation()).getTown();
 			if (!resident.getTown().equals(town)) {
 				if (player.hasPermission("townyflight.alliedtowns") && resident.getTown().hasNation()) {
 					if (resident.getTown().getNation().hasTown(town)) return true;
