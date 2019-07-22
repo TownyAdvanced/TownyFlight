@@ -68,7 +68,7 @@ public class TownyFlight extends JavaPlugin {
 		if (test != null)
 			warsForTownyFound = true;
 
-    	// Towny's API change as of 0.94.0.1 means this check has to change.
+    	// Towny 0.94.0.0 required.
     	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {
     		String [] ver = towny.getDescription().getVersion().split(".");
     		if (Integer.parseInt(ver[1]) < 94) {

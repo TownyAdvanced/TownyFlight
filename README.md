@@ -4,7 +4,7 @@ Flight plugin for Towny servers.
 
 Finally, you can allow towny residents to fly while in their own towns, for free, from the lead developer of Towny.
 
-Requires the use of Towny 0.92.0.0 or newer.
+Requires the use of Towny 0.94.0.0 or newer.
 
 Commands:
 
