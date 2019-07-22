@@ -59,7 +59,7 @@ public class PlayerPVPListener implements Listener {
     	if (!player.getAllowFlight())
     		return;
 
-    	if (!TownyUniverse.getInstance().getDatabase().getWorld(player.getLocation().getWorld().getName()).isUsingTowny())
+    	if (!TownyUniverse.getInstance().getDataSource().getWorld(player.getLocation().getWorld().getName()).isUsingTowny())
     		return;
 
     	if (CombatUtil.preventDamageCall(towny, attacker, defender))

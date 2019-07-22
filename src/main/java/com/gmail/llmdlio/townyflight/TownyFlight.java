@@ -71,8 +71,13 @@ public class TownyFlight extends JavaPlugin {
     	// Towny's API change as of 0.94.0.1 means this check has to change.
     	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {
     		String [] ver = towny.getDescription().getVersion().split(".");
-    		if ((Integer.parseInt(ver[1]) < 94) || (ver[1].equals("94") && ver[2].equals("0") && ver[3].equals("0"))) {
-    			getLogger().severe("Towny version inadequate: 0.94.0.1 or newer required.");
+    		if (Integer.parseInt(ver[1]) < 94) {
+    			getLogger().severe("Towny version inadequate: 0.94.0.0 or newer required.");
+				this.getServer().getPluginManager().disablePlugin(this);
+				return;
+    		}
+    		if(ver[1].equals("94") && ver[2].equals("0") && ver[3].equals("1")) {
+    			getLogger().severe("Towny version 0.94.0.1 has a broken API. Download newer Towny or get 0.94.0.0.");
 				this.getServer().getPluginManager().disablePlugin(this);
 				return;
     		}
@@ -198,7 +203,7 @@ public class TownyFlight extends JavaPlugin {
         }
 		Resident resident = null;
 		try {
-			resident = TownyUniverse.getInstance().getDatabase().getResident(player.getName());
+			resident = TownyUniverse.getInstance().getDataSource().getResident(player.getName());
 		} catch (NotRegisteredException e) {
 			// Sometimes when a player joins for the first time, there can be a canFly test run before Towny has 
 			// the chance to save the player properly.
