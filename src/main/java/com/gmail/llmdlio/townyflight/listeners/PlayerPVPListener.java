@@ -29,17 +29,14 @@ public class PlayerPVPListener implements Listener {
 	}
 	
     /*
-     * Listener for a player who joins the server successfully.
-     * Check if flight is allowed where they are currently and if not, remove it.
+     * Listener to turn off flight if flying player enters PVP combat. 
+     * Runs only if the config.yml's disable_Combat_Prevention is set to true.
      */
     @EventHandler(priority = EventPriority.LOWEST)
     private void playerPVPEvent (EntityDamageByEntityEvent event) throws NotRegisteredException {
     	Entity attacker = event.getDamager();
     	Entity defender = event.getEntity();
-    	
-    	if (!TownyFlight.disableCombatPrevention)
-    		return;
-    	
+
     	if (attacker instanceof Projectile) {
 			ProjectileSource shooter = ((Projectile) attacker).getShooter();
 			if (shooter instanceof Entity)
@@ -49,24 +46,24 @@ public class PlayerPVPListener implements Listener {
     	if ( !(attacker instanceof Player) || !(defender instanceof Player)) 
     		return;
 
-    	Player player = (Player) attacker;
+    	Player attackingPlayer = (Player) attacker;
     	
-    	if (player.getGameMode().equals(GameMode.CREATIVE)) {
+    	if (attackingPlayer.getGameMode().equals(GameMode.CREATIVE)) {
     		event.setCancelled(true);
     		return;    		
     	}
     	
-    	if (!player.getAllowFlight())
+    	if (!attackingPlayer.getAllowFlight())
     		return;
 
-    	if (!TownyUniverse.getInstance().getDataSource().getWorld(player.getLocation().getWorld().getName()).isUsingTowny())
+    	if (!TownyUniverse.getInstance().getDataSource().getWorld(attackingPlayer.getLocation().getWorld().getName()).isUsingTowny())
     		return;
 
     	if (CombatUtil.preventDamageCall(towny, attacker, defender))
     		return;
 
     	if (!event.isCancelled()) {
-    		TownyFlight.toggleFlight(player, false, true, "pvp");
+    		TownyFlight.toggleFlight(attackingPlayer, false, true, "pvp");
     		event.setCancelled(true);
     	}    	
     }
