@@ -22,7 +22,6 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.TownyUniverse;
 
 public class TownyFlight extends JavaPlugin {
 	
@@ -217,7 +216,7 @@ public class TownyFlight extends JavaPlugin {
         }
 		Resident resident = null;
 		try {
-			resident = TownyUniverse.getInstance().getDataSource().getResident(player.getName());
+			resident = TownyAPI.getInstance().getDataSource().getResident(player.getName());
 		} catch (NotRegisteredException e) {
 			// Sometimes when a player joins for the first time, there can be a canFly test run before Towny has 
 			// the chance to save the player properly.
