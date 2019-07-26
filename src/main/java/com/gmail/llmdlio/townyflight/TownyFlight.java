@@ -1,5 +1,6 @@
 package com.gmail.llmdlio.townyflight;
 
+import java.util.Arrays;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -65,40 +66,50 @@ public class TownyFlight extends JavaPlugin {
 		if (test != null)
 			warsForTownyFound = true;
 
-		if (!townyVersionCheck()) {
+		Plugin towny = getServer().getPluginManager().getPlugin("Towny");
+		if (!townyVersionCheck(towny.getDescription().getVersion())) {
 			this.getServer().getPluginManager().disablePlugin(this);
 			return;
+		} else {
+			getLogger().info("Towny version " + towny.getDescription().getVersion() + " found.");
 		}
-
 
     	registerEvents();
 	    getLogger().info(this.getDescription().getFullName() + " by LlmDl Enabled.");
 	}
 
-	private boolean townyVersionCheck() {
-    	// Towny 0.94.0.2+ required.
-		Plugin towny = getServer().getPluginManager().getPlugin("Towny");
-    	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {
-    		String [] ver = towny.getDescription().getVersion().split(".");
-    		if (Integer.parseInt(ver[1]) < 94) {
+	private boolean townyVersionCheck(String version) {
+    	// Towny 0.94.0.2+ required.		
+    	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {    		
+    		int[] vers = Arrays.stream(version.split("\\.")).mapToInt(Integer::parseInt).toArray();
+
+    		if (Integer.valueOf(vers[1]) < 94) {
     			getLogger().severe("Towny version inadequate: 0.94.0.2 or newer required.");
     			return false;
     		}
-    		if(ver[1].equals("94") && ver[2].equals("0") && ver[3].equals("1")) {
+    		if (Integer.valueOf(vers[1]) > 94) {
+    			return true;
+    		}
+    		// Must be on a version of 0.94.*.*
+    		if (vers[2] > 0) {
+    			return true;
+    		}
+    		// Must be on a version of 0.94.0.*
+    		if (vers[3] == 1) {
     			getLogger().severe("Towny version 0.94.0.1 has a broken API. Download Towny 0.94.0.2 or newer.");
 				return false;
     		}
-    		if( (ver[1].equals("94") && ver[2].equals("0")) && Integer.valueOf(ver[3]) > 1 ) {
-    			getLogger().severe("Towny version " + towny.getDescription().getVersion() + " found.");
+    		if (vers[3] > 1 ) {    			
     			return true;
     		}
     			
     	} else {
-			getLogger().severe("Towny version inadequate: 0.94.0.0 or newer required.");
+			getLogger().severe("Towny version inadequate: 0.94.0.2 or newer required.");
 			return false;    		
     	}
     	return false;
 	}
+
     public void onDisable() {
     	getLogger().info("TownyFlight Disabled.");
     }
