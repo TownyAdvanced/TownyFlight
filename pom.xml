@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.gmail.llmdlio</groupId>
   <artifactId>TownyFlight</artifactId>
-  <version>1.4.4</version>
+  <version>1.4.5</version>
   <name>TownyFlight</name>
   <description>A flight plugin for Towny servers.</description>
   <build>
