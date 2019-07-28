@@ -48,7 +48,7 @@ public class TownyFlight extends JavaPlugin {
 	public static Boolean disableCombatPrevention;
 	private static Boolean disableDuringWar;
 	private static Boolean showPermissionInMessage;
-	private static Boolean warsForTownyFound;
+	private static Boolean warsForTownyFound = false;
 
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 
