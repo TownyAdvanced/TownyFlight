@@ -19,7 +19,7 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
-import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.object.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -79,32 +79,19 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	private boolean townyVersionCheck(String version) {
-    	// Towny 0.94.0.2+ required.		
+    	// Towny 0.92.0.0+ required.		
     	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {    		
     		int[] vers = Arrays.stream(version.split("\\.")).mapToInt(Integer::parseInt).toArray();
 
-    		if (Integer.valueOf(vers[1]) < 94) {
-    			getLogger().severe("Towny version inadequate: 0.94.0.2 or newer required.");
+    		if (Integer.valueOf(vers[1]) < 92) {
+    			getLogger().severe("Towny version inadequate: 0.92.0.0 or newer required.");
     			return false;
     		}
-    		if (Integer.valueOf(vers[1]) > 94) {
+    		if (Integer.valueOf(vers[1]) > 91) {
     			return true;
-    		}
-    		// Must be on a version of 0.94.*.*
-    		if (vers[2] > 0) {
-    			return true;
-    		}
-    		// Must be on a version of 0.94.0.*
-    		if (vers[3] == 1) {
-    			getLogger().severe("Towny version 0.94.0.1 has a broken API. Download Towny 0.94.0.2 or newer.");
-				return false;
-    		}
-    		if (vers[3] > 1 ) {    			
-    			return true;
-    		}
-    			
+    		}	
     	} else {
-			getLogger().severe("Towny version inadequate: 0.94.0.2 or newer required.");
+			getLogger().severe("Towny version inadequate: 0.92.0.0 or newer required.");
 			return false;    		
     	}
     	return false;
@@ -227,13 +214,13 @@ public class TownyFlight extends JavaPlugin {
         }
 		Resident resident = null;
 		try {
-			resident = TownyAPI.getInstance().getDataSource().getResident(player.getName());
+			resident = TownyUniverse.getDataSource().getResident(player.getName());
 		} catch (NotRegisteredException e) {
 			// Sometimes when a player joins for the first time, there can be a canFly test run before Towny has 
 			// the chance to save the player properly.
 			return false;
 		}
-		if (disableDuringWar && (TownyAPI.getInstance().isWarTime() || warsForTowny(resident))) {
+		if (disableDuringWar && (TownyUniverse.isWarTime() || warsForTowny(resident))) {
 			if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
 			return false;
 		}
@@ -274,11 +261,11 @@ public class TownyFlight extends JavaPlugin {
      * @return
      */
     private static boolean allowedLocation(Player player, Resident resident) {
-		if (TownyAPI.getInstance().isWilderness(player.getLocation()))
+		if (TownyUniverse.isWilderness(player.getLocation().getBlock()))
 			return false;
 
 		try {
-			Town town = TownyAPI.getInstance().getTownBlock(player.getLocation()).getTown();
+			Town town = TownyUniverse.getTownBlock(player.getLocation()).getTown();
 			if (!resident.getTown().equals(town)) {
 				if (player.hasPermission("townyflight.alliedtowns") && resident.getTown().hasNation()) {
 					if (resident.getTown().getNation().hasTown(town)) return true;
