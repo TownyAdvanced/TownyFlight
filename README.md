@@ -1,16 +1,25 @@
 # TownyFlight
-Flight plugin for Towny servers.
-
 
 Finally, you can allow towny residents to fly while in their own towns, for free, from the lead developer of Towny.
 
-Requires the use of Towny 0.94.0.0 or newer.
+__As of version 1.5.0 This plugin supports Towny 0.94.0.2+ and MC 1.14.*.__
+__Pre-1.5 versions requires the use of Towny 0.92.0.0 or newer.__
+
+Players that are flying and make a PVP combat attack will have their attack cancelled and their flight taken away. Players that are in creative and make attacks will be allowed to continue flying, but will have their pvp attack canceled.
+
+Players that have their flight taken away will fall harmlessly to the ground.
+
+If you want to support the developer consider becoming a patron: 
+[<img align=right src="https://user-images.githubusercontent.com/879756/65957602-d3795800-e412-11e9-8b27-dda76b6fed13.PNG">](https://www.patreon.com/bePatron?u=25096724)
+___
 
 ## Commands:
 
 - /tfly - Enable/disable flight.
 - /tfly reload - Reload the config.
 - /tfly {name} - (Console Only) Removes flight from someone.
+
+---
 
 ## Permission nodes:
 
@@ -20,9 +29,30 @@ Requires the use of Towny 0.94.0.0 or newer.
 - townyflight.alltowns - allows players to use /tfly in any town, but not the wilderness.
 - townyflight.bypass - default to Ops, bypasses removal of flight, use /tfly anywhere.
 
+---
 
+## Config:
+- Config auto-updates with new features while keeping your old settings intact (like Towny.)
+- Includes all language strings in case translation is required.
 
+- options.auto_Enable_Flight
+  - default: false
+  - If set to true, players entering their town will have flight auto-enabled.
+  - When set to true, the plugin will use slightly more resources due to the EnterTown listener.
+- options.auto_Enable_Silent
+  - default: false
+  - If set to true, players entering their town will have flight auto-enabled without being notified in chat
+- options.disable_During_Wartime
+  - default: true
+  - If set to false, players can still fly in their town while war is active.
+- options.disable_Combat_Prevention
+  - default: false
+  - If set to false, TownyFlight will not prevent combat from player who fly or take their flight away.
+- options.show_Permission_After_No_Permission_Message
+  - default: true
+  - If set to false, the language.noPermission message will not display the permission node.
 
+---
 
 I'm open to new features and willing to fix any bugs found.
 
