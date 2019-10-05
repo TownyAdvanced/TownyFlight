@@ -2,34 +2,55 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.gmail.llmdlio</groupId>
   <artifactId>TownyFlight</artifactId>
-  <version>1.4.6</version>
+  <version>1.5.0</version>
   <name>TownyFlight</name>
   <description>A flight plugin for Towny servers.</description>
+  <properties>
+    <java.version>1.8</java.version>
+    <project.bukkitAPIVersion>1.14</project.bukkitAPIVersion>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
   <build>
     <plugins>
       <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <configuration>
-              <source>1.7</source>
-              <target>1.7</target>
-          </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.8</source>
+          <target>1.8</target>
+        </configuration>
       </plugin>
     </plugins>
-  </build>  
-   <repositories>
-       <repository>
-         <id>spigot-repo</id>
-         <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-       </repository>
-   </repositories>
-   <dependencies>
-       <dependency>
-           <groupId>org.bukkit</groupId>
-           <artifactId>bukkit</artifactId>
-           <version>1.12.2-R0.1-SNAPSHOT</version><!--change this value depending on the version or use LATEST-->
-           <type>jar</type>
-           <scope>provided</scope>
-       </dependency>
-   </dependencies>            
+    <resources>
+      <resource>
+        <directory>src/main/resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
+  </build>
+  <repositories>
+   <repository>
+      <id>github-Towny</id>
+      <url>https://maven.pkg.github.com/TownyAdvanced/Towny</url>
+    </repository>   
+    <repository>
+      <id>spigot-repo</id>
+      <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+    </repository>
+  </repositories>
+  <dependencies>                    
+    <dependency>
+      <groupId>org.bukkit</groupId>
+      <artifactId>bukkit</artifactId>
+      <version>1.14.4-R0.1-SNAPSHOT</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.palmergames.bukkit.towny</groupId>
+      <artifactId>Towny</artifactId>
+      <version>0.94.0.14</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>             
 </project>

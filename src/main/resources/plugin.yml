@@ -1,10 +1,10 @@
 name: TownyFlight
 author: LlmDl
 main: com.gmail.llmdlio.townyflight.TownyFlight
-version: 1.4.6
+version: ${project.version}
+api-version: ${project.bukkitAPIVersion}
 depend: [Towny]
 softdepend: [WarsForTowny]
-api-version: 1.13
 prefix: TownyFlight
 
 commands:
@@ -28,4 +28,7 @@ permissions:
     default: op
   townyflight.alliedtowns:
     description: Allows players to use /townyflight in towns which are allied to their own.
+    default: op
+  townyflight.alltowns:
+    description: Allows players to use /townyflight in any town. Wilderness is still disallowed.
     default: op

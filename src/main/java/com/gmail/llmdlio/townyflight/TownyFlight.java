@@ -276,6 +276,9 @@ public class TownyFlight extends JavaPlugin {
     private static boolean allowedLocation(Player player, Resident resident) {
 		if (TownyAPI.getInstance().isWilderness(player.getLocation()))
 			return false;
+		
+		if (player.hasPermission("townyflight.alltowns"))
+			return true;
 
 		try {
 			Town town = TownyAPI.getInstance().getTownBlock(player.getLocation()).getTown();
