@@ -79,9 +79,10 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	private boolean townyVersionCheck(String version) {
-    	// Towny 0.94.0.2+ required.		
-    	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {    		
-    		int[] vers = Arrays.stream(version.split("\\.")).mapToInt(Integer::parseInt).toArray();
+    	// Towny 0.94.0.2+ required.	    
+    	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {
+    	    String[] versionShortened = version.split(" ");
+    		int[] vers = Arrays.stream(versionShortened[0].split("\\.")).mapToInt(Integer::parseInt).toArray();
 
     		if (Integer.valueOf(vers[1]) < 94) {
     			getLogger().severe("Towny version inadequate: 0.94.0.2 or newer required.");
