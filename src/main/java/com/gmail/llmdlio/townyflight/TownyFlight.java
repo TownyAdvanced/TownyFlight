@@ -158,59 +158,55 @@ public class TownyFlight extends JavaPlugin {
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-		if (command.getName().equalsIgnoreCase("tfly")) {
+        if (command.getName().equalsIgnoreCase("tfly")) {
+            // Handle console commands
+            if (sender instanceof ConsoleCommandSender) {
+                if (args.length != 0 && args[0].equalsIgnoreCase("reload")) {
+                    config.reload();
+                    LoadSettings();
+                    registerEvents();
+                    sender.sendMessage(pluginPrefix + "Config.yml reloaded.");
+                    return true;
+                } else {
+                    // It's not any other subcommand of /tfly so handle removing flight via /tfly {name}
+                    @SuppressWarnings("deprecation")
+                    OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
+                    if (player.isOnline()) {
+                        if (!player.getPlayer().getAllowFlight()) {
+                            sender.sendMessage(pluginPrefix + "Player " + args[0] + " is already unable to fly. Could not remove flight.");
+                            return true;
+                        }
+                        toggleFlight(player.getPlayer(), false, true, "console");
+                        sender.sendMessage(pluginPrefix + "Flight removed from " + args[0] + ".");
+                        return true;
+                    } else {
+                        sender.sendMessage(pluginPrefix + "Player " + args[0] + " not found, or is offline. Could not remove flight.");
+                        return true;
+                    }
+                }
+            }
+            // Handle player commands
+            if (sender instanceof Player) {
+                if (args.length != 0 && args[0].equalsIgnoreCase("reload")) {
+                    if (!sender.hasPermission("townyflight.command.tfly.reload")) {
+                        sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly.reload" : ""));
+                        return true;
+                    }
+                    config.reload();
+                    LoadSettings();
+                    registerEvents();
+                    sender.sendMessage(pluginPrefix + "Config.yml reloaded");
+                    return true;
+                }
 
-			if (sender instanceof ConsoleCommandSender) {
-
-				if (args[0].equalsIgnoreCase("reload")) {
-					config.reload();
-			    	LoadSettings();
-			    	registerEvents();
-					sender.sendMessage(pluginPrefix + "Config.yml reloaded.");
-					return true;
-				} else {
-					// It's not any other subcommand of /tfly so handle removing flight via /tfly {name}
-					@SuppressWarnings("deprecation")
-					OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
-					if (player.isOnline()) {
-				    	if (!player.getPlayer().getAllowFlight()) {
-				    		sender.sendMessage(pluginPrefix + "Player " + args[0] + " is already unable to fly. Could not remove flight.");
-							return false;
-				    	}
-				    	toggleFlight(player.getPlayer(), false, true, "console");
-						sender.sendMessage(pluginPrefix + "Flight removed from " + args[0] + ".");
-						return true;
-					} else {
-						sender.sendMessage(pluginPrefix + "Player " + args[0] + " not found, or is offline. Could not remove flight.");
-						return false;
-					}
-				}
-			}
-
-		 	if (sender instanceof Player) {
-
-				if (args.length == 0) {
-	                if (!canFly((Player) sender, false))
-	                	return false;
-	                toggleFlight((Player) sender, false, false, "");
-	                return true;
-		        }
-
-				if (args[0].equalsIgnoreCase("reload")) {
-					if (!sender.hasPermission("townyflight.command.tfly.reload")) {
-						sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly.reload" : ""));
-						return false;
-					}
-					config.reload();
-			    	LoadSettings();
-			    	registerEvents();
-					sender.sendMessage(pluginPrefix + "Config.yml reloaded");
-					return true;
-				}
-				return false;	
-			}
-		}
-		return false;
+                if (!canFly((Player) sender, false)) {
+                    return true;
+                }
+                toggleFlight((Player) sender, false, false, "");
+                return true;
+            }
+        }
+        return false;
     }
 
 	/** 
