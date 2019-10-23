@@ -175,31 +175,24 @@ public class TownyFlight extends JavaPlugin {
 					if (player.isOnline()) {
 				    	if (!player.getPlayer().getAllowFlight()) {
 				    		sender.sendMessage(pluginPrefix + "Player " + args[0] + " is already unable to fly. Could not remove flight.");
-							return false;
+							return true;
 				    	}
 				    	toggleFlight(player.getPlayer(), false, true, "console");
 						sender.sendMessage(pluginPrefix + "Flight removed from " + args[0] + ".");
 						return true;
 					} else {
 						sender.sendMessage(pluginPrefix + "Player " + args[0] + " not found, or is offline. Could not remove flight.");
-						return false;
+						return true;
 					}
 				}
 			}
 
 		 	if (sender instanceof Player) {
 
-				if (args.length == 0) {
-	                if (!canFly((Player) sender, false))
-	                	return false;
-	                toggleFlight((Player) sender, false, false, "");
-	                return true;
-		        }
-
-				if (args[0].equalsIgnoreCase("reload")) {
+		 	    if (args.length != 0 && args[0].equalsIgnoreCase("reload")) {
 					if (!sender.hasPermission("townyflight.command.tfly.reload")) {
 						sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly.reload" : ""));
-						return false;
+						return true;
 					}
 					config.reload();
 			    	LoadSettings();
@@ -207,7 +200,11 @@ public class TownyFlight extends JavaPlugin {
 					sender.sendMessage(pluginPrefix + "Config.yml reloaded");
 					return true;
 				}
-				return false;	
+		 	    
+                if (!canFly((Player) sender, false))
+                    return true;
+                toggleFlight((Player) sender, false, false, "");
+                return true;
 			}
 		}
 		return false;
