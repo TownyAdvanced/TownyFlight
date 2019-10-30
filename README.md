@@ -9,8 +9,7 @@ Players that are flying and make a PVP combat attack will have their attack canc
 
 Players that have their flight taken away will fall harmlessly to the ground.
 
-If you want to support the developer consider becoming a patron: 
-[<img align=right src="https://user-images.githubusercontent.com/879756/65957602-d3795800-e412-11e9-8b27-dda76b6fed13.PNG">](https://www.patreon.com/bePatron?u=25096724)
+If you want to support the developer consider [becoming a Sponsor](https://github.com/sponsors/LlmDl).
 ___
 
 ## Commands:
