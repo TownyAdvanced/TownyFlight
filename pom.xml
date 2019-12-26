@@ -29,10 +29,10 @@
     </resources>
   </build>
   <repositories>
-   <repository>
-      <id>github-Towny</id>
-      <url>https://maven.pkg.github.com/TownyAdvanced/Towny</url>
-    </repository>   
+    <repository>
+      <id>github-towny</id>
+      <url>https://maven.pkg.github.com/townyadvanced/towny</url>
+    </repository> 
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -49,7 +49,7 @@
     <dependency>
       <groupId>com.palmergames.bukkit.towny</groupId>
       <artifactId>Towny</artifactId>
-      <version>0.94.0.14</version>
+      <version>0.95.2.0</version>
       <scope>provided</scope>
     </dependency>
   </dependencies>             
