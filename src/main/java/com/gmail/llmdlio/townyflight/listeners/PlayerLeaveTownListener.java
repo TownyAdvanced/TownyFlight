@@ -10,11 +10,7 @@ import com.palmergames.bukkit.towny.event.PlayerLeaveTownEvent;
 
 public class PlayerLeaveTownListener implements Listener{	
 	
-	@SuppressWarnings("unused")
-	private final TownyFlight plugin;
-	
-	public PlayerLeaveTownListener(TownyFlight instance) {
-		plugin = instance;
+	public PlayerLeaveTownListener() {
 	}
 	
     /*

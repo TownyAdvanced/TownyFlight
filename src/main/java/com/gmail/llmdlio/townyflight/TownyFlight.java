@@ -1,6 +1,9 @@
 package com.gmail.llmdlio.townyflight;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -12,9 +15,11 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
 import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
@@ -28,9 +33,10 @@ public class TownyFlight extends JavaPlugin {
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
 	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
-	private final PlayerLeaveTownListener playerLeaveListener = new PlayerLeaveTownListener(this);	
-	private final PlayerPVPListener playerPVPListener = new PlayerPVPListener(this);
-	private final TownUnclaimListener townUnclaimListener = new TownUnclaimListener(this);
+	private final PlayerLeaveTownListener playerLeaveListener = new PlayerLeaveTownListener();	
+	private final PlayerPVPListener playerPVPListener = new PlayerPVPListener();
+	private final TownUnclaimListener townUnclaimListener = new TownUnclaimListener();
+	private final PlayerFallListener playerFallListener = new PlayerFallListener();
 
 	public static String pluginPrefix;
 	private static String flightOnMsg;
@@ -49,11 +55,15 @@ public class TownyFlight extends JavaPlugin {
 	private static Boolean disableDuringWar;
 	private static Boolean showPermissionInMessage;
 	private static Boolean warsForTownyFound = false;
+	
+	public static List<Player> flyingPlayers = new ArrayList<>();
 
 	private TownyFlightConfig config = new TownyFlightConfig(this);
+	private static TownyFlight plugin;
 
 	public void onEnable() {
 
+		plugin = this;
     	reloadConfig();
 
     	if (!LoadSettings()) {
@@ -155,6 +165,7 @@ public class TownyFlight extends JavaPlugin {
     	if (disableCombatPrevention)
     		pluginManager.registerEvents(playerPVPListener, this);
     	pluginManager.registerEvents(townUnclaimListener, this);
+    	pluginManager.registerEvents(playerFallListener, this);
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -316,8 +327,21 @@ public class TownyFlight extends JavaPlugin {
     				player.sendMessage(pluginPrefix + flightOffMsg);
     			}
     		}
-    		if (player.isFlying())
+    		System.out.println("player.isFlying() " + player.isFlying());
+    		if (player.isFlying()) {
+    			// As of 1.15 the below line does not seem to be reliable.
         		player.setFallDistance(-100000);
+        		// As of 1.15 the below is required.
+        		if (!player.isOnGround()) {
+        			flyingPlayers.add(player);
+        			new BukkitRunnable() {
+    					@Override
+    					public void run() {
+    						removeFallProtection(player);
+    					}
+    				}.runTaskLater(plugin, 100);
+        		}
+    		}
     		player.setAllowFlight(false);
     	} else {
     		if (!silent) 
@@ -325,4 +349,9 @@ public class TownyFlight extends JavaPlugin {
     		player.setAllowFlight(true);
     	}
     }
+    
+	private static void removeFallProtection(Player player) {
+		if (flyingPlayers.contains(player))
+			flyingPlayers.remove(player);
+	}
 }

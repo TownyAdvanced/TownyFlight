@@ -20,12 +20,10 @@ import com.palmergames.bukkit.towny.utils.CombatUtil;
 
 public class PlayerPVPListener implements Listener {
 	
-	@SuppressWarnings("unused")
-	private final TownyFlight plugin;
+
 	private Towny towny = (Towny) Bukkit.getServer().getPluginManager().getPlugin("Towny");
 	
-	public PlayerPVPListener(TownyFlight instance) {
-		plugin = instance;
+	public PlayerPVPListener() {
 	}
 	
     /*

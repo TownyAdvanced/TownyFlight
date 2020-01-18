@@ -15,11 +15,8 @@ import com.palmergames.bukkit.towny.object.WorldCoord;
 
 public class TownUnclaimListener implements Listener {
 
-	@SuppressWarnings("unused")
-	private final TownyFlight plugin;
-	
-	public TownUnclaimListener(TownyFlight instance) {
-		plugin = instance;
+	public TownUnclaimListener() {
+
 	}
 	
 	/*
