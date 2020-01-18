@@ -17,13 +17,13 @@ public class PlayerFallListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
     private void playerFallEvent (EntityDamageEvent event) {
 
-		if (!event.getCause().equals(DamageCause.FALL) && !(event.getEntityType().equals(EntityType.PLAYER))) 
-			return;
+		if (event.getCause().equals(DamageCause.FALL) && event.getEntityType().equals(EntityType.PLAYER)) {			
 		
-		Player player = (Player) event.getEntity();
-		if (TownyFlight.flyingPlayers.contains(player)) {
-			TownyFlight.flyingPlayers.remove(player);
-			event.setCancelled(true);
+			Player player = (Player) event.getEntity();
+			if (TownyFlight.flyingPlayers.contains(player)) {
+				TownyFlight.flyingPlayers.remove(player);
+				event.setCancelled(true);
+			}
 		}
 	}
 
