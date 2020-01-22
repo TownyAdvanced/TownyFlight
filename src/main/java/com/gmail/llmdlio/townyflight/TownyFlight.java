@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -228,7 +229,7 @@ public class TownyFlight extends JavaPlugin {
      * @param silent - show messages to player.
      **/
     public static boolean canFly(Player player, boolean silent) {
-    	if (player.hasPermission("townyflight.bypass"))
+    	if (player.hasPermission("townyflight.bypass") || player.getGameMode().equals(GameMode.SPECTATOR) || player.getGameMode().equals(GameMode.CREATIVE))
     		return true;
     	if (!player.hasPermission("townyflight.command.tfly")) {
     		if (!silent) player.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly" : ""));
