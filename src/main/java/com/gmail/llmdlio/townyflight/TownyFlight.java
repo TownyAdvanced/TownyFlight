@@ -328,7 +328,6 @@ public class TownyFlight extends JavaPlugin {
     				player.sendMessage(pluginPrefix + flightOffMsg);
     			}
     		}
-    		System.out.println("player.isFlying() " + player.isFlying());
     		if (player.isFlying()) {
     			// As of 1.15 the below line does not seem to be reliable.
         		player.setFallDistance(-100000);
