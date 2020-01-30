@@ -21,7 +21,7 @@ public class PlayerEnterTownListener implements Listener {
      * Used only if the config has auto-flight enabled.
      */
     @EventHandler(priority = EventPriority.LOWEST)
-    private void playerEnterTownEvent (PlayerEnterTownEvent event) {    	
+    private void playerEnterTownEvent (PlayerEnterTownEvent event) {
     	final Player player = event.getPlayer();    	
     	if (player.hasPermission("townyflight.bypass")) // Added in 1.2.5 to stop players with the bypass node from losing flight when entering a town. 
     		return;    	

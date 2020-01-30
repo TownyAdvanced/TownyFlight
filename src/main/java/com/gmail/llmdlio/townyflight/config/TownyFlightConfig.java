@@ -111,6 +111,8 @@ public class TownyFlightConfig {
 	}
 	
 	private void addDefault(String path, Object defaultValue) {
+		if (path.equals("Version"))
+			config.set(path, plugin.getDescription().getVersion());
 		if (!hasPath(path))
 			config.set(path, defaultValue);		
 	}

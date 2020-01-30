@@ -26,18 +26,22 @@ public class PlayerJoinListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR)
     private void playerJoinEvent (PlayerJoinEvent event) throws NotRegisteredException {
     	final Player player = event.getPlayer();
-
+    	
     	Bukkit.getScheduler().runTaskLater(this.plugin, new Runnable() {
     		  @Override
     		  public void run() {
-    	    		if (!TownyFlight.canFly(player, true))
+    		    	boolean canFly = TownyFlight.canFly(player, true);
+    		    	boolean isFlying = player.isFlying();
+    	    		if (isFlying && canFly)
     	        		return;
 
-    	        	if (TownyFlight.autoEnableFlight) {
+    	    		if (isFlying && !canFly) {
+    	    			TownyFlight.toggleFlight(player, false, true, "");
+    	    			return;
+    	    		}
+
+    	    		if (!isFlying && canFly && TownyFlight.autoEnableFlight)
     	       			TownyFlight.toggleFlight(player, false, false, "");
-    	        	} else {
-    	        		player.setFallDistance(-100000);
-    	        	}
     		  }
     		}, 1);
     }
