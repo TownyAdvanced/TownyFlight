@@ -136,15 +136,15 @@ public class TownyFlight extends JavaPlugin {
 		pluginPrefix = ChatColor.translateAlternateColorCodes('&', config.getConfig().getString("pluginPrefix"));
 
 		// Language Strings
-		flightOnMsg = config.getConfig().getConfigurationSection("language").getString("flightOnMsg");
-		flightOffMsg = config.getConfig().getConfigurationSection("language").getString("flightOffMsg");
-		noTownMsg = config.getConfig().getConfigurationSection("language").getString("noTownMsg");
-		notInTownMsg = config.getConfig().getConfigurationSection("language").getString("notInTownMsg");
-		flightDeactivatedMsg = config.getConfig().getConfigurationSection("language").getString("flightDeactivatedMsg");
-		flightDeactivatedPVPMsg = config.getConfig().getConfigurationSection("language").getString("flightDeactivatedPVPMsg");
-		flightDeactivatedConsoleMsg = config.getConfig().getConfigurationSection("language").getString("flightDeactivatedConsoleMsg");
-		noPermission = config.getConfig().getConfigurationSection("language").getString("noPermission");
-		notDuringWar = config.getConfig().getConfigurationSection("language").getString("notDuringWar");
+		flightOnMsg = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("flightOnMsg"));
+		flightOffMsg = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("flightOffMsg"));
+		noTownMsg = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("noTownMsg"));
+		notInTownMsg = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("notInTownMsg"));
+		flightDeactivatedMsg = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("flightDeactivatedMsg"));
+		flightDeactivatedPVPMsg = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("flightDeactivatedPVPMsg"));
+		flightDeactivatedConsoleMsg = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("flightDeactivatedConsoleMsg"));
+		noPermission = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("noPermission"));
+		notDuringWar = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("notDuringWar"));
 
 		// Options
 		autoEnableFlight = config.getConfig().getConfigurationSection("options").getString("auto_Enable_Flight").equalsIgnoreCase("true");

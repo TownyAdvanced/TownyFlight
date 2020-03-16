@@ -57,13 +57,13 @@ public class TownyFlightConfig {
 				"####################","");
     	
     	addComment("language.flightOnMsg","# Message shown when flight activated.");
-    	addDefault("language.flightOnMsg", "Flight Activated.");
+    	addDefault("language.flightOnMsg", "Flight Activated. ");
     	addComment("language.flightOffMsg","# Message shown when flight de-activated.");
-    	addDefault("language.flightOffMsg", "Flight De-activated.");
-    	addComment("language.noTownMsg","# Message shown when player lacks a town.");
-    	addDefault("language.noTownMsg", "Flight cannot be activated, you don't belong to a town.");
+    	addDefault("language.flightOffMsg", "Flight De-activated. ");
+    	addComment("language.noTownMsg","# Message shown when player lacks a town. ");
+    	addDefault("language.noTownMsg", "Flight cannot be activated, you don't belong to a town. ");
     	addComment("language.notInTownMsg","# Message shown when flight cannot be turned on.");
-    	addDefault("language.notInTownMsg", "Flight cannot be activated, return to your town and try again.");
+    	addDefault("language.notInTownMsg", "Flight cannot be activated, return to your town and try again. ");
     	addComment("language.flightDeactivatedMsg","# Message shown when a player has flight taken away.");
     	addDefault("language.flightDeactivatedMsg", "Left town boundaries. ");
     	addComment("language.flightDeactivatedPVPMsg","# Message shown when a player has flight taken away because of PVP.");
@@ -73,7 +73,7 @@ public class TownyFlightConfig {
     	addComment("language.noPermission","# Message shown when a player lacks a permission node.");
     	addDefault("language.noPermission", "You do not have permission for this command, missing: ");
     	addComment("language.notDuringWar", "# Message shown when war is active and flight is disallowed.");
-    	addDefault("language.notDuringWar", "You cannot use flight while Towny war is active.");
+    	addDefault("language.notDuringWar", "You cannot use flight while Towny war is active. ");
     	
     	addComment("options", "", "",
     						"#################",
