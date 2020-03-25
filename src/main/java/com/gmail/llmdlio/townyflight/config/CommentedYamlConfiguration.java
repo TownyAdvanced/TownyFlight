@@ -1,8 +1,11 @@
 package com.gmail.llmdlio.townyflight.config;
 
-import java.io.File; 
-import java.io.FileWriter; 
-import java.io.IOException; 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap; 
  
 import org.bukkit.configuration.file.YamlConfiguration; 
@@ -39,11 +42,12 @@ public class CommentedYamlConfiguration extends YamlConfiguration {
          
         String data = insertComments(saveToString()); 
  
-        FileWriter writer = new FileWriter(file); 
- 
+        OutputStream outputStream = new FileOutputStream(file);
+        OutputStreamWriter writer = new OutputStreamWriter(outputStream, StandardCharsets.UTF_8);
         try { 
             writer.write(data); 
         } finally { 
+        	writer.flush();
             writer.close(); 
         } 
     } 
