@@ -1,7 +1,6 @@
 package com.gmail.llmdlio.townyflight;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -29,12 +28,13 @@ import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.utils.CombatUtil;
 
 public class TownyFlight extends JavaPlugin {
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
 	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
-	private final PlayerLeaveTownListener playerLeaveListener = new PlayerLeaveTownListener();	
+	private final PlayerLeaveTownListener playerLeaveListener = new PlayerLeaveTownListener(this);	
 	private final PlayerPVPListener playerPVPListener = new PlayerPVPListener();
 	private final TownUnclaimListener townUnclaimListener = new TownUnclaimListener();
 	private final PlayerFallListener playerFallListener = new PlayerFallListener();
@@ -49,6 +49,7 @@ public class TownyFlight extends JavaPlugin {
 	private static String flightDeactivatedConsoleMsg;
 	private static String noPermission;
 	private static String notDuringWar;
+	public static String returnToAllowedArea;
 
 	public static Boolean autoEnableFlight;
 	public static Boolean autoEnableSilent;
@@ -56,6 +57,7 @@ public class TownyFlight extends JavaPlugin {
 	private static Boolean disableDuringWar;
 	private static Boolean showPermissionInMessage;
 	private static Boolean warsForTownyFound = false;
+	public static int flightDisableTimer;
 	
 	public static List<Player> flyingPlayers = new ArrayList<>();
 
@@ -67,7 +69,7 @@ public class TownyFlight extends JavaPlugin {
 		plugin = this;
     	reloadConfig();
 
-    	if (!LoadSettings()) {
+    	if (!loadSettings()) {
     		getLogger().severe("Config failed to load!");
     		this.getServer().getPluginManager().disablePlugin(this);
     		return;
@@ -90,36 +92,8 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	private boolean townyVersionCheck(String version) {
-    	// Towny 0.94.0.2+ required.	    
-    	if (getServer().getPluginManager().getPlugin("Towny").isEnabled()) {
-    	    String[] versionShortened = version.split(" ");
-    		int[] vers = Arrays.stream(versionShortened[0].split("\\.")).mapToInt(Integer::parseInt).toArray();
-
-    		if (Integer.valueOf(vers[1]) < 94) {
-    			getLogger().severe("Towny version inadequate: 0.94.0.2 or newer required.");
-    			return false;
-    		}
-    		if (Integer.valueOf(vers[1]) > 94) {
-    			return true;
-    		}
-    		// Must be on a version of 0.94.*.*
-    		if (vers[2] > 0) {
-    			return true;
-    		}
-    		// Must be on a version of 0.94.0.*
-    		if (vers[3] == 1) {
-    			getLogger().severe("Towny version 0.94.0.1 has a broken API. Download Towny 0.94.0.2 or newer.");
-				return false;
-    		}
-    		if (vers[3] > 1 ) {    			
-    			return true;
-    		}
-    			
-    	} else {
-			getLogger().severe("Towny version inadequate: 0.94.0.2 or newer required.");
-			return false;    		
-    	}
-    	return false;
+		// This was not terrible useful or well-made so for now we are disabling the version checking.
+		return true; 
 	}
 
     public void onDisable() {
@@ -132,7 +106,7 @@ public class TownyFlight extends JavaPlugin {
         config.reload();
     }
 
-    private boolean LoadSettings() {
+    private boolean loadSettings() {
 		pluginPrefix = ChatColor.translateAlternateColorCodes('&', config.getConfig().getString("pluginPrefix"));
 
 		// Language Strings
@@ -145,13 +119,15 @@ public class TownyFlight extends JavaPlugin {
 		flightDeactivatedConsoleMsg = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("flightDeactivatedConsoleMsg"));
 		noPermission = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("noPermission"));
 		notDuringWar = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("notDuringWar"));
+		returnToAllowedArea = ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString("returnToAllowedArea"));
 
 		// Options
 		autoEnableFlight = config.getConfig().getConfigurationSection("options").getString("auto_Enable_Flight").equalsIgnoreCase("true");
 		autoEnableSilent = config.getConfig().getConfigurationSection("options").getString("auto_Enable_Silent").equalsIgnoreCase("true");
 		disableDuringWar = config.getConfig().getConfigurationSection("options").getString("disable_During_Wartime").equalsIgnoreCase("true");
 		disableCombatPrevention = config.getConfig().getConfigurationSection("options").getString("disable_Combat_Prevention").equalsIgnoreCase("true");
-		showPermissionInMessage = config.getConfig().getConfigurationSection("options").getString("show_Permission_After_No_Permission_Message").equalsIgnoreCase("true");	
+		showPermissionInMessage = config.getConfig().getConfigurationSection("options").getString("show_Permission_After_No_Permission_Message").equalsIgnoreCase("true");
+		flightDisableTimer = Integer.valueOf(config.getConfig().getConfigurationSection("options").getString("flight_Disable_Timer"));
 
 		return true;
 	}
@@ -176,7 +152,7 @@ public class TownyFlight extends JavaPlugin {
 
 				if (args[0].equalsIgnoreCase("reload")) {
 					config.reload();
-			    	LoadSettings();
+			    	loadSettings();
 			    	registerEvents();
 					sender.sendMessage(pluginPrefix + "Config.yml reloaded.");
 					return true;
@@ -207,7 +183,7 @@ public class TownyFlight extends JavaPlugin {
 						return true;
 					}
 					config.reload();
-			    	LoadSettings();
+			    	loadSettings();
 			    	registerEvents();
 					sender.sendMessage(pluginPrefix + "Config.yml reloaded");
 					return true;
@@ -251,7 +227,7 @@ public class TownyFlight extends JavaPlugin {
 			if (!silent) player.sendMessage(pluginPrefix + noTownMsg);
 			return false;
 		}
-		if (!allowedLocation(player, resident)) {
+		if (!allowedLocation(player)) {
 			if (!silent) player.sendMessage(pluginPrefix + notInTownMsg);
 			return false;
 		}
@@ -280,10 +256,14 @@ public class TownyFlight extends JavaPlugin {
      * whether they have the alliedtowns permission and if they are in an allied area.
      * 
      * @param player
-     * @param resident
-     * @return
+     * @return true if player is allowed to be flying at their present location.
      */
-    private static boolean allowedLocation(Player player, Resident resident) {
+    private static boolean allowedLocation(Player player) {
+    	Resident resident = null;
+		try {
+			resident = TownyAPI.getInstance().getDataSource().getResident(player.getName());
+		} catch (NotRegisteredException ignored) {
+		}
 		if (TownyAPI.getInstance().isWilderness(player.getLocation()))
 			return false;
 		
@@ -292,18 +272,12 @@ public class TownyFlight extends JavaPlugin {
 
 		try {
 			Town town = TownyAPI.getInstance().getTownBlock(player.getLocation()).getTown();
-			if (!resident.getTown().equals(town)) {
-				if (player.hasPermission("townyflight.alliedtowns") && resident.getTown().hasNation()) {
-					if (resident.getTown().getNation().hasTown(town)) return true;
-					else if (town.hasNation())
-						if (town.getNation().hasAlly(resident.getTown().getNation())) return true;
-				}
-				return false;
-			}
+			if (player.hasPermission("townyflight.alliedtowns"))
+				return CombatUtil.isAlly(town, resident.getTown());
 		} catch (NotRegisteredException e) {
 			e.printStackTrace();
 		}
-		return true;
+		return false;
 	}
 
 	/**

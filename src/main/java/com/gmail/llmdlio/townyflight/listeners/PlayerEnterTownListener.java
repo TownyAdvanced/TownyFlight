@@ -23,15 +23,16 @@ public class PlayerEnterTownListener implements Listener {
     @EventHandler(priority = EventPriority.LOWEST)
     private void playerEnterTownEvent (PlayerEnterTownEvent event) {
     	final Player player = event.getPlayer();    	
-    	if (player.hasPermission("townyflight.bypass")) // Added in 1.2.5 to stop players with the bypass node from losing flight when entering a town. 
+    	// Do nothing to players who are already flying.
+    	if (player.getAllowFlight())  
     		return;    	
-    	plugin.getServer().getScheduler().runTaskLater(plugin, new Runnable() {			
+    	plugin.getServer().getScheduler().runTask(plugin, new Runnable() {			
 			public void run() {
 				if (!TownyFlight.canFly(player, true))
 		    		return;
 		    	TownyFlight.toggleFlight(player, TownyFlight.autoEnableSilent, false, "");				
 			};
-    	},20);
+    	});
 	
     }
 }

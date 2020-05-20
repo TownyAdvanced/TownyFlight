@@ -74,6 +74,9 @@ public class TownyFlightConfig {
     	addDefault("language.noPermission", "You do not have permission for this command, missing: ");
     	addComment("language.notDuringWar", "# Message shown when war is active and flight is disallowed.");
     	addDefault("language.notDuringWar", "You cannot use flight while Towny war is active. ");
+    	addComment("language.returnToAllowedArea", "# Message telling a player to return to an allowed flight area.");
+    	addDefault("language.returnToAllowedArea", "You have %s seconds to return to an allowed flight area. ");
+    	
     	
     	addComment("options", "", "",
     						"#################",
@@ -90,6 +93,9 @@ public class TownyFlightConfig {
     	addDefault("options.disable_Combat_Prevention","false");
     	addComment("options.show_Permission_After_No_Permission_Message","# If set to false, the language.noPermission message will not display the permission node.");
     	addDefault("options.show_Permission_After_No_Permission_Message","true");
+    	addComment("options.flight_Disable_Timer","# Number of seconds after leaving an allowed flight area before flight is taken away.","# Set to 0 to take flight away immediately.");
+    	addDefault("options.flight_Disable_Timer","3");
+    	
         // Write back config 
         try { 
             config.save(f); 
