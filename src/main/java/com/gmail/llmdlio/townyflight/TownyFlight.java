@@ -272,6 +272,8 @@ public class TownyFlight extends JavaPlugin {
 
 		try {
 			Town town = TownyAPI.getInstance().getTownBlock(player.getLocation()).getTown();
+			if (resident.getTown() == town)
+				return true;
 			if (player.hasPermission("townyflight.alliedtowns"))
 				return CombatUtil.isAlly(town, resident.getTown());
 		} catch (NotRegisteredException e) {
