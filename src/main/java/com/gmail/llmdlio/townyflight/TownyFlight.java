@@ -134,7 +134,6 @@ public class TownyFlight extends JavaPlugin {
 
     private void registerEvents(){
     	final PluginManager pluginManager = getServer().getPluginManager();
-    	HandlerList.unregisterAll(playerEnterListener);
     	if (autoEnableFlight)
     		pluginManager.registerEvents(playerEnterListener, this);
     	pluginManager.registerEvents(playerJoinListener, this);
@@ -143,6 +142,15 @@ public class TownyFlight extends JavaPlugin {
     		pluginManager.registerEvents(playerPVPListener, this);
     	pluginManager.registerEvents(townUnclaimListener, this);
     	pluginManager.registerEvents(playerFallListener, this);
+    }
+    
+    private void unregisterEvents() {
+    	HandlerList.unregisterAll(playerEnterListener);
+    	HandlerList.unregisterAll(playerJoinListener);
+    	HandlerList.unregisterAll(playerLeaveListener);
+    	HandlerList.unregisterAll(playerPVPListener);
+    	HandlerList.unregisterAll(townUnclaimListener);
+    	HandlerList.unregisterAll(playerFallListener);
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -153,6 +161,7 @@ public class TownyFlight extends JavaPlugin {
 				if (args[0].equalsIgnoreCase("reload")) {
 					config.reload();
 			    	loadSettings();
+			    	unregisterEvents();
 			    	registerEvents();
 					sender.sendMessage(pluginPrefix + "Config.yml reloaded.");
 					return true;
@@ -184,6 +193,7 @@ public class TownyFlight extends JavaPlugin {
 					}
 					config.reload();
 			    	loadSettings();
+			    	unregisterEvents();
 			    	registerEvents();
 					sender.sendMessage(pluginPrefix + "Config.yml reloaded");
 					return true;
