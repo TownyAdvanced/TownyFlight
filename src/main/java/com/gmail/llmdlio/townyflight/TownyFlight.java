@@ -300,7 +300,7 @@ public class TownyFlight extends JavaPlugin {
      * @param forced - whether this is a forced deactivation or not
      * @param cause - cause of disabling flight ("", "pvp", "console")
      */
-    public static void toggleFlight(Player player, boolean silent, boolean forced, String cause) {
+    private static void toggleFlight(Player player, boolean silent, boolean forced, String cause) {
     	if (player.getAllowFlight()) {
     		if (!silent) {
     			if (forced) {
@@ -334,6 +334,56 @@ public class TownyFlight extends JavaPlugin {
     			player.sendMessage(pluginPrefix + flightOnMsg);
     		player.setAllowFlight(true);
     	}
+    }
+    
+    /**
+     * Turn off flight.
+     * 
+     * @param player
+     * @param silent - show messages to player
+     * @param forced - whether this is a forced deactivation or not
+     * @param cause - cause of disabling flight ("", "pvp", "console")
+     */
+    public static void removeFlight(Player player, boolean silent, boolean forced, String cause) {
+        if (!silent) {
+            if (forced) {
+                String reason = flightDeactivatedMsg;
+                if (cause == "pvp") 
+                    reason = flightDeactivatedPVPMsg;
+                if (cause == "console") 
+                    reason = flightDeactivatedConsoleMsg;
+                player.sendMessage(pluginPrefix + reason + flightOffMsg);
+            } else {
+                player.sendMessage(pluginPrefix + flightOffMsg);
+            }
+        }
+        if (player.isFlying()) {
+            // As of 1.15 the below line does not seem to be reliable.
+            player.setFallDistance(-100000);
+            // As of 1.15 the below is required.
+            if (!player.isOnGround()) {
+                flyingPlayers.add(player);
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        removeFallProtection(player);
+                    }
+                }.runTaskLater(plugin, 100);
+            }
+        }
+        player.setAllowFlight(false);
+    }
+    
+    /**
+     * Turn flight on.
+     * 
+     * @param player
+     * @param silent - show messages to player
+     */
+    public static void addFlight(Player player, boolean silent) {
+        if (!silent) 
+            player.sendMessage(pluginPrefix + flightOnMsg);
+        player.setAllowFlight(true);
     }
     
 	private static void removeFallProtection(Player player) {

@@ -30,7 +30,7 @@ public class PlayerEnterTownListener implements Listener {
 			public void run() {
 				if (!TownyFlight.canFly(player, true))
 		    		return;
-		    	TownyFlight.toggleFlight(player, TownyFlight.autoEnableSilent, false, "");				
+		    	TownyFlight.addFlight(player, TownyFlight.autoEnableSilent);				
 			};
     	});
 	

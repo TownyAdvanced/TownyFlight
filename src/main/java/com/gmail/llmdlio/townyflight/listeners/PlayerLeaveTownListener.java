@@ -43,14 +43,14 @@ public class PlayerLeaveTownListener implements Listener{
 	private void executeLeaveTown(Player player) {
     	if (!TownyFlight.canFly(player, true)) {
     		if (TownyFlight.flightDisableTimer < 1) 
-    			TownyFlight.toggleFlight(player, false, true, "");
+    			TownyFlight.removeFlight(player, false, true, "");
     		else {
     			player.sendMessage(TownyFlight.pluginPrefix + ChatColor.RED + String.format(TownyFlight.returnToAllowedArea, TownyFlight.flightDisableTimer));
     			new BukkitRunnable() {
 					@Override
 					public void run() {
 						if (!TownyFlight.canFly(player, true))
-							TownyFlight.toggleFlight(player, false, true, "");
+							TownyFlight.removeFlight(player, false, true, "");
 					}
 				}.runTaskLater(plugin, TownyFlight.flightDisableTimer * 20);
     		}

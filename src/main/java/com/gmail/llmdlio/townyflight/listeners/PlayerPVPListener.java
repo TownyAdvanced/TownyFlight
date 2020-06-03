@@ -61,7 +61,7 @@ public class PlayerPVPListener implements Listener {
     		return;
 
     	if (!event.isCancelled()) {
-    		TownyFlight.toggleFlight(attackingPlayer, false, true, "pvp");
+    		TownyFlight.removeFlight(attackingPlayer, false, true, "pvp");
     		event.setCancelled(true);
     	}    	
     }
