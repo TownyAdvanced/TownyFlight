@@ -11,8 +11,8 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
           <configuration>
-              <source>1.7</source>
-              <target>1.7</target>
+              <source>1.8</source>
+              <target>1.8</target>
           </configuration>
       </plugin>
     </plugins>
@@ -30,6 +30,20 @@
            <version>1.12.2-R0.1-SNAPSHOT</version><!--change this value depending on the version or use LATEST-->
            <type>jar</type>
            <scope>provided</scope>
+       </dependency>
+       <dependency>
+           <groupId>com.palmergames</groupId>
+           <artifactId>Towny</artifactId>
+           <version>0.93.1.0</version>
+           <scope>system</scope>
+           <systemPath>${basedir}/libs/Towny.jar</systemPath>
+       </dependency>
+       <dependency>
+           <groupId>com.aurgiyalgo</groupId>
+           <artifactId>WarsForTowny</artifactId>
+           <version>1.4</version>
+           <scope>system</scope>
+           <systemPath>${basedir}/libs/WarsForTowny_v1.4-SNAPSHOT1.jar</systemPath>
        </dependency>
    </dependencies>            
 </project>
