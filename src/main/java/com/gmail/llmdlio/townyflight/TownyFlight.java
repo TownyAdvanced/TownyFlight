@@ -29,8 +29,10 @@ import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
+import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
+	private final String requiredTownyVersion = "0.96.2.5"; 
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
 	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
@@ -81,6 +83,7 @@ public class TownyFlight extends JavaPlugin {
 
 		Plugin towny = getServer().getPluginManager().getPlugin("Towny");
 		if (!townyVersionCheck(towny.getDescription().getVersion())) {
+			getLogger().severe("Towny version does not meet required version: " + requiredTownyVersion);
 			this.getServer().getPluginManager().disablePlugin(this);
 			return;
 		} else {
@@ -92,8 +95,10 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	private boolean townyVersionCheck(String version) {
-		// This was not terrible useful or well-made so for now we are disabling the version checking.
-		return true; 
+		Version ver = new Version(version);
+		Version required = new Version(requiredTownyVersion);
+		
+		return ver.compareTo(required) >= 0; 
 	}
 
     public void onDisable() {
