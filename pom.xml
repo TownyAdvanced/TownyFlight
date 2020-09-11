@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.gmail.llmdlio</groupId>
   <artifactId>TownyFlight</artifactId>
-  <version>1.6.2</version>
+  <version>1.6.3</version>
   <name>TownyFlight</name>
   <description>A flight plugin for Towny servers.</description>
   <properties>
@@ -49,8 +49,13 @@
     <dependency>
       <groupId>com.palmergames.bukkit.towny</groupId>
       <artifactId>Towny</artifactId>
-      <version>0.96.2.5</version>
+      <version>0.96.2.17</version>
       <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.jetbrains</groupId>
+      <artifactId>annotations</artifactId>
+      <version>16.0.2</version>
     </dependency>
   </dependencies>             
 </project>

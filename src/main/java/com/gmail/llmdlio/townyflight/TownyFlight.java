@@ -32,7 +32,7 @@ import com.palmergames.bukkit.towny.utils.CombatUtil;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private final String requiredTownyVersion = "0.96.2.5"; 
+	private static Version requiredTownyVersion = Version.fromString("0.96.2.17"); 
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
 	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
@@ -83,7 +83,7 @@ public class TownyFlight extends JavaPlugin {
 
 		Plugin towny = getServer().getPluginManager().getPlugin("Towny");
 		if (!townyVersionCheck(towny.getDescription().getVersion())) {
-			getLogger().severe("Towny version does not meet required version: " + requiredTownyVersion);
+			getLogger().severe("Towny version does not meet required version: " + requiredTownyVersion.toString());
 			this.getServer().getPluginManager().disablePlugin(this);
 			return;
 		} else {
@@ -95,11 +95,10 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	private boolean townyVersionCheck(String version) {
-		Version ver = new Version(version);
-		Version required = new Version(requiredTownyVersion);
+		Version ver = Version.fromString(version);
 		
-		return ver.compareTo(required) >= 0; 
-	}
+		return ver.compareTo(requiredTownyVersion) >= 0;
+    }
 
     public void onDisable() {
     	getLogger().info("TownyFlight Disabled.");
