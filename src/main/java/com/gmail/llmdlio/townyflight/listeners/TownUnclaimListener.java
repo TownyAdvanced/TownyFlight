@@ -1,16 +1,14 @@
 package com.gmail.llmdlio.townyflight.listeners;
 
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.gmail.llmdlio.townyflight.TownyFlight;
-import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.event.TownUnclaimEvent;
-import com.palmergames.bukkit.towny.object.Coord;
-import com.palmergames.bukkit.towny.object.Town;
-import com.palmergames.bukkit.towny.object.WorldCoord;
+import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 
 
 public class TownUnclaimListener implements Listener {
@@ -25,19 +23,15 @@ public class TownUnclaimListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR)
     private void TownUnclaimEvent (TownUnclaimEvent event) {    	
-    	Town town = event.getTown();
-    	WorldCoord wc = event.getWorldCoord();
+    	World world = event.getWorldCoord().getBukkitWorld();
 
     	// Cycle through players of the affected town, because multiple players could be in a plot that is unclaimed.
-    	for (final Player player : TownyAPI.getInstance().getOnlinePlayers(town)) {
-    		if (player.hasPermission("townyflight.bypass"))
+    	for (final Player player : Bukkit.getOnlinePlayers()) {
+    		if (player.hasPermission("townyflight.bypass")
+    		    || !player.getAllowFlight()
+    		    || !player.getWorld().equals(world)
+    		    || TownyFlight.canFly(player, true))
 	    		return;
-    		if (!player.getAllowFlight())
-    			return;
-    		
-    		WorldCoord pwc = new WorldCoord(player.getWorld().getName(), Coord.parseCoord(player.getLocation()));
-    		if (!pwc.equals(wc))
-    			return;
     		
     		TownyFlight.removeFlight(player, false, true, "");
     	}	

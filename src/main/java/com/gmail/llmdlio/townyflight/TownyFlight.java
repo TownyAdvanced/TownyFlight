@@ -23,8 +23,10 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
@@ -32,7 +34,7 @@ import com.palmergames.bukkit.towny.utils.CombatUtil;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static Version requiredTownyVersion = Version.fromString("0.96.2.17"); 
+	private static Version requiredTownyVersion = Version.fromString("0.96.5.5"); 
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
 	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
@@ -40,6 +42,7 @@ public class TownyFlight extends JavaPlugin {
 	private final PlayerPVPListener playerPVPListener = new PlayerPVPListener();
 	private final TownUnclaimListener townUnclaimListener = new TownUnclaimListener();
 	private final PlayerFallListener playerFallListener = new PlayerFallListener();
+	private final PlayerTeleportListener playerTeleportListener = new PlayerTeleportListener();
 
 	public static String pluginPrefix;
 	private static String flightOnMsg;
@@ -146,6 +149,7 @@ public class TownyFlight extends JavaPlugin {
     		pluginManager.registerEvents(playerPVPListener, this);
     	pluginManager.registerEvents(townUnclaimListener, this);
     	pluginManager.registerEvents(playerFallListener, this);
+    	pluginManager.registerEvents(playerTeleportListener, this);
     }
     
     private void unregisterEvents() {
@@ -155,6 +159,7 @@ public class TownyFlight extends JavaPlugin {
     	HandlerList.unregisterAll(playerPVPListener);
     	HandlerList.unregisterAll(townUnclaimListener);
     	HandlerList.unregisterAll(playerFallListener);
+    	HandlerList.unregisterAll(playerTeleportListener);
     }
 
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -225,14 +230,10 @@ public class TownyFlight extends JavaPlugin {
     		if (!silent) player.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly" : ""));
         	return false;
         }
-		Resident resident = null;
-		try {
-			resident = TownyAPI.getInstance().getDataSource().getResident(player.getName());
-		} catch (NotRegisteredException e) {
-			// Sometimes when a player joins for the first time, there can be a canFly test run before Towny has 
-			// the chance to save the player properly.
+		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
+		if (resident == null)
 			return false;
-		}
+
 		if (disableDuringWar && (TownyAPI.getInstance().isWarTime() || warsForTowny(resident))) {
 			if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
 			return false;
@@ -273,11 +274,10 @@ public class TownyFlight extends JavaPlugin {
      * @return true if player is allowed to be flying at their present location.
      */
     private static boolean allowedLocation(Player player) {
-    	Resident resident = null;
-		try {
-			resident = TownyAPI.getInstance().getDataSource().getResident(player.getName());
-		} catch (NotRegisteredException ignored) {
-		}
+        Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
+        if (resident == null)
+            return false;
+        
 		if (TownyAPI.getInstance().isWilderness(player.getLocation()))
 			return false;
 		
@@ -304,6 +304,7 @@ public class TownyFlight extends JavaPlugin {
      * @param forced - whether this is a forced deactivation or not
      * @param cause - cause of disabling flight ("", "pvp", "console")
      */
+    @SuppressWarnings("deprecation")
     private static void toggleFlight(Player player, boolean silent, boolean forced, String cause) {
     	if (player.getAllowFlight()) {
     		if (!silent) {
@@ -348,6 +349,7 @@ public class TownyFlight extends JavaPlugin {
      * @param forced - whether this is a forced deactivation or not
      * @param cause - cause of disabling flight ("", "pvp", "console")
      */
+    @SuppressWarnings("deprecation")
     public static void removeFlight(Player player, boolean silent, boolean forced, String cause) {
         if (!silent) {
             if (forced) {
