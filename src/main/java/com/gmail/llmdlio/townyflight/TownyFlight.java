@@ -6,7 +6,6 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
@@ -168,46 +167,39 @@ public class TownyFlight extends JavaPlugin {
 			if (sender instanceof ConsoleCommandSender) {
 
 				if (args[0].equalsIgnoreCase("reload")) {
-					config.reload();
-			    	loadSettings();
-			    	unregisterEvents();
-			    	registerEvents();
-					sender.sendMessage(pluginPrefix + "Config.yml reloaded.");
-					return true;
+					// Reload the plugin.
+					return reloadPlugin(sender);
 				} else {
 					// It's not any other subcommand of /tfly so handle removing flight via /tfly {name}
-					@SuppressWarnings("deprecation")
-					OfflinePlayer player = Bukkit.getOfflinePlayer(args[0]);
-					if (player.isOnline()) {
-				    	if (!player.getPlayer().getAllowFlight()) {
-				    		sender.sendMessage(pluginPrefix + "Player " + args[0] + " is already unable to fly. Could not remove flight.");
-							return true;
-				    	}
-				    	toggleFlight(player.getPlayer(), false, true, "console");
-						sender.sendMessage(pluginPrefix + "Flight removed from " + args[0] + ".");
-						return true;
-					} else {
-						sender.sendMessage(pluginPrefix + "Player " + args[0] + " not found, or is offline. Could not remove flight.");
-						return true;
-					}
+					return toggleFlightOnOther(sender, args[0]);
 				}
 			}
 
 		 	if (sender instanceof Player) {
 
-		 	    if (args.length != 0 && args[0].equalsIgnoreCase("reload")) {
-					if (!sender.hasPermission("townyflight.command.tfly.reload")) {
-						sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly.reload" : ""));
-						return true;
-					}
-					config.reload();
-			    	loadSettings();
-			    	unregisterEvents();
-			    	registerEvents();
-					sender.sendMessage(pluginPrefix + "Config.yml reloaded");
-					return true;
-				}
+		 	    if (args.length != 0) {
+		 	    	// We have more than just /tfly
+		 	    	
+		 	    	if (args[0].equalsIgnoreCase("reload")) {
+			 	    	// We have /tfly reload, test for permission node.
+		 	    		if (!sender.hasPermission("townyflight.command.tfly.reload")) {
+							sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly.reload" : ""));
+							return true;
+						}
+		 	    		// Reload the plugin.
+						return reloadPlugin(sender);
+		 	    	} else {
+		 	    		//  It's not any other subcommand of /tfly so handle removing flight via /tfly {name}		 	    		
+		 	    		if (!sender.hasPermission("townyflight.command.tfly.other")) {
+							sender.sendMessage(pluginPrefix + ChatColor.RED + noPermission + ((showPermissionInMessage) ? "townyflight.command.tfly.other" : ""));
+							return true;
+		 	    		}
+		 	    		// Send the name off to attempt to remove their flight.
+		 	    		return toggleFlightOnOther(sender, args[0]);
+		 	    	}
+		 	    }
 		 	    
+		 	    // We have only /tfly
                 if (!canFly((Player) sender, false))
                     return true;
                 toggleFlight((Player) sender, false, false, "");
@@ -215,6 +207,31 @@ public class TownyFlight extends JavaPlugin {
 			}
 		}
 		return false;
+    }
+    
+    private boolean reloadPlugin(CommandSender sender) {
+		config.reload();
+    	loadSettings();
+    	unregisterEvents();
+    	registerEvents();
+		sender.sendMessage(pluginPrefix + "Config.yml reloaded");
+		return true;
+    }
+    
+    private boolean toggleFlightOnOther(CommandSender sender, String name) {
+
+		Player player = Bukkit.getPlayerExact(name);
+		if (player != null && player.isOnline())
+	    	if (!player.getAllowFlight()) {
+	    		sender.sendMessage(pluginPrefix + "Player " + name + " is already unable to fly. Could not remove flight.");
+	    	} else {
+		    	toggleFlight(player.getPlayer(), false, true, "console");
+				sender.sendMessage(pluginPrefix + "Flight removed from " + name + ".");
+	    	}
+		else
+			sender.sendMessage(pluginPrefix + "Player " + name + " not found, or is offline. Could not remove flight.");
+
+		return true;
     }
 
 	/** 

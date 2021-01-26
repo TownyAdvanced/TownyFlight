@@ -16,7 +16,7 @@ ___
 
 - /tfly - Enable/disable flight.
 - /tfly reload - Reload the config.
-- /tfly {name} - (Console Only) Removes flight from someone.
+- /tfly {name} - Removes flight from someone.
 
 ---
 
