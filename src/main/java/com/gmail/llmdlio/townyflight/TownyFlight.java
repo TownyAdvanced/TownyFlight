@@ -39,7 +39,7 @@ public class TownyFlight extends JavaPlugin {
 	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
 	private final PlayerLeaveTownListener playerLeaveListener = new PlayerLeaveTownListener(this);	
 	private final PlayerPVPListener playerPVPListener = new PlayerPVPListener();
-	private final TownUnclaimListener townUnclaimListener = new TownUnclaimListener();
+	private final TownUnclaimListener townUnclaimListener = new TownUnclaimListener(this);
 	private final PlayerFallListener playerFallListener = new PlayerFallListener();
 	private final PlayerTeleportListener playerTeleportListener = new PlayerTeleportListener();
 
