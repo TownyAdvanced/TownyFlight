@@ -33,7 +33,7 @@ import com.palmergames.bukkit.towny.utils.CombatUtil;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static Version requiredTownyVersion = Version.fromString("0.96.5.5"); 
+	private static Version requiredTownyVersion = Version.fromString("0.96.7.4"); 
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
 	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);

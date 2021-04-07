@@ -1,27 +1,15 @@
 package com.gmail.llmdlio.townyflight.listeners;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.projectiles.ProjectileSource;
-
 import com.gmail.llmdlio.townyflight.TownyFlight;
-import com.palmergames.bukkit.towny.Towny;
-import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
-import com.palmergames.bukkit.towny.utils.CombatUtil;
+import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
 
 
 public class PlayerPVPListener implements Listener {
-	
-
-	private Towny towny = (Towny) Bukkit.getServer().getPluginManager().getPlugin("Towny");
 	
 	public PlayerPVPListener() {
 	}
@@ -31,42 +19,20 @@ public class PlayerPVPListener implements Listener {
      * Runs only if the config.yml's disable_Combat_Prevention is set to true.
      */
     @EventHandler(priority = EventPriority.NORMAL, ignoreCancelled = true)
-    private void playerPVPEvent (EntityDamageByEntityEvent event) throws NotRegisteredException {
-    	Entity attacker = event.getDamager();
-    	Entity defender = event.getEntity();
-        
-		if (!TownyAPI.getInstance().isTownyWorld(attacker.getWorld()))
-			return;
+    private void playerPVPEvent (TownyPlayerDamagePlayerEvent event) {
+    	Player attackingPlayer = event.getAttackingPlayer();
+    	Player defendingPlayer = event.getVictimPlayer();
     	
-    	if (attacker instanceof Projectile) {
-			ProjectileSource shooter = ((Projectile) attacker).getShooter();
-			if (shooter instanceof Entity)
-				attacker = (Entity) shooter;
-    	}
-    	
-    	if (!(attacker instanceof Player) || !(defender instanceof Player)) 
+    	if (!attackingPlayer.getAllowFlight())
     		return;
 
-    	Player attackingPlayer = (Player) attacker;
-    	Player defendingPlayer = (Player) defender;
-        
-        if (!attackingPlayer.getAllowFlight())
-            return;
-
-    	if (attackingPlayer.getGameMode().equals(GameMode.CREATIVE)) {
-    		event.setCancelled(true);
-    		return;    		
-    	}
+    	if (attackingPlayer.getGameMode().equals(GameMode.CREATIVE)
+    		|| !defendingPlayer.canSee(attackingPlayer)) {
+			event.setCancelled(true);
+			return;    		
+		}
     	
-    	if (!defendingPlayer.canSee(attackingPlayer)) {
-    	    event.setCancelled(true);
-            return;
-    	}
-
-    	if (CombatUtil.preventDamageCall(towny, attacker, defender))
-    		return;
-
 		TownyFlight.removeFlight(attackingPlayer, false, true, "pvp");
 		event.setCancelled(true);
-	}
+    }
 }

@@ -29,7 +29,7 @@ public class TownUnclaimListener implements Listener {
     private void TownUnclaimEvent (TownUnclaimEvent event) {    	
 
     	List<WorldCoord> plots = selectArea(event.getWorldCoord());
-    	Bukkit.getScheduler().runTaskLater(plugin, () -> scanForFlightAbilities(plots), 2L);
+    	Bukkit.getScheduler().runTaskLater(plugin, () -> scanForFlightAbilities(plots), 10);
 
     }
 
