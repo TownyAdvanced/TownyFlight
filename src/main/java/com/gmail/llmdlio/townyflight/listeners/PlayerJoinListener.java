@@ -8,7 +8,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.gmail.llmdlio.townyflight.TownyFlight;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 
 public class PlayerJoinListener implements Listener {
 
@@ -24,7 +23,7 @@ public class PlayerJoinListener implements Listener {
      * Check if flight is allowed where they are currently and if not, remove it.
      */
     @EventHandler(priority = EventPriority.MONITOR)
-    private void playerJoinEvent (PlayerJoinEvent event) throws NotRegisteredException {
+    private void playerJoinEvent (PlayerJoinEvent event) {
     	final Player player = event.getPlayer();
     	
     	Bukkit.getScheduler().runTaskLater(this.plugin, new Runnable() {

@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 import com.gmail.llmdlio.townyflight.TownyFlight;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
@@ -47,15 +46,15 @@ public class PlayerTeleportListener implements Listener {
 		if (player.hasPermission("townyflight.alltowns"))
 			return true;
 
-		try {
-			Town town = TownyAPI.getInstance().getTownBlock(player.getLocation()).getTown();
-			if (resident.getTown() == town)
-				return true;
-			if (player.hasPermission("townyflight.alliedtowns"))
-				return CombatUtil.isAlly(town, resident.getTown());
-		} catch (NotRegisteredException e) {
-			e.printStackTrace();
-		}
+		if (!resident.hasTown())
+			return false;
+		
+		Town town = TownyAPI.getInstance().getTown(player.getLocation());
+		Town residentTown = TownyAPI.getInstance().getResidentTownOrNull(resident); 
+		if (residentTown.getUUID() == town.getUUID())
+			return true;
+		if (player.hasPermission("townyflight.alliedtowns"))
+			return CombatUtil.isAlly(town, residentTown);
 		return false;		
 	}
 

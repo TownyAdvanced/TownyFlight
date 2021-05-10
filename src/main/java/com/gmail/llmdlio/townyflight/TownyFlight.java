@@ -26,14 +26,13 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
-import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static Version requiredTownyVersion = Version.fromString("0.96.7.4"); 
+	private static Version requiredTownyVersion = Version.fromString("0.97.0.0"); 
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
 	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
@@ -271,14 +270,10 @@ public class TownyFlight extends JavaPlugin {
     		return false;
     	if (!resident.hasTown())
     		return false;
-    	try {
-			if (!resident.getTown().hasNation())
-				return false;
-			if (com.aurgiyalgo.WarsForTowny.WarManager.getWarForNation(resident.getTown().getNation()) != null)
-				return true;
-		} catch (NotRegisteredException e) {
-			e.printStackTrace();
-		}
+    	if (TownyAPI.getInstance().getResidentNationOrNull(resident) == null)
+			return false;
+		if (com.aurgiyalgo.WarsForTowny.WarManager.getWarForNation(TownyAPI.getInstance().getResidentNationOrNull(resident)) != null)
+			return true;
     	return false;
 	}
 
@@ -292,7 +287,7 @@ public class TownyFlight extends JavaPlugin {
      */
     private static boolean allowedLocation(Player player) {
         Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
-        if (resident == null)
+        if (resident == null || !resident.hasTown())
             return false;
         
 		if (TownyAPI.getInstance().isWilderness(player.getLocation()))
@@ -301,15 +296,12 @@ public class TownyFlight extends JavaPlugin {
 		if (player.hasPermission("townyflight.alltowns"))
 			return true;
 
-		try {
-			Town town = TownyAPI.getInstance().getTownBlock(player.getLocation()).getTown();
-			if (resident.getTown() == town)
-				return true;
-			if (player.hasPermission("townyflight.alliedtowns"))
-				return CombatUtil.isAlly(town, resident.getTown());
-		} catch (NotRegisteredException e) {
-			e.printStackTrace();
-		}
+		Town town = TownyAPI.getInstance().getTown(player.getLocation());
+		Town residentTown = TownyAPI.getInstance().getResidentTownOrNull(resident); 
+		if (residentTown.getUUID() == town.getUUID())
+			return true;
+		if (player.hasPermission("townyflight.alliedtowns"))
+			return CombatUtil.isAlly(town, residentTown);
 		return false;
 	}
 
