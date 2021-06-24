@@ -1,0 +1,37 @@
+name: TownyFlight
+author: LlmDl
+main: com.gmail.llmdlio.townyflight.TownyFlight
+version: ${project.version}
+api-version: ${project.bukkitAPIVersion}
+depend: [Towny]
+softdepend: [WarsForTowny]
+prefix: TownyFlight
+
+commands:
+  tfly:
+    description: Turns flight on and off.
+    aliases: [townyfly, townyflight]
+    usage: "/<command>"
+  tfly reload:
+    description: Reload the TownyFlight config.
+    usage: "/<command>"
+
+permissions:
+  townyflight.command.tfly:
+    description: User is able to toggle flight on while in their town.
+    default: op
+  townyflight.command.tfly.reload:
+    description: User is able to reload the config.
+    default: op
+  townyflight.command.tfly.other:
+    description: User is able to remove flight from other players.
+    default: op
+  townyflight.bypass:
+    description: Bypass permission node for admins to not have their flight disabled while they travel the server.
+    default: op
+  townyflight.alliedtowns:
+    description: Allows players to use /townyflight in towns which are allied to their own.
+    default: op
+  townyflight.alltowns:
+    description: Allows players to use /townyflight in any town. Wilderness is still disallowed.
+    default: op
