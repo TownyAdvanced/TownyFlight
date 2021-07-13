@@ -29,19 +29,19 @@ public class TownUnclaimListener implements Listener {
     private void TownUnclaimEvent (TownUnclaimEvent event) {    	
 
     	List<WorldCoord> plots = selectArea(event.getWorldCoord());
-    	Bukkit.getScheduler().runTaskLater(plugin, () -> scanForFlightAbilities(plots), 10);
+    	Bukkit.getScheduler().runTaskLater(plugin, () -> scanForFlightAbilities(plots), 2);
 
     }
 
 	private void scanForFlightAbilities(List<WorldCoord> plots) {
 		
 		// Cycle through all the online players, because multiple players could be in a plot that is unclaimed.
-    	for (final Player player : Bukkit.getOnlinePlayers()) {
+    	for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
     		if (player.hasPermission("townyflight.bypass")
     		    || !player.getAllowFlight()
     		    || !plots.contains(WorldCoord.parseWorldCoord(player))
     		    || TownyFlight.canFly(player, true))
-	    		return;
+	    		continue;
     		
     		TownyFlight.removeFlight(player, false, true, "");
     	}	

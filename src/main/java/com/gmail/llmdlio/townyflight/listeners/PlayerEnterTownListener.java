@@ -6,7 +6,11 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
+import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
+import com.palmergames.bukkit.towny.utils.CombatUtil;
 
 public class PlayerEnterTownListener implements Listener {
 
@@ -33,6 +37,26 @@ public class PlayerEnterTownListener implements Listener {
 		    	TownyFlight.addFlight(player, TownyFlight.autoEnableSilent);				
 			};
     	});
-	
+    }
+
+    /*
+     * Listener which takes flight from a town's online
+     * players if an enemy enters into the town. 
+     * 
+     * TODO: Set this up in the config as an option.
+     */
+//    @EventHandler
+    private void enemyEnterTownEvent (PlayerEnterTownEvent event) {
+    	final Resident resident = TownyAPI.getInstance().getResident(event.getPlayer().getUniqueId());
+    	if (resident == null || !resident.hasTown())
+    		return;
+    	final Town town = event.getEnteredtown();
+    	
+    	if (CombatUtil.isEnemy(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
+    		TownyAPI.getInstance().getOnlinePlayersInTown(town).stream()
+    			.filter(player -> player.getAllowFlight())
+    			.filter(player -> TownyAPI.getInstance().getTown(player.getLocation()).equals(town))
+    			.forEach(player -> TownyFlight.removeFlight(player, false, true , ""));
+    	}
     }
 }
