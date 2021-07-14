@@ -30,9 +30,9 @@
   </build>
   <repositories>
     <repository>
-      <id>github-towny</id>
-      <url>https://maven.pkg.github.com/townyadvanced/towny</url>
-    </repository> 
+	  <id>jitpack.io</id>
+	  <url>https://jitpack.io</url>
+	</repository> 
     <repository>
       <id>spigot-repo</id>
       <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
@@ -47,9 +47,15 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
-      <groupId>com.palmergames.bukkit.towny</groupId>
+      <groupId>com.github.TownyAdvanced</groupId>
       <artifactId>Towny</artifactId>
       <version>0.97.0.0</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.TownyAdvanced</groupId>
+      <artifactId>SiegeWar</artifactId>
+      <version>0.4.0</version>
       <scope>provided</scope>
     </dependency>
     <dependency>

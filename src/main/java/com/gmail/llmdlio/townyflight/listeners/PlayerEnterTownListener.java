@@ -46,7 +46,8 @@ public class PlayerEnterTownListener implements Listener {
      * TODO: Set this up in the config as an option.
      */
 //    @EventHandler
-    private void enemyEnterTownEvent (PlayerEnterTownEvent event) {
+    @SuppressWarnings("unused")
+	private void enemyEnterTownEvent (PlayerEnterTownEvent event) {
     	final Resident resident = TownyAPI.getInstance().getResident(event.getPlayer().getUniqueId());
     	if (resident == null || !resident.hasTown())
     		return;

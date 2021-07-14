@@ -16,6 +16,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import com.gmail.goosius.siegewar.SiegeController;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
 import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
@@ -26,6 +27,7 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.exceptions.NotRegisteredException;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
@@ -60,6 +62,7 @@ public class TownyFlight extends JavaPlugin {
 	private static Boolean disableDuringWar;
 	private static Boolean showPermissionInMessage;
 	private static Boolean warsForTownyFound = false;
+	private static Boolean siegeWarFound = false;
 	public static int flightDisableTimer;
 	
 	public static List<Player> flyingPlayers = new ArrayList<>();
@@ -81,6 +84,10 @@ public class TownyFlight extends JavaPlugin {
     	Plugin test = getServer().getPluginManager().getPlugin("WarsForTowny");
 		if (test != null)
 			warsForTownyFound = true;
+		
+		test = getServer().getPluginManager().getPlugin("SiegeWar");
+		if (test != null)
+			siegeWarFound = true;
 
 		Plugin towny = getServer().getPluginManager().getPlugin("Towny");
 		if (!townyVersionCheck(towny.getDescription().getVersion())) {
@@ -250,7 +257,7 @@ public class TownyFlight extends JavaPlugin {
 		if (resident == null)
 			return false;
 
-		if (disableDuringWar && (TownyAPI.getInstance().isWarTime() || warsForTowny(resident))) {
+		if (disableDuringWar && (TownyAPI.getInstance().isWarTime() || warsForTowny(resident) || residentIsSieged(resident))) {
 			if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
 			return false;
 		}
@@ -265,7 +272,19 @@ public class TownyFlight extends JavaPlugin {
 		return true;
     }
 
-    private static boolean warsForTowny(Resident resident) {
+    private static boolean residentIsSieged(Resident resident) {
+		if (!siegeWarFound)
+			return false;
+    	if (!resident.hasTown())
+    		return false;
+    	try {
+			return (SiegeController.hasActiveSiege(resident.getTown()));
+		} catch (NotRegisteredException ignored) {}
+    	
+    	return false;
+	}
+
+	private static boolean warsForTowny(Resident resident) {
     	if (!warsForTownyFound)
     		return false;
     	if (!resident.hasTown())
