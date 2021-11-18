@@ -34,7 +34,7 @@ import com.palmergames.bukkit.towny.utils.CombatUtil;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static Version requiredTownyVersion = Version.fromString("0.97.0.0"); 
+	private static Version requiredTownyVersion = Version.fromString("0.97.2.15"); 
 	
 	private final PlayerEnterTownListener playerEnterListener = new PlayerEnterTownListener(this);
 	private final PlayerJoinListener playerJoinListener = new PlayerJoinListener(this);
@@ -257,7 +257,7 @@ public class TownyFlight extends JavaPlugin {
 		if (resident == null)
 			return false;
 
-		if (disableDuringWar && (TownyAPI.getInstance().isWarTime() || warsForTowny(resident) || residentIsSieged(resident))) {
+		if (disableDuringWar && (townHasActiveWar(player, resident) || warsForTowny(resident) || residentIsSieged(resident))) {
 			if (!silent) player.sendMessage(pluginPrefix + notDuringWar);
 			return false;
 		}
@@ -272,7 +272,12 @@ public class TownyFlight extends JavaPlugin {
 		return true;
     }
 
-    private static boolean residentIsSieged(Resident resident) {
+    private static boolean townHasActiveWar(Player player, Resident resident) {
+		return (resident.hasTown() && resident.getTownOrNull().hasActiveWar()) 
+				|| (!TownyAPI.getInstance().isWilderness(player.getLocation()) && TownyAPI.getInstance().getTown(player.getLocation()).hasActiveWar());
+	}
+
+	private static boolean residentIsSieged(Resident resident) {
 		if (!siegeWarFound)
 			return false;
     	if (!resident.hasTown())
