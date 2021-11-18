@@ -1,13 +1,15 @@
 package com.gmail.llmdlio.townyflight.listeners;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
-
+import com.gmail.llmdlio.townyflight.Message;
+import com.gmail.llmdlio.townyflight.Settings;
 import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.palmergames.bukkit.towny.event.PlayerLeaveTownEvent;
 
 public class PlayerLeaveTownListener implements Listener{	
@@ -28,12 +30,7 @@ public class PlayerLeaveTownListener implements Listener{
     	if (!player.getAllowFlight() || player.hasPermission("townyflight.bypass"))
     		return;
 
-    	new BukkitRunnable() {
-			@Override
-			public void run() {
-				executeLeaveTown(player);
-			}
-		}.runTask(plugin);
+    	executeLeaveTown(player);
     }
 
     /*
@@ -41,18 +38,12 @@ public class PlayerLeaveTownListener implements Listener{
      * Handles the flightDisableTimer if in use.
      */
 	private void executeLeaveTown(Player player) {
-    	if (!TownyFlight.canFly(player, true)) {
-    		if (TownyFlight.flightDisableTimer < 1) 
-    			TownyFlight.removeFlight(player, false, true, "");
+    	if (!TownyFlightAPI.getInstance().canFly(player, true)) {
+    		if (Settings.flightDisableTimer < 1) 
+    			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
     		else {
-    			player.sendMessage(TownyFlight.pluginPrefix + ChatColor.RED + String.format(TownyFlight.returnToAllowedArea, TownyFlight.flightDisableTimer));
-    			new BukkitRunnable() {
-					@Override
-					public void run() {
-						if (!TownyFlight.canFly(player, true))
-							TownyFlight.removeFlight(player, false, true, "");
-					}
-				}.runTaskLater(plugin, TownyFlight.flightDisableTimer * 20);
+    			Message.to(player, ChatColor.RED + String.format(Settings.returnToAllowedArea, Settings.flightDisableTimer));
+    			Bukkit.getScheduler().runTaskLater(plugin, ()-> TownyFlightAPI.getInstance().testForFlight(player, true), Settings.flightDisableTimer * 20);
     		}
     	}
     }

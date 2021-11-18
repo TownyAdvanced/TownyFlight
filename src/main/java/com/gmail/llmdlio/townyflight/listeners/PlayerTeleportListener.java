@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -32,7 +32,7 @@ public class PlayerTeleportListener implements Listener {
             return;
         }
         
-        TownyFlight.removeFlight(player, false, true, "");
+        TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
 	}
 	
 	private boolean flightAllowedDestination(Player player, Location loc) {

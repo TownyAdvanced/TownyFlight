@@ -10,6 +10,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 
@@ -40,10 +41,10 @@ public class TownUnclaimListener implements Listener {
     		if (player.hasPermission("townyflight.bypass")
     		    || !player.getAllowFlight()
     		    || !plots.contains(WorldCoord.parseWorldCoord(player))
-    		    || TownyFlight.canFly(player, true))
+    		    || TownyFlightAPI.getInstance().canFly(player, true))
 	    		continue;
     		
-    		TownyFlight.removeFlight(player, false, true, "");
+    		TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
     	}	
 	}
 	

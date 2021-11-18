@@ -7,7 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 
 public class PlayerFallListener implements Listener {
 	
@@ -20,8 +20,8 @@ public class PlayerFallListener implements Listener {
 		if (event.getCause().equals(DamageCause.FALL) && event.getEntityType().equals(EntityType.PLAYER)) {			
 		
 			Player player = (Player) event.getEntity();
-			if (TownyFlight.flyingPlayers.contains(player)) {
-				TownyFlight.flyingPlayers.remove(player);
+			if (TownyFlightAPI.getInstance().fallProtectedPlayers.contains(player)) {
+				TownyFlightAPI.getInstance().fallProtectedPlayers.remove(player);
 				event.setCancelled(true);
 			}
 		}
