@@ -50,8 +50,13 @@ public class PlayerTeleportListener implements Listener {
 		Town residentTown = TownyAPI.getInstance().getResidentTownOrNull(resident);
 		if (residentTown.getUUID() == town.getUUID())
 			return true;
-		if (player.hasPermission("townyflight.alliedtowns"))
-			return CombatUtil.isAlly(town, residentTown);
+
+		if (player.hasPermission("townyflight.nationtowns") && CombatUtil.isSameNation(residentTown, town))
+			return true;
+
+		if (player.hasPermission("townyflight.alliedtowns") && CombatUtil.isAlly(town, residentTown))
+			return true;
+
 		return false;
 	}
 
