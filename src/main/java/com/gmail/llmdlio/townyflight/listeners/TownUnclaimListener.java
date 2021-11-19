@@ -37,12 +37,12 @@ public class TownUnclaimListener implements Listener {
 	private void scanForFlightAbilities(List<WorldCoord> plots) {
 		
 		// Cycle through all the online players, because multiple players could be in a plot that is unclaimed.
-    	for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
-    		if (player.hasPermission("townyflight.bypass")
-    		    || !player.getAllowFlight()
-    		    || !plots.contains(WorldCoord.parseWorldCoord(player))
-    		    || TownyFlightAPI.getInstance().canFly(player, true))
-	    		continue;
+		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
+			if (player.hasPermission("townyflight.bypass")
+				|| !player.getAllowFlight()
+				|| !plots.contains(WorldCoord.parseWorldCoord(player))
+				|| TownyFlightAPI.getInstance().canFly(player, true))
+				continue;
     		
     		TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
     	}	

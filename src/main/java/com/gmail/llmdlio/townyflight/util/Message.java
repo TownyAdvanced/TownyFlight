@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.messaging;
+package com.gmail.llmdlio.townyflight.util;
 
 import com.gmail.llmdlio.townyflight.config.Settings;
 
@@ -40,13 +40,12 @@ public class Message {
 
 	public static String getLangString(String message) {
 		String langString = Settings.getLangString(message);
-		if (langString == null)
-			langString = "TownyFlight asked for a missing language string (" + message + ") please report this.";
+		if (langString == null) langString = "TownyFlight asked for a missing language string (" + message + ") please report this.";
 		return langString;
 	}
 
 	private static boolean hasLangString(String message) {
-		return Settings.getLangString(message) != null;
+		return Settings.hasLangString(message);
 	}
 
 }

@@ -10,21 +10,11 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 
 public class PlayerFallListener implements Listener {
-	
-	public PlayerFallListener() {
-	}
-	
-	@EventHandler(priority = EventPriority.LOWEST)
-    private void playerFallEvent (EntityDamageEvent event) {
 
-		if (event.getCause().equals(DamageCause.FALL) && event.getEntityType().equals(EntityType.PLAYER)) {			
-		
-			Player player = (Player) event.getEntity();
-			if (TownyFlightAPI.getInstance().fallProtectedPlayers.contains(player)) {
-				TownyFlightAPI.getInstance().fallProtectedPlayers.remove(player);
-				event.setCancelled(true);
-			}
-		}
-	}
+	@EventHandler(priority = EventPriority.LOWEST, ignoreCancelled=true)
+	private void playerFallEvent(EntityDamageEvent event) {
 
+		if (event.getCause().equals(DamageCause.FALL) && event.getEntityType().equals(EntityType.PLAYER))
+			event.setCancelled(TownyFlightAPI.getInstance().removeFallProtection((Player) event.getEntity()));
+	}
 }

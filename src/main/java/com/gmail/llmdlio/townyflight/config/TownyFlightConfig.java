@@ -81,9 +81,9 @@ public class TownyFlightConfig {
     	
     	
     	addComment("options", "", "",
-    						"#################",
-    						"#    Options    #",
-    						"#################","");
+    			"#################",
+    			"#    Options    #",
+    			"#################","");
     	addComment("options.auto_Enable_Flight","# If set to true, players entering their town will have flight auto-enabled.",
                                                 "# When set to true, the plugin will use slightly more resources due to the EnterTown listener.");
     	addDefault("options.auto_Enable_Flight","false");

@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.messaging;
+package com.gmail.llmdlio.townyflight.util;
 
 import org.bukkit.command.CommandSender;
 

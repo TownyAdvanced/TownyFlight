@@ -62,12 +62,10 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	private void checkWarPlugins() {
-		Plugin test = getServer().getPluginManager().getPlugin("WarsForTowny");
-		if (test != null)
+		if (getServer().getPluginManager().getPlugin("WarsForTowny") != null)
 			Settings.warsForTownyFound = true;
 
-		test = getServer().getPluginManager().getPlugin("SiegeWar");
-		if (test != null)
+		if (getServer().getPluginManager().getPlugin("SiegeWar") != null)
 			Settings.siegeWarFound = true;
 	}
 
@@ -86,17 +84,15 @@ public class TownyFlight extends JavaPlugin {
 		config.reload();
 	}
 
-	void registerEvents() {
+	public void registerEvents() {
 		final PluginManager pm = getServer().getPluginManager();
 		pm.registerEvents(new PlayerJoinListener(this), this);
 		pm.registerEvents(new PlayerLeaveTownListener(this), this);
 		pm.registerEvents(new TownUnclaimListener(this), this);
 		pm.registerEvents(new PlayerFallListener(), this);
 		pm.registerEvents(new PlayerTeleportListener(), this);
-		if (Settings.autoEnableFlight)
-			pm.registerEvents(new PlayerEnterTownListener(this), this);
-		if (Settings.disableCombatPrevention)
-			pm.registerEvents(new PlayerPVPListener(), this);
+		if (Settings.autoEnableFlight) pm.registerEvents(new PlayerEnterTownListener(this), this);
+		if (Settings.disableCombatPrevention) pm.registerEvents(new PlayerPVPListener(), this);
 	}
 
 	protected void unregisterEvents() {
