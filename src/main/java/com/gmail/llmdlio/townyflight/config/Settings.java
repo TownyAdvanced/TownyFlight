@@ -14,7 +14,6 @@ public class Settings {
 	public static Boolean disableCombatPrevention;
 	public static Boolean disableDuringWar;
 	public static Boolean showPermissionInMessage;
-	public static Boolean warsForTownyFound;
 	public static Boolean siegeWarFound;
 	public static int flightDisableTimer;
 	private static Map<String, String> lang = new HashMap<String,String>();

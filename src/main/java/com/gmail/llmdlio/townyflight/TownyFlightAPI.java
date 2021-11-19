@@ -17,7 +17,6 @@ import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
-import com.aurgiyalgo.BetterTownyWars.BetterTownyWars;
 
 public class TownyFlightAPI {
 
@@ -162,7 +161,7 @@ public class TownyFlightAPI {
 	}
 
 	private boolean warPrevents(Location location, Resident resident) {
-		return Settings.disableDuringWar && (townHasActiveWar(location, resident) || warsForTowny(resident) || residentIsSieged(resident));
+		return Settings.disableDuringWar && (townHasActiveWar(location, resident) || residentIsSieged(resident));
 	}
 
 	private static boolean townHasActiveWar(Location loc, Resident resident) {
@@ -173,7 +172,4 @@ public class TownyFlightAPI {
 		return Settings.siegeWarFound && SiegeController.hasActiveSiege(resident.getTownOrNull());
 	}
 
-	private static boolean warsForTowny(Resident resident) {
-		return Settings.warsForTownyFound && !BetterTownyWars.getInstance().getWarManager().getWarsForMember(resident.getUUID()).isEmpty();
-	}
 }
