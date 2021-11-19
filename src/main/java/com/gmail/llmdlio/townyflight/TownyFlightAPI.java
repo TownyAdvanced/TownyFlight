@@ -17,6 +17,7 @@ import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
+import com.aurgiyalgo.BetterTownyWars.BetterTownyWars;
 
 public class TownyFlightAPI {
 
@@ -173,6 +174,6 @@ public class TownyFlightAPI {
 	}
 
 	private static boolean warsForTowny(Resident resident) {
-		return Settings.warsForTownyFound && resident.hasNation() && com.aurgiyalgo.WarsForTowny.WarManager.getWarForNation(resident.getNationOrNull()) != null;
+		return Settings.warsForTownyFound && !BetterTownyWars.getInstance().getWarManager().getWarsForMember(resident.getUUID()).isEmpty();
 	}
 }
