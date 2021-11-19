@@ -56,22 +56,24 @@ public class TownyFlightConfig {
 				"# Language Strings #",
 				"####################","");
     	
-    	addComment("language.flightOnMsg","# Message shown when flight activated.");
+    	addComment("language.flightOnMsg", "# Message shown when flight activated.");
     	addDefault("language.flightOnMsg", "Flight Activated. ");
-    	addComment("language.flightOffMsg","# Message shown when flight de-activated.");
+    	addComment("language.flightOffMsg", "# Message shown when flight de-activated.");
     	addDefault("language.flightOffMsg", "Flight De-activated. ");
-    	addComment("language.noTownMsg","# Message shown when player lacks a town. ");
+    	addComment("language.noTownMsg", "# Message shown when player lacks a town. ");
     	addDefault("language.noTownMsg", "Flight cannot be activated, you don't belong to a town. ");
-    	addComment("language.notInTownMsg","# Message shown when flight cannot be turned on.");
+    	addComment("language.notInTownMsg", "# Message shown when flight cannot be turned on.");
     	addDefault("language.notInTownMsg", "Flight cannot be activated, return to your town and try again. ");
-    	addComment("language.flightDeactivatedMsg","# Message shown when a player has flight taken away.");
+    	addComment("language.flightDeactivatedMsg", "# Message shown when a player has flight taken away.");
     	addDefault("language.flightDeactivatedMsg", "Left town boundaries. ");
     	addComment("language.flightDeactivatedPVPMsg","# Message shown when a player has flight taken away because of PVP.");
     	addDefault("language.flightDeactivatedPVPMsg", "Entering PVP combat. ");
-    	addComment("language.flightDeactivatedConsoleMsg","# Message shown when a player has flight taken away by console.");
+    	addComment("language.flightDeactivatedConsoleMsg", "# Message shown when a player has flight taken away by console.");
     	addDefault("language.flightDeactivatedConsoleMsg", "Flight priviledges removed. ");
-    	addComment("language.noPermission","# Message shown when a player lacks a permission node.");
-    	addDefault("language.noPermission", "You do not have permission for this command, missing: ");
+    	addComment("language.noPermission", "# Message shown when a player lacks a permission node.");
+    	addDefault("language.noPermission", "You do not have permission for this command%s. ");
+    	addComment("language.missingNode", "# Message attached to noPermission when options.show_Permission_After_No_Permission_Message is true");
+    	addDefault("language.missingNode", ", missing %s");
     	addComment("language.notDuringWar", "# Message shown when war is active and flight is disallowed.");
     	addDefault("language.notDuringWar", "You cannot use flight while Towny war is active. ");
     	addComment("language.returnToAllowedArea", "# Message telling a player to return to an allowed flight area.");

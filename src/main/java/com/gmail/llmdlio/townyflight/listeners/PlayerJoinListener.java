@@ -7,9 +7,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import com.gmail.llmdlio.townyflight.Settings;
 import com.gmail.llmdlio.townyflight.TownyFlight;
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
+import com.gmail.llmdlio.townyflight.config.Settings;
 
 public class PlayerJoinListener implements Listener {
 

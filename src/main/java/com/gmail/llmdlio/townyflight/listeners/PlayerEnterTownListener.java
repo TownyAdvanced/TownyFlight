@@ -5,9 +5,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.gmail.llmdlio.townyflight.Settings;
 import com.gmail.llmdlio.townyflight.TownyFlight;
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
+import com.gmail.llmdlio.townyflight.config.Settings;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -32,11 +32,11 @@ public class PlayerEnterTownListener implements Listener {
     	// Do nothing to players who are already flying.
     	if (player.getAllowFlight())  
     		return;    	
-    	plugin.getServer().getScheduler().runTask(plugin, new Runnable() {			
+    	plugin.getServer().getScheduler().runTask(plugin, new Runnable() {
 			public void run() {
 				if (!TownyFlightAPI.getInstance().canFly(player, true))
 		    		return;
-		    	TownyFlightAPI.getInstance().addFlight(player, Settings.autoEnableSilent);				
+		    	TownyFlightAPI.getInstance().addFlight(player, Settings.autoEnableSilent);
 			};
     	});
     }
