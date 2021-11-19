@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.ConfigurationSection;
 
 public class Settings {
 
@@ -36,7 +37,7 @@ public class Settings {
 
 	public static void loadStrings() {
 		lang.clear();
-		lang.put("pluginPrefix", getString("pluginPrefix"));
+		lang.put("pluginPrefix", colour(config.getConfig().getString("pluginPrefix")));
 		lang.put("flightOnMsg", getString("flightOnMsg"));
 		lang.put("flightOffMsg", getString("flightOffMsg"));
 		lang.put("noTownMsg", getString("noTownMsg"));
@@ -59,10 +60,17 @@ public class Settings {
 	}
 
 	private static String getOption(String string) {
-		return config.getConfig().getConfigurationSection("options").getString(string);
+		return getConfig("options").getString(string);
 	}
 
 	private static String getString(String string) {
-		return ChatColor.translateAlternateColorCodes('&', config.getConfig().getConfigurationSection("language").getString(string));
+		return colour(getConfig("language").getString(string));
+	}
+	
+	private static ConfigurationSection getConfig(String path) {
+		return config.getConfig().getConfigurationSection(path);
+	}
+	private static String colour(String string) {
+		return ChatColor.translateAlternateColorCodes('&', string);
 	}
 }

@@ -1,7 +1,6 @@
 package com.gmail.llmdlio.townyflight;
 
 import org.bukkit.event.HandlerList;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -21,82 +20,31 @@ public class TownyFlight extends JavaPlugin {
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	private static TownyFlight plugin;
 	private static TownyFlightAPI api = null;
-
+	final PluginManager pm = getServer().getPluginManager();
+	
 	public void onEnable() {
 
 		plugin = this;
 		api = new TownyFlightAPI(this);
+		String townyVersion = pm.getPlugin("Towny").getDescription().getVersion();
 
 		if (!loadSettings()) {
 			getLogger().severe("Config failed to load!");
+			disable();
 			return;
 		}
 
-		if (!checkTownyVersion())
+		if (!townyVersionCheck(townyVersion)) {
+			getLogger().severe("Towny version does not meet required version: " + requiredTownyVersion.toString());
+			disable();
 			return;
+		}
 
 		checkWarPlugins();
 		registerEvents();
 		registerCommands();
+		getLogger().info("Towny version " + townyVersion + " found.");
 		getLogger().info(this.getDescription().getFullName() + " by LlmDl Enabled.");
-	}
-
-	private boolean checkTownyVersion() {
-		Plugin towny = getServer().getPluginManager().getPlugin("Towny");
-		if (!townyVersionCheck(towny.getDescription().getVersion())) {
-			getLogger().severe("Towny version does not meet required version: " + requiredTownyVersion.toString());
-			return false;
-		}
-
-		getLogger().info("Towny version " + towny.getDescription().getVersion() + " found.");
-		return true;
-	}
-
-	public void onDisable() {
-		unregisterEvents();
-		getLogger().info("TownyFlight Disabled.");
-	}
-
-	private void registerCommands() {
-		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
-	}
-
-	private void checkWarPlugins() {
-		if (getServer().getPluginManager().getPlugin("WarsForTowny") != null)
-			Settings.warsForTownyFound = true;
-
-		if (getServer().getPluginManager().getPlugin("SiegeWar") != null)
-			Settings.siegeWarFound = true;
-	}
-
-	private boolean townyVersionCheck(String version) {
-		return Version.fromString(version).compareTo(requiredTownyVersion) >= 0;
-	}
-
-	protected boolean loadSettings() {
-		reloadConfig();
-		return Settings.loadSettings(config);
-	}
-
-	public void reloadConfig() {
-		if (!getDataFolder().exists())
-			getDataFolder().mkdirs();
-		config.reload();
-	}
-
-	public void registerEvents() {
-		final PluginManager pm = getServer().getPluginManager();
-		pm.registerEvents(new PlayerJoinListener(this), this);
-		pm.registerEvents(new PlayerLeaveTownListener(this), this);
-		pm.registerEvents(new TownUnclaimListener(this), this);
-		pm.registerEvents(new PlayerFallListener(), this);
-		pm.registerEvents(new PlayerTeleportListener(), this);
-		if (Settings.autoEnableFlight) pm.registerEvents(new PlayerEnterTownListener(this), this);
-		if (Settings.disableCombatPrevention) pm.registerEvents(new PlayerPVPListener(), this);
-	}
-
-	protected void unregisterEvents() {
-		HandlerList.unregisterAll(this);
 	}
 
 	public static TownyFlight getPlugin() {
@@ -110,4 +58,45 @@ public class TownyFlight extends JavaPlugin {
 		return api;
 	}
 
+	private void disable() {
+		unregisterEvents();
+		getLogger().severe("TownyFlight Disabled.");
+	}
+
+	protected boolean loadSettings() {
+		return loadConfig() && Settings.loadSettings(config);
+	}
+
+	private boolean loadConfig() {
+		if (!getDataFolder().exists())
+			getDataFolder().mkdirs();
+		return config.reload();
+	}
+
+	private boolean townyVersionCheck(String version) {
+		return Version.fromString(version).compareTo(requiredTownyVersion) >= 0;
+	}
+
+	private void checkWarPlugins() {
+		Settings.warsForTownyFound = pm.getPlugin("WarsForTowny") != null;
+		Settings.siegeWarFound = pm.getPlugin("SiegeWar") != null;
+	}
+
+	protected void registerEvents() {
+		pm.registerEvents(new PlayerJoinListener(this), this);
+		pm.registerEvents(new PlayerLeaveTownListener(this), this);
+		pm.registerEvents(new TownUnclaimListener(this), this);
+		pm.registerEvents(new PlayerFallListener(), this);
+		pm.registerEvents(new PlayerTeleportListener(), this);
+		if (Settings.autoEnableFlight) pm.registerEvents(new PlayerEnterTownListener(this), this);
+		if (Settings.disableCombatPrevention) pm.registerEvents(new PlayerPVPListener(), this);
+	}
+
+	protected void unregisterEvents() {
+		HandlerList.unregisterAll(this);
+	}
+
+	private void registerCommands() {
+		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
+	}
 }
