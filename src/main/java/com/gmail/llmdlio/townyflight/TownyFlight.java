@@ -78,7 +78,7 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	private void checkWarPlugins() {
-		Settings.warsForTownyFound = pm.getPlugin("WarsForTowny") != null;
+		Settings.warsForTownyFound = pm.getPlugin("BetterTownyWars") != null;
 		Settings.siegeWarFound = pm.getPlugin("SiegeWar") != null;
 	}
 
