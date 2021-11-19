@@ -16,10 +16,7 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
 
 public class PlayerTeleportListener implements Listener {
-	
-	public PlayerTeleportListener() {
-	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void playerTeleports(PlayerTeleportEvent event) {
 		if (event.getCause() != TeleportCause.PLUGIN || event.getCause() != TeleportCause.COMMAND)

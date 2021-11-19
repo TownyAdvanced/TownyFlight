@@ -9,30 +9,22 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.gmail.llmdlio.townyflight.TownyFlight;
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
+import com.gmail.llmdlio.townyflight.util.Scheduler;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 
 
 public class TownUnclaimListener implements Listener {
-
-	private TownyFlight plugin;
-	public TownUnclaimListener(TownyFlight plugin) {
-		this.plugin = plugin;
-	}
 	
 	/*
-     * Listener for when players unclaim territory.
-     * Will cause any player in that area to lose flight.
-     */
-    @EventHandler(priority = EventPriority.MONITOR)
-    private void TownUnclaimEvent (TownUnclaimEvent event) {    	
-
-    	List<WorldCoord> plots = selectArea(event.getWorldCoord());
-    	Bukkit.getScheduler().runTaskLater(plugin, () -> scanForFlightAbilities(plots), 2);
-
-    }
+	 * Listener for when players unclaim territory. Will cause any player in that
+	 * area to lose flight.
+	 */
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void TownUnclaimEvent(TownUnclaimEvent event) {
+		Scheduler.run(()-> scanForFlightAbilities(selectArea(event.getWorldCoord())), 2);
+	}
 
 	private void scanForFlightAbilities(List<WorldCoord> plots) {
 		

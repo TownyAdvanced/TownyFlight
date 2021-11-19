@@ -2,7 +2,7 @@ package com.gmail.llmdlio.townyflight.util;
 
 import org.bukkit.command.CommandSender;
 
-public class Permissions {
+public class Permission {
 
 	public static boolean has(CommandSender sender, String node, boolean silent) {
 		if (sender.hasPermission(node))

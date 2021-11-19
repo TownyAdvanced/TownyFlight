@@ -8,7 +8,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import com.gmail.llmdlio.townyflight.util.Message;
-import com.gmail.llmdlio.townyflight.util.Permissions;
+import com.gmail.llmdlio.townyflight.util.Permission;
 
 public class TownyFlightCommand implements CommandExecutor {
 
@@ -44,11 +44,11 @@ public class TownyFlightCommand implements CommandExecutor {
 			if (args.length > 0) {
 				if (args[0].equalsIgnoreCase("reload")) {
 					// We have /tfly reload, test for permission node.
-					if (Permissions.has(sender,"townyflight.command.tfly.reload", false))
+					if (Permission.has(sender,"townyflight.command.tfly.reload", false))
 						reloadPlugin(sender);
 				} else {
 					// It's not any other subcommand of /tfly so handle removing flight via /tfly {name}
-					if (Permissions.has(sender, "townyflight.command.tfly.other", false))
+					if (Permission.has(sender, "townyflight.command.tfly.other", false))
 						toggleFlightOnOther(sender, args[0]);
 				}
 				return;

@@ -19,7 +19,7 @@ public class TownyFlight extends JavaPlugin {
 	private static Version requiredTownyVersion = Version.fromString("0.97.2.15");
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	private static TownyFlight plugin;
-	private static TownyFlightAPI api = null;
+	private static TownyFlightAPI api;
 	final PluginManager pm = getServer().getPluginManager();
 	
 	public void onEnable() {
@@ -83,12 +83,12 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	protected void registerEvents() {
-		pm.registerEvents(new PlayerJoinListener(this), this);
-		pm.registerEvents(new PlayerLeaveTownListener(this), this);
-		pm.registerEvents(new TownUnclaimListener(this), this);
+		pm.registerEvents(new PlayerJoinListener(), this);
+		pm.registerEvents(new PlayerLeaveTownListener(), this);
+		pm.registerEvents(new TownUnclaimListener(), this);
 		pm.registerEvents(new PlayerFallListener(), this);
 		pm.registerEvents(new PlayerTeleportListener(), this);
-		if (Settings.autoEnableFlight) pm.registerEvents(new PlayerEnterTownListener(this), this);
+		if (Settings.autoEnableFlight) pm.registerEvents(new PlayerEnterTownListener(), this);
 		if (Settings.disableCombatPrevention) pm.registerEvents(new PlayerPVPListener(), this);
 	}
 

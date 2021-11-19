@@ -10,9 +10,6 @@ import com.palmergames.bukkit.towny.event.damage.TownyPlayerDamagePlayerEvent;
 
 
 public class PlayerPVPListener implements Listener {
-	
-	public PlayerPVPListener() {
-	}
 
 	/*
 	 * Listener to turn off flight if flying player enters PVP combat. Runs only if

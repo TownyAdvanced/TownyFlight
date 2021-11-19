@@ -3,7 +3,6 @@ package com.gmail.llmdlio.townyflight;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -11,7 +10,8 @@ import org.bukkit.entity.Player;
 import com.gmail.goosius.siegewar.SiegeController;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.util.Message;
-import com.gmail.llmdlio.townyflight.util.Permissions;
+import com.gmail.llmdlio.townyflight.util.Permission;
+import com.gmail.llmdlio.townyflight.util.Scheduler;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -30,7 +30,7 @@ public class TownyFlightAPI {
 	
 	public static TownyFlightAPI getInstance() {
 		if (instance == null)
-			instance = new TownyFlightAPI(TownyFlight.getPlugin());
+			instance = new TownyFlightAPI(plugin);
 		return instance;
 	}
 
@@ -47,8 +47,7 @@ public class TownyFlightAPI {
 			|| player.getGameMode().equals(GameMode.CREATIVE))
 			return true;
 
-		if (!Permissions.has(player, "townyflight.command.tfly", silent))
-			return false;
+		if (!Permission.has(player, "townyflight.command.tfly", silent)) return false;
 
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
 		if (resident == null) return false;
@@ -73,7 +72,7 @@ public class TownyFlightAPI {
 	/**
 	 * Returns true if a player is allowed to fly at their current location. Checks
 	 * if they are in the wilderness, in their own town and if not, whether they have the alliedtowns
-	 * permission and if they are in an alliedarea.
+	 * permission and if they are in an allied area.
 	 * 
 	 * @param player       the {@link Player}.
 	 * @param residentTown The {@link Town} of the {@link Player}.
@@ -133,7 +132,7 @@ public class TownyFlightAPI {
 	 * @param silent true will mean no message is shown to the {@link Player}.
 	 */
 	public void addFlight(Player player, boolean silent) {
-		if (!silent) Message.of("flightOnMsg").to(player);;
+		if (!silent) Message.of("flightOnMsg").to(player);
 		player.setAllowFlight(true);
 	}
 
@@ -144,7 +143,7 @@ public class TownyFlightAPI {
 	 */
 	public void protectFromFall(Player player) {
 		fallProtectedPlayers.add(player);
-		Bukkit.getScheduler().runTaskLater(plugin, () -> fallProtectedPlayers.remove(player), 100);
+		Scheduler.run(() -> fallProtectedPlayers.remove(player), 100);
 	}
 	
 	public boolean removeFallProtection(Player player) {
@@ -158,8 +157,7 @@ public class TownyFlightAPI {
 	 * @param silent true will mean no message is shown to the {@link Player}.
 	 */
 	public void testForFlight(Player player, boolean silent) {
-		if (!canFly(player, silent))
-			removeFlight(player, false, true, "");
+		if (!canFly(player, silent)) removeFlight(player, false, true, "");
 	}
 
 	private boolean warPrevents(Location location, Resident resident) {
@@ -175,7 +173,6 @@ public class TownyFlightAPI {
 	}
 
 	private static boolean warsForTowny(Resident resident) {
-		if (!Settings.warsForTownyFound || !resident.hasNation()) return false;
-		return com.aurgiyalgo.WarsForTowny.WarManager.getWarForNation(TownyAPI.getInstance().getResidentNationOrNull(resident)) != null;
+		return Settings.warsForTownyFound && resident.hasNation() && com.aurgiyalgo.WarsForTowny.WarManager.getWarForNation(resident.getNationOrNull()) != null;
 	}
 }
