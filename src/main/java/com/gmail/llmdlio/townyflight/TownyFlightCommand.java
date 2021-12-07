@@ -120,9 +120,11 @@ public class TownyFlightCommand implements TabExecutor {
 		}
 
 		if (args[1].equalsIgnoreCase("toggleflight")) {
-			boolean active = MetaData.getFreeFlightMeta(town);
-			MetaData.setFreeFlightMeta(town, !active);
-			Message.of(String.format(Message.getLangString("townWideFlight"), Message.getLangString(!active ? "enabled" : "disabled"), town)).to(sender);
+			boolean futurestate = !MetaData.getFreeFlightMeta(town);
+			MetaData.setFreeFlightMeta(town, futurestate);
+			Message.of(String.format(Message.getLangString("townWideFlight"), Message.getLangString(futurestate? "enabled" : "disabled"), town)).to(sender);
+			if (!futurestate)
+				TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
 			return;
 		}
 

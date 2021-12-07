@@ -1,8 +1,10 @@
 package com.gmail.llmdlio.townyflight;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -178,4 +180,16 @@ public class TownyFlightAPI {
 		return Settings.siegeWarFound && SiegeController.hasActiveSiege(resident.getTownOrNull());
 	}
 
+	public void takeFlightFromPlayersInTown(Town town) {
+		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
+			if (player.hasPermission("townyflight.bypass")
+				|| !player.getAllowFlight()
+				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
+				|| TownyFlightAPI.getInstance().canFly(player, true))
+				continue;
+
+			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+		}	
+	}
+	
 }
