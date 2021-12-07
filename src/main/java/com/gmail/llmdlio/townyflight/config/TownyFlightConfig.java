@@ -70,7 +70,16 @@ public class TownyFlightConfig {
 		addDefault("language.notDuringWar", "You cannot use flight while Towny war is active. ");
 		addComment("language.returnToAllowedArea", "# Message telling a player to return to an allowed flight area.");
 		addDefault("language.returnToAllowedArea", "You have %s seconds to return to an allowed flight area. ");
+		addComment("language.noTownFound", "# Message when a town cannot be found by the name.");
+		addDefault("language.noTownFound", "TownyFlight cannot find a town by the name %s. ");
+		addComment("language.townWideFlight", "# Message when a town has free flight enabled or disabled.");
+		addDefault("language.townWideFlight", "Free flight has been %s in %s. ");
+		addComment("language.disabled", "# The word disabled.");
+		addDefault("language.disabled", "disabled");
+		addComment("language.enabled", "# The world enabled");
+		addDefault("language.enabled", "enabled");
 
+		
 		addComment("options", "", "", 
 				"#################", 
 				"#    Options    #", 

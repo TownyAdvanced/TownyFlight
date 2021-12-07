@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import com.gmail.goosius.siegewar.SiegeController;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.util.Message;
+import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.gmail.llmdlio.townyflight.util.Permission;
 import com.gmail.llmdlio.townyflight.util.Scheduler;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -42,9 +43,11 @@ public class TownyFlightAPI {
 	 * @return true if the {@link Player} is allowed to fly.
 	 **/
 	public boolean canFly(Player player, boolean silent) {
+		Town town = TownyAPI.getInstance().getTown(player.getLocation());
 		if (player.hasPermission("townyflight.bypass") 
 			|| player.getGameMode().equals(GameMode.SPECTATOR) 
-			|| player.getGameMode().equals(GameMode.CREATIVE))
+			|| player.getGameMode().equals(GameMode.CREATIVE)
+			|| town != null && MetaData.getFreeFlightMeta(town))
 			return true;
 
 		if (!Permission.has(player, "townyflight.command.tfly", silent)) return false;
