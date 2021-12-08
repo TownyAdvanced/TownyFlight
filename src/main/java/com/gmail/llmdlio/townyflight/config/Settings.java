@@ -48,6 +48,12 @@ public class Settings {
 		lang.put("missingNode", getString("missingNode"));
 		lang.put("notDuringWar", getString("notDuringWar"));
 		lang.put("returnToAllowedArea", getString("returnToAllowedArea"));
+		lang.put("noTownFound", getString("noTownFound"));
+		lang.put("townWideFlight", getString("townWideFlight"));
+		lang.put("disabled", getString("disabled"));
+		lang.put("enabled", getString("enabled"));
+		lang.put("statusScreenComponent", getString("statusScreenComponent"));
+		lang.put("statusScreenComponentHover", getString("statusScreenComponentHover"));
 	}
 
 	public static String getLangString(String languageString) {

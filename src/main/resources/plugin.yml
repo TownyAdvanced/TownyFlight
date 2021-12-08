@@ -12,9 +12,6 @@ commands:
     description: Turns flight on and off.
     aliases: [townyfly, townyflight]
     usage: "/<command>"
-  tfly reload:
-    description: Reload the TownyFlight config.
-    usage: "/<command>"
 
 permissions:
   townyflight.command.tfly:
@@ -25,6 +22,9 @@ permissions:
     default: op
   townyflight.command.tfly.other:
     description: User is able to remove flight from other players.
+    default: op
+  townyflight.command.tfly.town:
+    description: User is able to use /tfly town command.
     default: op
   townyflight.bypass:
     description: Bypass permission node for admins to not have their flight disabled while they travel the server.

@@ -1,8 +1,10 @@
 package com.gmail.llmdlio.townyflight;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -10,6 +12,7 @@ import org.bukkit.entity.Player;
 import com.gmail.goosius.siegewar.SiegeController;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.util.Message;
+import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.gmail.llmdlio.townyflight.util.Permission;
 import com.gmail.llmdlio.townyflight.util.Scheduler;
 import com.palmergames.bukkit.towny.TownyAPI;
@@ -42,9 +45,11 @@ public class TownyFlightAPI {
 	 * @return true if the {@link Player} is allowed to fly.
 	 **/
 	public boolean canFly(Player player, boolean silent) {
+		Town town = TownyAPI.getInstance().getTown(player.getLocation());
 		if (player.hasPermission("townyflight.bypass") 
 			|| player.getGameMode().equals(GameMode.SPECTATOR) 
-			|| player.getGameMode().equals(GameMode.CREATIVE))
+			|| player.getGameMode().equals(GameMode.CREATIVE)
+			|| town != null && MetaData.getFreeFlightMeta(town))
 			return true;
 
 		if (!Permission.has(player, "townyflight.command.tfly", silent)) return false;
@@ -146,7 +151,7 @@ public class TownyFlightAPI {
 	 */
 	public void protectFromFall(Player player) {
 		fallProtectedPlayers.add(player);
-		Scheduler.run(() -> fallProtectedPlayers.remove(player), 100);
+		Scheduler.run(() -> removeFallProtection(player), 100);
 	}
 	
 	public boolean removeFallProtection(Player player) {
@@ -163,6 +168,24 @@ public class TownyFlightAPI {
 		if (!canFly(player, silent)) removeFlight(player, false, true, "");
 	}
 
+	/**
+	 * Parse over the players online in the server and if they're in the given {@link Town},
+	 * and are not given a flight bypass of some kind, remove their flight. Called when
+	 * a town has their free flight disabled.
+	 */
+	public void takeFlightFromPlayersInTown(Town town) {
+		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
+			if (player.hasPermission("townyflight.bypass")
+				|| !player.getAllowFlight()
+				|| TownyAPI.getInstance().isWilderness(player.getLocation())
+				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
+				|| TownyFlightAPI.getInstance().canFly(player, true))
+				continue;
+
+			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+		}	
+	}
+
 	private boolean warPrevents(Location location, Resident resident) {
 		return Settings.disableDuringWar && (townHasActiveWar(location, resident) || residentIsSieged(resident));
 	}
@@ -174,5 +197,4 @@ public class TownyFlightAPI {
 	private static boolean residentIsSieged(Resident resident) {
 		return Settings.siegeWarFound && SiegeController.hasActiveSiege(resident.getTownOrNull());
 	}
-
 }
