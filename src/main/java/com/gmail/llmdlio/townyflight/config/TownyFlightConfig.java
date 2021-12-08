@@ -76,11 +76,14 @@ public class TownyFlightConfig {
 		addDefault("language.townWideFlight", "Free flight has been %s in %s. ");
 		addComment("language.disabled", "# The word disabled.");
 		addDefault("language.disabled", "disabled");
-		addComment("language.enabled", "# The world enabled");
+		addComment("language.enabled", "# The world enabled.");
 		addDefault("language.enabled", "enabled");
+		addComment("language.statusScreenComponent", "# The component shown on towns' status screens when they have free flight enabled.");
+		addDefault("language.statusScreenComponent", "Free Flight");
+		addComment("language.statusScreenComponentHover", "# The hover text shown on the free flight status screen component.");
+		addDefault("language.statusScreenComponentHover", "Flight enabled for everyone within this town's borders.");
 
-		
-		addComment("options", "", "", 
+		addComment("options", "", "", "", 
 				"#################", 
 				"#    Options    #", 
 				"#################", "");

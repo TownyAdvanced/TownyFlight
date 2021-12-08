@@ -151,7 +151,7 @@ public class TownyFlightAPI {
 	 */
 	public void protectFromFall(Player player) {
 		fallProtectedPlayers.add(player);
-		Scheduler.run(() -> fallProtectedPlayers.remove(player), 100);
+		Scheduler.run(() -> removeFallProtection(player), 100);
 	}
 	
 	public boolean removeFallProtection(Player player) {
@@ -168,6 +168,24 @@ public class TownyFlightAPI {
 		if (!canFly(player, silent)) removeFlight(player, false, true, "");
 	}
 
+	/**
+	 * Parse over the players online in the server and if they're in the given {@link Town},
+	 * and are not given a flight bypass of some kind, remove their flight. Called when
+	 * a town has their free flight disabled.
+	 */
+	public void takeFlightFromPlayersInTown(Town town) {
+		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
+			if (player.hasPermission("townyflight.bypass")
+				|| !player.getAllowFlight()
+				|| TownyAPI.getInstance().isWilderness(player.getLocation())
+				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
+				|| TownyFlightAPI.getInstance().canFly(player, true))
+				continue;
+
+			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+		}	
+	}
+
 	private boolean warPrevents(Location location, Resident resident) {
 		return Settings.disableDuringWar && (townHasActiveWar(location, resident) || residentIsSieged(resident));
 	}
@@ -179,17 +197,4 @@ public class TownyFlightAPI {
 	private static boolean residentIsSieged(Resident resident) {
 		return Settings.siegeWarFound && SiegeController.hasActiveSiege(resident.getTownOrNull());
 	}
-
-	public void takeFlightFromPlayersInTown(Town town) {
-		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
-			if (player.hasPermission("townyflight.bypass")
-				|| !player.getAllowFlight()
-				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
-				|| TownyFlightAPI.getInstance().canFly(player, true))
-				continue;
-
-			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
-		}	
-	}
-	
 }
