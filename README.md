@@ -3,7 +3,7 @@
 Finally, you can allow towny residents to fly while in their own towns, for free, from the lead developer of Towny.
 
 __As of version 1.5.0 This plugin supports Towny 0.94.0.2+ and MC 1.14.*.__
-__Pre-1.5 versions requires the use of Towny 0.92.0.0 or newer.__
+__Pre-1.5 versions requires the use of Towny 0.92.0.0 or older.__
 
 Players that are flying and make a PVP combat attack will have their attack cancelled and their flight taken away. Players that are in creative and make attacks will be allowed to continue flying, but will have their pvp attack canceled.
 
@@ -17,16 +17,20 @@ ___
 - /tfly - Enable/disable flight.
 - /tfly reload - Reload the config.
 - /tfly {name} - Removes flight from someone.
+- /tfly town {townname} toggleflight - Enables free flight in a town (use this on your Spawn city if you want everyone to be able to fly there.)
 
 ---
 
 ## Permission nodes:
 
-- townyflight.command.tfly - required to use /tfly.
-- townyflight.command.tfly.reload - required to reload the config.
-- townyflight.alliedtowns - allows players to use /tfly in towns which consider that player an ally.
-- townyflight.alltowns - allows players to use /tfly in any town, but not the wilderness.
-- townyflight.bypass - default to Ops, bypasses removal of flight, use /tfly anywhere.
+- townyflight.command.tfly - required to use `/tfly`.
+- townyflight.command.tfly.reload - required to use `/tfly reload`.
+- townyflight.command.tfly.town - required to use `/tfly town {townname} toggleflight`.
+- townyflight.command.tfly.other - required to use `/tfly {name}`.
+- townyflight.alliedtowns - allows players to use `/tfly` in towns which consider that player an ally.
+- townyflight.nationtowns - allows players to use `/tfly` in towns which are part of the player's nation.
+- townyflight.alltowns - allows players to use `/tfly` in any town, but not the wilderness.
+- townyflight.bypass - default to Ops, bypasses removal of flight, use `/tfly` anywhere.
 
 ---
 
