@@ -67,7 +67,7 @@ public class TownyFlightAPI {
 			return false;
 		}
 
-		if (!allowedLocation(player, resident.getTownOrNull())) {
+		if (!allowedLocation(player, player.getLocation(), resident.getTownOrNull())) {
 			if (!silent) Message.of("notInTownMsg").to(player);
 			return false;
 		}
@@ -79,18 +79,19 @@ public class TownyFlightAPI {
 	 * if they are in the wilderness, in their own town and if not, whether they have the alliedtowns
 	 * permission and if they are in an allied area.
 	 * 
-	 * @param player       the {@link Player}.
+	 * @param player       The {@link Player}.
+	 * @param locaiton     The {@link Location} to test for the player.
 	 * @param residentTown The {@link Town} of the {@link Player}.
 	 * @return true if player is allowed to be flying at their present location.
 	 */
-	private static boolean allowedLocation(Player player, Town residentTown) {
-		if (TownyAPI.getInstance().isWilderness(player.getLocation()))
+	public static boolean allowedLocation(Player player, Location location, Town residentTown) {
+		if (TownyAPI.getInstance().isWilderness(location))
 			return false;
 
 		if (player.hasPermission("townyflight.alltowns"))
 			return true;
 
-		Town town = TownyAPI.getInstance().getTown(player.getLocation());
+		Town town = TownyAPI.getInstance().getTown(location);
 		if (residentTown.getUUID() == town.getUUID())
 			return true;
 
