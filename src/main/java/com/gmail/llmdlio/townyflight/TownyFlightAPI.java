@@ -7,6 +7,7 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 import com.gmail.goosius.siegewar.SiegeController;
@@ -20,12 +21,14 @@ import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
+import org.bukkit.persistence.PersistentDataType;
 
 public class TownyFlightAPI {
 
 	private static TownyFlight plugin;
 	private static TownyFlightAPI instance;
 	public Set<Player> fallProtectedPlayers = new HashSet<>();
+	private static final NamespacedKey forceAllowFlight = new NamespacedKey(plugin, "force_allow_flight");
 	
 	public TownyFlightAPI(TownyFlight _plugin) {
 		plugin = _plugin;
@@ -49,7 +52,8 @@ public class TownyFlightAPI {
 		if (player.hasPermission("townyflight.bypass") 
 			|| player.getGameMode().equals(GameMode.SPECTATOR) 
 			|| player.getGameMode().equals(GameMode.CREATIVE)
-			|| town != null && MetaData.getFreeFlightMeta(town))
+			|| town != null && MetaData.getFreeFlightMeta(town)
+			|| getForceAllowFlight(player))
 			return true;
 
 		if (!Permission.has(player, "townyflight.command.tfly", silent)) return false;
@@ -80,11 +84,14 @@ public class TownyFlightAPI {
 	 * permission and if they are in an allied area.
 	 * 
 	 * @param player       The {@link Player}.
-	 * @param locaiton     The {@link Location} to test for the player.
+	 * @param location     The {@link Location} to test for the player.
 	 * @param residentTown The {@link Town} of the {@link Player}.
 	 * @return true if player is allowed to be flying at their present location.
 	 */
 	public static boolean allowedLocation(Player player, Location location, Town residentTown) {
+		if (instance.getForceAllowFlight(player))
+			return true;
+
 		if (TownyAPI.getInstance().isWilderness(location))
 			return false;
 
@@ -185,6 +192,27 @@ public class TownyFlightAPI {
 
 			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
 		}	
+	}
+
+	/**
+	 * This method allows the player to fly everywhere, even if they are not in a town. Useful for
+	 * plugins that have items that can make you fly.
+	 *
+	 * @param player {@link Player} who is flying.
+	 * @param force  true will allow the player to fly anywhere.
+	 */
+	public void setForceAllowFlight(Player player, boolean force) {
+		player.getPersistentDataContainer().set(forceAllowFlight, PersistentDataType.BYTE, (byte) (force ? 1 : 0));
+	}
+
+	/**
+	 * This method checks if the player is allowed to fly anywhere
+	 *
+	 * @param player {@link Player} who is being checked.
+	 * @return true if the player is allowed to fly anywhere.
+	 */
+	public boolean getForceAllowFlight(Player player) {
+		return player.getPersistentDataContainer().getOrDefault(forceAllowFlight, PersistentDataType.BYTE, (byte) 0) == 1;
 	}
 
 	private boolean warPrevents(Location location, Resident resident) {
