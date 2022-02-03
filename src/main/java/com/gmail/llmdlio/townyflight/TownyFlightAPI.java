@@ -28,10 +28,11 @@ public class TownyFlightAPI {
 	private static TownyFlight plugin;
 	private static TownyFlightAPI instance;
 	public Set<Player> fallProtectedPlayers = new HashSet<>();
-	private static final NamespacedKey forceAllowFlight = new NamespacedKey(plugin, "force_allow_flight");
+	private static NamespacedKey forceAllowFlight;
 	
 	public TownyFlightAPI(TownyFlight _plugin) {
 		plugin = _plugin;
+		forceAllowFlight = new NamespacedKey(plugin, "force_allow_flight");
 	}
 	
 	public static TownyFlightAPI getInstance() {
