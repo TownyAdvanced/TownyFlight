@@ -11,6 +11,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 
 import com.gmail.goosius.siegewar.SiegeController;
+import com.gmail.goosius.siegewar.enums.SiegeStatus;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.MetaData;
@@ -225,6 +226,6 @@ public class TownyFlightAPI {
 	}
 
 	private static boolean residentIsSieged(Resident resident) {
-		return Settings.siegeWarFound && SiegeController.hasActiveSiege(resident.getTownOrNull());
+		return Settings.siegeWarFound && SiegeController.hasSiege(resident.getTownOrNull()) && SiegeController.getSiege(resident.getTownOrNull()).getStatus().equals(SiegeStatus.IN_PROGRESS);
 	}
 }
