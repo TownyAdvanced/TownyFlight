@@ -10,6 +10,7 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerLogOutListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
 import com.gmail.llmdlio.townyflight.listeners.TownStatusScreenListener;
@@ -17,7 +18,7 @@ import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static Version requiredTownyVersion = Version.fromString("0.97.5.0");
+	private static Version requiredTownyVersion = Version.fromString("0.98.2.0");
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	private static TownyFlight plugin;
 	private static TownyFlightAPI api;
@@ -84,6 +85,7 @@ public class TownyFlight extends JavaPlugin {
 
 	protected void registerEvents() {
 		pm.registerEvents(new PlayerJoinListener(), this);
+		pm.registerEvents(new PlayerLogOutListener(), this);
 		pm.registerEvents(new PlayerLeaveTownListener(), this);
 		pm.registerEvents(new TownUnclaimListener(), this);
 		pm.registerEvents(new PlayerFallListener(), this);
