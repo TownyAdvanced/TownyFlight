@@ -29,6 +29,7 @@ ___
 - townyflight.command.tfly.other - required to use `/tfly {name}`.
 - townyflight.alliedtowns - allows players to use `/tfly` in towns which consider that player an ally.
 - townyflight.nationtowns - allows players to use `/tfly` in towns which are part of the player's nation.
+- townyflight.trustedtowns - allows players to use `/tfly` in towns which they are trusted.
 - townyflight.alltowns - allows players to use `/tfly` in any town, but not the wilderness.
 - townyflight.bypass - default to Ops, bypasses removal of flight, use `/tfly` anywhere.
 
