@@ -63,7 +63,7 @@ public class TownyFlightAPI {
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
 		if (resident == null) return false;
 
-		if (!resident.hasTown()) {
+		if (!resident.hasTown() && !locationTrustsResidents(town, resident)) {
 			if (!silent) Message.of("noTownMsg").to(player);
 			return false;
 		}
@@ -73,24 +73,29 @@ public class TownyFlightAPI {
 			return false;
 		}
 
-		if (!allowedLocation(player, player.getLocation(), resident.getTownOrNull())) {
+		if (!allowedLocation(player, player.getLocation(), resident)) {
 			if (!silent) Message.of("notInTownMsg").to(player);
 			return false;
 		}
 		return true;
 	}
 
+	private boolean locationTrustsResidents(Town town, Resident resident) {
+		return town != null && town.hasTrustedResident(resident);
+	}
+
+
 	/**
 	 * Returns true if a player is allowed to fly at their current location. Checks
-	 * if they are in the wilderness, in their own town and if not, whether they have the alliedtowns
-	 * permission and if they are in an allied area.
+	 * if they are in the wilderness, in their own town and if not, whether they
+	 * have the alliedtowns permission and if they are in an allied area.
 	 * 
-	 * @param player       The {@link Player}.
-	 * @param location     The {@link Location} to test for the player.
-	 * @param residentTown The {@link Town} of the {@link Player}.
+	 * @param player   The {@link Player}.
+	 * @param location The {@link Location} to test for the player.
+	 * @param resident The {@link Resident} of the {@link Player}.
 	 * @return true if player is allowed to be flying at their present location.
 	 */
-	public static boolean allowedLocation(Player player, Location location, Town residentTown) {
+	public static boolean allowedLocation(Player player, Location location, Resident resident) {
 		if (instance.getForceAllowFlight(player))
 			return true;
 
@@ -101,6 +106,13 @@ public class TownyFlightAPI {
 			return true;
 
 		Town town = TownyAPI.getInstance().getTown(location);
+		if (player.hasPermission("townyflight.trustedtowns") && town.hasTrustedResident(resident))
+			return true;
+
+		Town residentTown = resident.getTownOrNull();
+		if (residentTown == null)
+			return false;
+
 		if (residentTown.getUUID() == town.getUUID())
 			return true;
 

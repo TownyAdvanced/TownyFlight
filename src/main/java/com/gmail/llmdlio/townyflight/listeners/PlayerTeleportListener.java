@@ -31,10 +31,7 @@ public class PlayerTeleportListener implements Listener {
 
 	private boolean flightAllowedDestination(Player player, Location loc) {
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
-		if (resident == null || !resident.hasTown())
-			return false;
-
-		return TownyFlightAPI.allowedLocation(player, loc, resident.getTownOrNull());
+		return resident != null && TownyFlightAPI.allowedLocation(player, loc, resident);
 	}
 
 }

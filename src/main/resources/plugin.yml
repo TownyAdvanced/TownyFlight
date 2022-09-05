@@ -36,5 +36,8 @@ permissions:
     description: Allows players to use /townyflight in any town. Wilderness is still disallowed.
     default: op
   townyflight.nationtowns:
-    description: ALlows players to use /townyflight in towns which are in their nation.
+    description: Allows players to use /townyflight in towns which are in their nation.
+    default: op
+  townyflight.trustedtowns:
+    description: Allows players to use /townyflight in towns in which they are Trusted.
     default: op
