@@ -1,10 +1,10 @@
-package com.gmail.llmdlio.townyflight.config;
+package com.olziedev.terraeflight.config;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
-import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.olziedev.terraeflight.TownyFlight;
 import com.palmergames.bukkit.config.CommentedConfiguration;
 
 public class TownyFlightConfig {

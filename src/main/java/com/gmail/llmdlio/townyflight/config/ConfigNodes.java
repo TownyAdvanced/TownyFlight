@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.config;
+package com.olziedev.terraeflight.config;
 
 public enum ConfigNodes {
 	VERSION("Version", ""),
@@ -29,6 +29,11 @@ public enum ConfigNodes {
 			"Flight cannot be activated, return to your town and try again. ",
 			"",
 			"# Message shown when flight cannot be turned on."),
+	LANG_NOTINTOWNNATION(
+			"language.notInTownNationMsg",
+			"Flight cannot be activated, return to a town nation and try again.",
+			"",
+			"# Message shown when nation flight cannot be turned on."),
 	LANG_FLIGHTDEACTIVATEDMSG(
 			"language.flightDeactivatedMsg",
 			"Left town boundaries. ",

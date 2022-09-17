@@ -1,14 +1,14 @@
-package com.gmail.llmdlio.townyflight.listeners;
+package com.olziedev.terraeflight.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.gmail.llmdlio.townyflight.TownyFlightAPI;
-import com.gmail.llmdlio.townyflight.config.Settings;
-import com.gmail.llmdlio.townyflight.util.Message;
-import com.gmail.llmdlio.townyflight.util.Scheduler;
+import com.olziedev.terraeflight.TownyFlightAPI;
+import com.olziedev.terraeflight.config.Settings;
+import com.olziedev.terraeflight.util.Message;
+import com.olziedev.terraeflight.util.Scheduler;
 import com.palmergames.bukkit.towny.event.PlayerLeaveTownEvent;
 
 public class PlayerLeaveTownListener implements Listener{	

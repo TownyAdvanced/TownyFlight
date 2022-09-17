@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.listeners;
+package com.olziedev.terraeflight.listeners;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +9,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
-import com.gmail.llmdlio.townyflight.TownyFlightAPI;
-import com.gmail.llmdlio.townyflight.util.Scheduler;
+import com.olziedev.terraeflight.TownyFlightAPI;
+import com.olziedev.terraeflight.util.Scheduler;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 

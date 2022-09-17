@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.listeners;
+package com.olziedev.terraeflight.listeners;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -6,9 +6,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import com.gmail.llmdlio.townyflight.TownyFlightAPI;
-import com.gmail.llmdlio.townyflight.config.Settings;
-import com.gmail.llmdlio.townyflight.util.Scheduler;
+import com.olziedev.terraeflight.TownyFlightAPI;
+import com.olziedev.terraeflight.config.Settings;
+import com.olziedev.terraeflight.util.Scheduler;
 
 public class PlayerJoinListener implements Listener {
 

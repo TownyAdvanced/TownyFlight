@@ -1,6 +1,6 @@
-package com.gmail.llmdlio.townyflight.util;
+package com.olziedev.terraeflight.util;
 
-import com.gmail.llmdlio.townyflight.config.Settings;
+import com.olziedev.terraeflight.config.Settings;
 
 import net.md_5.bungee.api.ChatColor;
 

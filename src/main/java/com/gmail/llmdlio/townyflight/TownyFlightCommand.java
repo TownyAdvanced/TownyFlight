@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight;
+package com.olziedev.terraeflight;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,9 +12,9 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
-import com.gmail.llmdlio.townyflight.util.Message;
-import com.gmail.llmdlio.townyflight.util.MetaData;
-import com.gmail.llmdlio.townyflight.util.Permission;
+import com.olziedev.terraeflight.util.Message;
+import com.olziedev.terraeflight.util.MetaData;
+import com.olziedev.terraeflight.util.Permission;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Town;
@@ -100,6 +100,7 @@ public class TownyFlightCommand implements TabExecutor {
 			}
 
 			// We have only /tfly
+			TownyFlightAPI.setFlightNation((Player) sender, false);
 			if (!TownyFlightAPI.getInstance().canFly((Player) sender, false))
 				return;
 

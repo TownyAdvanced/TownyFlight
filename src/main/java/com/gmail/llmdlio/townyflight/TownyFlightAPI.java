@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight;
+package com.olziedev.terraeflight;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -12,11 +12,11 @@ import org.bukkit.entity.Player;
 
 import com.gmail.goosius.siegewar.SiegeController;
 import com.gmail.goosius.siegewar.enums.SiegeStatus;
-import com.gmail.llmdlio.townyflight.config.Settings;
-import com.gmail.llmdlio.townyflight.util.Message;
-import com.gmail.llmdlio.townyflight.util.MetaData;
-import com.gmail.llmdlio.townyflight.util.Permission;
-import com.gmail.llmdlio.townyflight.util.Scheduler;
+import com.olziedev.terraeflight.config.Settings;
+import com.olziedev.terraeflight.util.Message;
+import com.olziedev.terraeflight.util.MetaData;
+import com.olziedev.terraeflight.util.Permission;
+import com.olziedev.terraeflight.util.Scheduler;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -30,10 +30,12 @@ public class TownyFlightAPI {
 	private static TownyFlightAPI instance;
 	public Set<Player> fallProtectedPlayers = new HashSet<>();
 	private static NamespacedKey forceAllowFlight;
-	
+	private static NamespacedKey flightNation;
+
 	public TownyFlightAPI(TownyFlight _plugin) {
 		plugin = _plugin;
 		forceAllowFlight = new NamespacedKey(plugin, "force_allow_flight");
+		flightNation = new NamespacedKey(plugin, "flight_nation");
 	}
 	
 	public static TownyFlightAPI getInstance() {
@@ -58,12 +60,13 @@ public class TownyFlightAPI {
 			|| getForceAllowFlight(player))
 			return true;
 
-		if (!Permission.has(player, "townyflight.command.tfly", silent)) return false;
+		boolean nation = getFlightNation(player);
+		if (!Permission.has(player, "townyflight.command." + (nation ? "nfly" : "tfly"), silent)) return false;
 
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
 		if (resident == null) return false;
 
-		if (!resident.hasTown() && !locationTrustsResidents(town, resident)) {
+		if (!resident.hasTown()) {
 			if (!silent) Message.of("noTownMsg").to(player);
 			return false;
 		}
@@ -73,29 +76,24 @@ public class TownyFlightAPI {
 			return false;
 		}
 
-		if (!allowedLocation(player, player.getLocation(), resident)) {
-			if (!silent) Message.of("notInTownMsg").to(player);
+		if (!allowedLocation(player, player.getLocation(), resident.getTownOrNull())) {
+			if (!silent) Message.of(nation ? "notInTownNationMsg" : "notInTownMsg").to(player);
 			return false;
 		}
 		return true;
 	}
 
-	private boolean locationTrustsResidents(Town town, Resident resident) {
-		return town != null && town.hasTrustedResident(resident);
-	}
-
-
 	/**
 	 * Returns true if a player is allowed to fly at their current location. Checks
-	 * if they are in the wilderness, in their own town and if not, whether they
-	 * have the alliedtowns permission and if they are in an allied area.
+	 * if they are in the wilderness, in their own town and if not, whether they have the alliedtowns
+	 * permission and if they are in an allied area.
 	 * 
-	 * @param player   The {@link Player}.
-	 * @param location The {@link Location} to test for the player.
-	 * @param resident The {@link Resident} of the {@link Player}.
+	 * @param player       The {@link Player}.
+	 * @param location     The {@link Location} to test for the player.
+	 * @param residentTown The {@link Town} of the {@link Player}.
 	 * @return true if player is allowed to be flying at their present location.
 	 */
-	public static boolean allowedLocation(Player player, Location location, Resident resident) {
+	public static boolean allowedLocation(Player player, Location location, Town residentTown) {
 		if (instance.getForceAllowFlight(player))
 			return true;
 
@@ -106,13 +104,9 @@ public class TownyFlightAPI {
 			return true;
 
 		Town town = TownyAPI.getInstance().getTown(location);
-		if (player.hasPermission("townyflight.trustedtowns") && town.hasTrustedResident(resident))
-			return true;
-
-		Town residentTown = resident.getTownOrNull();
-		if (residentTown == null)
-			return false;
-
+		if (getFlightNation(player)) {
+			return CombatUtil.isSameNation(residentTown, town);
+		}
 		if (residentTown.getUUID() == town.getUUID())
 			return true;
 
@@ -162,6 +156,11 @@ public class TownyFlightAPI {
 	 * @param silent true will mean no message is shown to the {@link Player}.
 	 */
 	public void addFlight(Player player, boolean silent) {
+		if (!silent) Message.of("flightOnMsg").to(player);
+		player.setAllowFlight(true);
+	}
+
+	public void addNationFlight(Player player, boolean silent) {
 		if (!silent) Message.of("flightOnMsg").to(player);
 		player.setAllowFlight(true);
 	}
@@ -217,6 +216,14 @@ public class TownyFlightAPI {
 	 */
 	public void setForceAllowFlight(Player player, boolean force) {
 		player.getPersistentDataContainer().set(forceAllowFlight, PersistentDataType.BYTE, (byte) (force ? 1 : 0));
+	}
+
+	public static void setFlightNation(Player player, boolean nation) {
+		player.getPersistentDataContainer().set(flightNation, PersistentDataType.BYTE, (byte) (nation ? 1 : 0));
+	}
+
+	public static boolean getFlightNation(Player player) {
+		return player.getPersistentDataContainer().getOrDefault(flightNation, PersistentDataType.BYTE, (byte) 0) == 1;
 	}
 
 	/**

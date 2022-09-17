@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.config;
+package com.olziedev.terraeflight.config;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -41,6 +41,7 @@ public class Settings {
 		lang.put("flightOffMsg", getString("flightOffMsg"));
 		lang.put("noTownMsg", getString("noTownMsg"));
 		lang.put("notInTownMsg", getString("notInTownMsg"));
+		lang.put("notInTownNationMsg", getString("notInTownNationMsg"));
 		lang.put("flightDeactivatedMsg", getString("flightDeactivatedMsg"));
 		lang.put("flightDeactivatedPVPMsg", getString("flightDeactivatedPVPMsg"));
 		lang.put("flightDeactivatedConsoleMsg", getString("flightDeactivatedConsoleMsg"));

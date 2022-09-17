@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.util;
+package com.olziedev.terraeflight.util;
 
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.metadata.BooleanDataField;

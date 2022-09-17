@@ -1,10 +1,10 @@
-package com.gmail.llmdlio.townyflight.listeners;
+package com.olziedev.terraeflight.listeners;
 
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
-import com.gmail.llmdlio.townyflight.util.Message;
-import com.gmail.llmdlio.townyflight.util.MetaData;
+import com.olziedev.terraeflight.util.Message;
+import com.olziedev.terraeflight.util.MetaData;
 import com.palmergames.adventure.text.Component;
 import com.palmergames.adventure.text.event.HoverEvent;
 import com.palmergames.bukkit.towny.event.statusscreen.TownStatusScreenEvent;

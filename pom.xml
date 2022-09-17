@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gmail.llmdlio</groupId>
 	<artifactId>TownyFlight</artifactId>
-	<version>1.8.5</version>
+	<version>1.8.4</version>
 	<name>TownyFlight</name>
 	<description>A flight plugin for Towny servers.</description>
 	<properties>
@@ -36,23 +36,19 @@
 			<id>jitpack.io</id>
 			<url>https://jitpack.io</url>
 		</repository>
-		<repository>
-			<id>spigot-repo</id>
-			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
-			<artifactId>spigot-api</artifactId>
-			<version>1.16.4-R0.1-SNAPSHOT</version>
-			<type>jar</type>
-			<scope>provided</scope>
+			<artifactId>spigot</artifactId>
+			<version>1.16.1-R0.1-SNAPSHOT</version>
+			<systemPath>${basedir}/../lib/spigot.jar</systemPath>
+			<scope>system</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.github.TownyAdvanced</groupId>
 			<artifactId>Towny</artifactId>
-			<version>0.98.3.0</version>
+			<version>0.97.5.0</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
@@ -60,6 +56,12 @@
 			<artifactId>SiegeWar</artifactId>
 			<version>0.6.0</version>
 			<scope>provided</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>*</groupId>
+					<artifactId>*</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.jetbrains</groupId>
