@@ -1,6 +1,6 @@
 name: TownyFlight
 author: LlmDl
-main: com.gmail.llmdlio.townyflight.TownyFlight
+main: com.olziedev.terraeflight.TownyFlight
 version: ${project.version}
 api-version: ${project.bukkitAPIVersion}
 depend: [Towny]
@@ -11,6 +11,9 @@ commands:
   tfly:
     description: Turns flight on and off.
     aliases: [townyfly, townyflight]
+    usage: "/<command>"
+  nfly:
+    description: Turns flight on and off.
     usage: "/<command>"
 
 permissions:
@@ -36,8 +39,5 @@ permissions:
     description: Allows players to use /townyflight in any town. Wilderness is still disallowed.
     default: op
   townyflight.nationtowns:
-    description: Allows players to use /townyflight in towns which are in their nation.
-    default: op
-  townyflight.trustedtowns:
-    description: Allows players to use /townyflight in towns in which they are Trusted.
+    description: ALlows players to use /townyflight in towns which are in their nation.
     default: op
