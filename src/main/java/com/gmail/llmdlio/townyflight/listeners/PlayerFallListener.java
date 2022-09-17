@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.listeners;
+package com.olziedev.terraeflight.listeners;
 
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -7,7 +7,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import com.gmail.llmdlio.townyflight.TownyFlightAPI;
+import com.olziedev.terraeflight.TownyFlightAPI;
 
 public class PlayerFallListener implements Listener {
 

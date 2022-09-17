@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.listeners;
+package com.olziedev.terraeflight.listeners;
 
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -8,7 +8,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
-import com.gmail.llmdlio.townyflight.TownyFlightAPI;
+import com.olziedev.terraeflight.TownyFlightAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
 
@@ -31,7 +31,10 @@ public class PlayerTeleportListener implements Listener {
 
 	private boolean flightAllowedDestination(Player player, Location loc) {
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
-		return resident != null && TownyFlightAPI.allowedLocation(player, loc, resident);
+		if (resident == null || !resident.hasTown())
+			return false;
+
+		return TownyFlightAPI.allowedLocation(player, loc, resident.getTownOrNull());
 	}
 
 }
