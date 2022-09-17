@@ -1,8 +1,8 @@
-package com.gmail.llmdlio.townyflight.util;
+package com.olziedev.terraeflight.util;
 
 import org.bukkit.Bukkit;
 
-import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.olziedev.terraeflight.TownyFlight;
 
 public class Scheduler {
 

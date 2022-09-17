@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.util;
+package com.olziedev.terraeflight.util;
 
 import org.bukkit.command.CommandSender;
 
