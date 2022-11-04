@@ -1,11 +1,13 @@
 package com.gmail.llmdlio.townyflight;
 
 import org.bukkit.event.HandlerList;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
+import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
 import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
@@ -23,7 +25,8 @@ public class TownyFlight extends JavaPlugin {
 	private static TownyFlight plugin;
 	private static TownyFlightAPI api;
 	final PluginManager pm = getServer().getPluginManager();
-	
+	private TownyFlightPlaceholderExpansion papiExpansion = null;
+
 	public void onEnable() {
 
 		plugin = this;
@@ -43,6 +46,7 @@ public class TownyFlight extends JavaPlugin {
 		}
 
 		checkWarPlugins();
+		checkIntegrations();
 		registerEvents();
 		registerCommands();
 		getLogger().info("Towny version " + townyVersion + " found.");
@@ -83,6 +87,16 @@ public class TownyFlight extends JavaPlugin {
 		Settings.siegeWarFound = pm.getPlugin("SiegeWar") != null;
 	}
 
+
+	private void checkIntegrations() {
+		Plugin test;
+		test = getServer().getPluginManager().getPlugin("PlaceholderAPI");
+		if (test != null) {
+			papiExpansion = new TownyFlightPlaceholderExpansion(this);
+			papiExpansion.register();
+		}
+	}
+
 	protected void registerEvents() {
 		pm.registerEvents(new PlayerJoinListener(), this);
 		pm.registerEvents(new PlayerLogOutListener(), this);
@@ -91,7 +105,7 @@ public class TownyFlight extends JavaPlugin {
 		pm.registerEvents(new PlayerFallListener(), this);
 		pm.registerEvents(new PlayerTeleportListener(), this);
 		pm.registerEvents(new TownStatusScreenListener(), this);
-		if (Settings.autoEnableFlight) pm.registerEvents(new PlayerEnterTownListener(), this);
+		pm.registerEvents(new PlayerEnterTownListener(), this);
 		if (Settings.disableCombatPrevention) pm.registerEvents(new PlayerPVPListener(), this);
 	}
 
