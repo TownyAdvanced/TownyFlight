@@ -11,5 +11,6 @@ public class PlayerLogOutListener implements Listener {
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event) {
 		TownyFlightAPI.getInstance().testForFlight(event.getPlayer(), true);
+		TownyFlightAPI.removeCachedPlayer(event.getPlayer());
 	}
 }

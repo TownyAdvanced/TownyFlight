@@ -58,6 +58,11 @@ ___
 
 ---
 
+## PAPI Placeholders:
+- `%townyflight_can_player_fly%` - Displays true or false, based on whether the player could fly at their current location.
+
+---
+
 I'm open to new features and willing to fix any bugs found.
 
 

@@ -1,8 +1,10 @@
 package com.gmail.llmdlio.townyflight;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -29,6 +31,7 @@ public class TownyFlightAPI {
 	private static TownyFlight plugin;
 	private static TownyFlightAPI instance;
 	public Set<Player> fallProtectedPlayers = new HashSet<>();
+	private static HashMap<UUID, Boolean> canFlyCache = new HashMap<>();
 	private static NamespacedKey forceAllowFlight;
 	
 	public TownyFlightAPI(TownyFlight _plugin) {
@@ -153,6 +156,7 @@ public class TownyFlightAPI {
 				protectFromFall(player);
 		}
 		player.setAllowFlight(false);
+		cachePlayerFlight(player, false);
 	}
 
 	/**
@@ -164,6 +168,7 @@ public class TownyFlightAPI {
 	public void addFlight(Player player, boolean silent) {
 		if (!silent) Message.of("flightOnMsg").to(player);
 		player.setAllowFlight(true);
+		cachePlayerFlight(player, true);
 	}
 
 	/**
@@ -239,5 +244,22 @@ public class TownyFlightAPI {
 
 	private static boolean residentIsSieged(Resident resident) {
 		return Settings.siegeWarFound && SiegeController.hasSiege(resident.getTownOrNull()) && SiegeController.getSiege(resident.getTownOrNull()).getStatus().equals(SiegeStatus.IN_PROGRESS);
+	}
+
+	public static boolean canFlyAccordingToCache(Player player) {
+		if (!canFlyCache.containsKey(player.getUniqueId()))
+			cachePlayerFlight(player, TownyFlightAPI.getInstance().canFly(player, true));
+
+		return canFlyCache.get(player.getUniqueId());
+	}
+
+	public static void cachePlayerFlight(Player player, boolean canFly) {
+		if (canFlyCache.containsKey(player.getUniqueId()) && canFlyCache.get(player.getUniqueId()) == canFly)
+			return;
+		canFlyCache.put(player.getUniqueId(), canFly);
+	}
+	
+	public static void removeCachedPlayer(Player player) {
+		canFlyCache.remove(player.getUniqueId());
 	}
 }

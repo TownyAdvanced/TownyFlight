@@ -29,7 +29,10 @@ public class PlayerEnterTownListener implements Listener {
 		Scheduler.run(()-> {
 			if (!TownyFlightAPI.getInstance().canFly(player, true))
 				return;
-			TownyFlightAPI.getInstance().addFlight(player, Settings.autoEnableSilent);
+			if (Settings.autoEnableFlight)
+				TownyFlightAPI.getInstance().addFlight(player, Settings.autoEnableSilent);
+
+			TownyFlightAPI.cachePlayerFlight(player, true);
 		}, 1);
 	}
 
