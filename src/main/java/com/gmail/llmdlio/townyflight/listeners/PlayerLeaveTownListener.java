@@ -9,7 +9,7 @@ import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.Scheduler;
-import com.palmergames.bukkit.towny.event.PlayerLeaveTownEvent;
+import com.palmergames.bukkit.towny.event.player.PlayerExitsFromTownBorderEvent;
 
 public class PlayerLeaveTownListener implements Listener{	
 
@@ -18,7 +18,7 @@ public class PlayerLeaveTownListener implements Listener{
 	 * PlayerLeaveTownEvent in order to get the proper location.
 	 */
 	@EventHandler(priority = EventPriority.LOWEST)
-	private void playerLeftTownEvent(PlayerLeaveTownEvent event) {
+	private void playerLeftTownEvent(PlayerExitsFromTownBorderEvent event) {
 		Player player = event.getPlayer();
 		if (!player.getAllowFlight() || player.hasPermission("townyflight.bypass"))
 			return;
