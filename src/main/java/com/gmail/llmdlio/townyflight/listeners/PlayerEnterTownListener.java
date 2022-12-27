@@ -9,7 +9,7 @@ import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.util.Scheduler;
 import com.palmergames.bukkit.towny.TownyAPI;
-import com.palmergames.bukkit.towny.event.PlayerEnterTownEvent;
+import com.palmergames.bukkit.towny.event.player.PlayerEntersIntoTownBorderEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
@@ -21,7 +21,7 @@ public class PlayerEnterTownListener implements Listener {
 	 * auto-flight enabled.
 	 */
 	@EventHandler(priority = EventPriority.LOWEST)
-	private void playerEnterTownEvent(PlayerEnterTownEvent event) {
+	private void playerEnterTownEvent(PlayerEntersIntoTownBorderEvent event) {
 		final Player player = event.getPlayer();
 		// Do nothing to players who are already flying.
 		if (player.getAllowFlight()) return;
@@ -44,11 +44,11 @@ public class PlayerEnterTownListener implements Listener {
 	 */
 //	@EventHandler
 	@SuppressWarnings("unused")
-	private void enemyEnterTownEvent(PlayerEnterTownEvent event) {
+	private void enemyEnterTownEvent(PlayerEntersIntoTownBorderEvent event) {
 		final Resident resident = TownyAPI.getInstance().getResident(event.getPlayer().getUniqueId());
 		if (resident == null || !resident.hasTown())
 			return;
-		final Town town = event.getEnteredtown();
+		final Town town = event.getEnteredTown();
 
 		if (CombatUtil.isEnemy(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
 			TownyAPI.getInstance().getOnlinePlayersInTown(town).stream().filter(player -> player.getAllowFlight())
