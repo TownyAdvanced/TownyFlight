@@ -20,7 +20,7 @@ import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static Version requiredTownyVersion = Version.fromString("0.98.4.15");
+	private static Version requiredTownyVersion = Version.fromString("0.98.5.0");
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	private static TownyFlight plugin;
 	private static TownyFlightAPI api;
