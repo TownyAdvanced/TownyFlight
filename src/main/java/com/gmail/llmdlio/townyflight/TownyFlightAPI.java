@@ -235,15 +235,16 @@ public class TownyFlightAPI {
 	}
 
 	private boolean warPrevents(Location location, Resident resident) {
-		return Settings.disableDuringWar && (townHasActiveWar(location, resident) || residentIsSieged(resident));
+		return Settings.disableDuringWar && (townHasActiveWar(location, resident) || residentIsSieged(location));
 	}
 
 	private static boolean townHasActiveWar(Location loc, Resident resident) {
 		return resident.getTownOrNull().hasActiveWar() || !TownyAPI.getInstance().isWilderness(loc) && TownyAPI.getInstance().getTown(loc).hasActiveWar();
 	}
 
-	private static boolean residentIsSieged(Resident resident) {
-		return Settings.siegeWarFound && SiegeController.hasSiege(resident.getTownOrNull()) && SiegeController.getSiege(resident.getTownOrNull()).getStatus().equals(SiegeStatus.IN_PROGRESS);
+	private static boolean residentIsSieged(Location location) {
+		Town town = TownyAPI.getInstance().getTown(location);
+		return Settings.siegeWarFound && town != null && SiegeController.hasSiege(town) && SiegeController.getSiege(town).getStatus().equals(SiegeStatus.IN_PROGRESS);
 	}
 
 	public static boolean canFlyAccordingToCache(Player player) {
