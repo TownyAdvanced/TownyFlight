@@ -239,7 +239,7 @@ public class TownyFlightAPI {
 	}
 
 	private static boolean townHasActiveWar(Location loc, Resident resident) {
-		return resident.getTownOrNull().hasActiveWar() || !TownyAPI.getInstance().isWilderness(loc) && TownyAPI.getInstance().getTown(loc).hasActiveWar();
+		return (resident.hasTown() && resident.getTownOrNull().hasActiveWar()) || (!TownyAPI.getInstance().isWilderness(loc) && TownyAPI.getInstance().getTown(loc).hasActiveWar());
 	}
 
 	private static boolean residentIsSieged(Location location) {
