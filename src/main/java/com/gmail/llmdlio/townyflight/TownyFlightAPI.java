@@ -34,7 +34,7 @@ public class TownyFlightAPI {
 	private static NamespacedKey forceAllowFlight;
 	
 	public TownyFlightAPI(TownyFlight plugin) {
-		this.plugin = plugin;
+		TownyFlightAPI.plugin = plugin;
 		forceAllowFlight = new NamespacedKey(plugin, "force_allow_flight");
 	}
 	
