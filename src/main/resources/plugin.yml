@@ -6,6 +6,7 @@ api-version: ${project.bukkitAPIVersion}
 depend: [Towny]
 softdepend: [SiegeWar]
 prefix: TownyFlight
+folia-supported: true
 
 commands:
   tfly:

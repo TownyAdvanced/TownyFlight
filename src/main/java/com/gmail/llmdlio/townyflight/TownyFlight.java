@@ -1,5 +1,8 @@
 package com.gmail.llmdlio.townyflight;
 
+import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
+import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
+import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -20,18 +23,21 @@ import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static Version requiredTownyVersion = Version.fromString("0.98.6.0");
+	private static final Version requiredTownyVersion = Version.fromString("0.99.0.6");
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	private static TownyFlight plugin;
 	private static TownyFlightAPI api;
-	final PluginManager pm = getServer().getPluginManager();
 	private TownyFlightPlaceholderExpansion papiExpansion = null;
+	private final TaskScheduler scheduler;
+
+	public TownyFlight() {
+		plugin = this;
+		this.scheduler = isFoliaClassPresent() ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this);
+	}
 
 	public void onEnable() {
-
-		plugin = this;
 		api = new TownyFlightAPI(this);
-		String townyVersion = pm.getPlugin("Towny").getDescription().getVersion();
+		String townyVersion = getServer().getPluginManager().getPlugin("Towny").getDescription().getVersion();
 
 		if (!loadSettings()) {
 			getLogger().severe("Config failed to load!");
@@ -84,7 +90,7 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	private void checkWarPlugins() {
-		Settings.siegeWarFound = pm.getPlugin("SiegeWar") != null;
+		Settings.siegeWarFound = getServer().getPluginManager().getPlugin("SiegeWar") != null;
 	}
 
 
@@ -98,15 +104,19 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	protected void registerEvents() {
-		pm.registerEvents(new PlayerJoinListener(), this);
+		final PluginManager pm = getServer().getPluginManager();
+
+		pm.registerEvents(new PlayerJoinListener(this), this);
 		pm.registerEvents(new PlayerLogOutListener(), this);
-		pm.registerEvents(new PlayerLeaveTownListener(), this);
-		pm.registerEvents(new TownUnclaimListener(), this);
+		pm.registerEvents(new PlayerLeaveTownListener(this), this);
+		pm.registerEvents(new TownUnclaimListener(this), this);
 		pm.registerEvents(new PlayerFallListener(), this);
 		pm.registerEvents(new PlayerTeleportListener(), this);
 		pm.registerEvents(new TownStatusScreenListener(), this);
-		pm.registerEvents(new PlayerEnterTownListener(), this);
-		if (Settings.disableCombatPrevention) pm.registerEvents(new PlayerPVPListener(), this);
+		pm.registerEvents(new PlayerEnterTownListener(this), this);
+
+		if (Settings.disableCombatPrevention)
+			pm.registerEvents(new PlayerPVPListener(), this);
 	}
 
 	protected void unregisterEvents() {
@@ -115,5 +125,18 @@ public class TownyFlight extends JavaPlugin {
 
 	private void registerCommands() {
 		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
+	}
+
+	public TaskScheduler getScheduler() {
+		return this.scheduler;
+	}
+
+	private static boolean isFoliaClassPresent() {
+		try {
+			Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+			return true;
+		} catch (ClassNotFoundException e) {
+			return false;
+		}
 	}
 }

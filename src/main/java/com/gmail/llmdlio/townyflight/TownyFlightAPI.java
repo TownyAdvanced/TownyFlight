@@ -1,10 +1,10 @@
 package com.gmail.llmdlio.townyflight;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -18,7 +18,6 @@ import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.gmail.llmdlio.townyflight.util.Permission;
-import com.gmail.llmdlio.townyflight.util.Scheduler;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -30,12 +29,12 @@ public class TownyFlightAPI {
 
 	private static TownyFlight plugin;
 	private static TownyFlightAPI instance;
-	public Set<Player> fallProtectedPlayers = new HashSet<>();
-	private static HashMap<UUID, Boolean> canFlyCache = new HashMap<>();
+	public Set<Player> fallProtectedPlayers = ConcurrentHashMap.newKeySet();
+	private static Map<UUID, Boolean> canFlyCache = new ConcurrentHashMap<>();
 	private static NamespacedKey forceAllowFlight;
 	
-	public TownyFlightAPI(TownyFlight _plugin) {
-		plugin = _plugin;
+	public TownyFlightAPI(TownyFlight plugin) {
+		this.plugin = plugin;
 		forceAllowFlight = new NamespacedKey(plugin, "force_allow_flight");
 	}
 	
@@ -178,7 +177,7 @@ public class TownyFlightAPI {
 	 */
 	public void protectFromFall(Player player) {
 		fallProtectedPlayers.add(player);
-		Scheduler.run(() -> removeFallProtection(player), 100);
+		plugin.getScheduler().runAsyncLater(() -> removeFallProtection(player), 100);
 	}
 	
 	public boolean removeFallProtection(Player player) {

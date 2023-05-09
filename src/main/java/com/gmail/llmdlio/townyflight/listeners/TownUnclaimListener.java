@@ -3,6 +3,7 @@ package com.gmail.llmdlio.townyflight.listeners;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gmail.llmdlio.townyflight.TownyFlight;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -10,12 +11,16 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
-import com.gmail.llmdlio.townyflight.util.Scheduler;
 import com.palmergames.bukkit.towny.event.town.TownUnclaimEvent;
 import com.palmergames.bukkit.towny.object.WorldCoord;
 
 
 public class TownUnclaimListener implements Listener {
+	private final TownyFlight plugin;
+
+	public TownUnclaimListener(TownyFlight plugin) {
+		this.plugin = plugin;
+	}
 	
 	/*
 	 * Listener for when players unclaim territory. Will cause any player in that
@@ -23,20 +28,22 @@ public class TownUnclaimListener implements Listener {
 	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void TownUnclaimEvent(TownUnclaimEvent event) {
-		Scheduler.run(()-> scanForFlightAbilities(selectArea(event.getWorldCoord())), 2);
+		plugin.getScheduler().runLater(() -> scanForFlightAbilities(selectArea(event.getWorldCoord())), 2);
 	}
 
 	private void scanForFlightAbilities(List<WorldCoord> plots) {
 		
 		// Cycle through all the online players, because multiple players could be in a plot that is unclaimed.
 		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
-			if (player.hasPermission("townyflight.bypass")
-				|| !player.getAllowFlight()
-				|| !plots.contains(WorldCoord.parseWorldCoord(player))
-				|| TownyFlightAPI.getInstance().canFly(player, true))
-				continue;
-    		
-    		TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+			plugin.getScheduler().run(player, () -> {
+				if (player.hasPermission("townyflight.bypass")
+						|| !player.getAllowFlight()
+						|| !plots.contains(WorldCoord.parseWorldCoord(player))
+						|| TownyFlightAPI.getInstance().canFly(player, true))
+					return;
+
+				TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+			});
     	}	
 	}
 	

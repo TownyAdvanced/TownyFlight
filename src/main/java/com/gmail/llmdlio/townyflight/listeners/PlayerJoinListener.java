@@ -1,5 +1,6 @@
 package com.gmail.llmdlio.townyflight.listeners;
 
+import com.gmail.llmdlio.townyflight.TownyFlight;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -8,9 +9,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.gmail.llmdlio.townyflight.config.Settings;
-import com.gmail.llmdlio.townyflight.util.Scheduler;
 
 public class PlayerJoinListener implements Listener {
+	private final TownyFlight plugin;
+
+	public PlayerJoinListener(TownyFlight plugin) {
+		this.plugin = plugin;
+	}
 
 	/*
 	 * Listener for a player who joins the server successfully. Check if flight is
@@ -20,7 +25,7 @@ public class PlayerJoinListener implements Listener {
 	private void playerJoinEvent(PlayerJoinEvent event) {
 		final Player player = event.getPlayer();
 
-		Scheduler.run(() -> {
+		plugin.getScheduler().runLater(player, () -> {
 			boolean canFly = TownyFlightAPI.getInstance().canFly(player, true);
 			boolean isFlying = player.isFlying();
 			if (isFlying && canFly)
