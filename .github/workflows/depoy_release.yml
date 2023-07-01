@@ -40,7 +40,8 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           generate_release_notes: true
-          append_body: false
+          body: <a href=https://dedimc.promo/towny>![Spigot_Banner_Towny](https://github.com/TownyAdvanced/Towny/assets/879756/559c8340-82e5-41fc-a10c-af0dcf47f38f)</a>
+          append_body: true
           draft: false
           prerelease: false
           token: ${{ github.token }}
