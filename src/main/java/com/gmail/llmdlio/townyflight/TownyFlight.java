@@ -1,8 +1,11 @@
 package com.gmail.llmdlio.townyflight;
 
+import com.gmail.llmdlio.townyflight.listeners.*;
+import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
+import org.bukkit.entity.Entity;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -11,16 +14,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
 import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
-import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
-import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
-import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
-import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
-import com.gmail.llmdlio.townyflight.listeners.PlayerLogOutListener;
-import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
-import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
-import com.gmail.llmdlio.townyflight.listeners.TownStatusScreenListener;
-import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.util.Version;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TownyFlight extends JavaPlugin {
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.6");
@@ -29,6 +27,7 @@ public class TownyFlight extends JavaPlugin {
 	private static TownyFlightAPI api;
 	private TownyFlightPlaceholderExpansion papiExpansion = null;
 	private final TaskScheduler scheduler;
+	private Map<Town, Integer> enemiesInTown = null;
 
 	public TownyFlight() {
 		plugin = this;
@@ -115,6 +114,14 @@ public class TownyFlight extends JavaPlugin {
 		pm.registerEvents(new TownStatusScreenListener(), this);
 		pm.registerEvents(new PlayerEnterTownListener(this), this);
 
+		if (Settings.flightDisableBy != "NONE") {
+			pm.registerEvents(new EnemyEnterTownListener(this), this);
+			pm.registerEvents(new EnemyLeaveTownListener(this), this);
+			pm.registerEvents(new EnemyLogOutListener(this), this);
+			pm.registerEvents(new EnemyTeleportListener(this), this);
+			enemiesInTown = new HashMap<Town, Integer>();
+		}
+
 		if (Settings.disableCombatPrevention)
 			pm.registerEvents(new PlayerPVPListener(), this);
 	}
@@ -136,6 +143,31 @@ public class TownyFlight extends JavaPlugin {
 			Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
 			return true;
 		} catch (ClassNotFoundException e) {
+			return false;
+		}
+	}
+
+	public void incrementEnemiesInTown(Town t) {
+		if(enemiesInTown.containsKey(t)){
+			enemiesInTown.put(t, enemiesInTown.get(t) + 1);
+		} else {
+			enemiesInTown.put(t, 1);
+		}
+	}
+
+	public void decrementEnemiesInTown(Town t) {
+		if(enemiesInTown.containsKey(t)){
+			enemiesInTown.put(t, enemiesInTown.get(t) - 1);
+		}
+		else{
+			getLogger().severe("Tried to decrement enemies in town for a town that shouldn't have any enemies.");
+		}
+	}
+	public boolean containsTown(Town t) {
+		if(enemiesInTown.containsKey(t) && enemiesInTown.get(t) > 0){
+			return true;
+		}
+		else{
 			return false;
 		}
 	}

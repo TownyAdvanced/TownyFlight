@@ -79,6 +79,12 @@ public class TownyFlightAPI {
 			if (!silent) Message.of("notInTownMsg").to(player);
 			return false;
 		}
+
+		// If the enemiesInTown hashmap contains this town and its value is >0, players cannot fly there.
+		if(plugin.containsTown(town)){
+			return false;
+		}
+
 		return true;
 	}
 

@@ -129,7 +129,21 @@ public enum ConfigNodes {
 			"options.flight_Disable_Timer",
 			"3",
 			"",
-			"# Number of seconds after leaving an allowed flight area before flight is taken away.", "# Set to 0 to take flight away immediately.");
+			"# Number of seconds after leaving an allowed flight area before flight is taken away.", "# Set to 0 to take flight away immediately."),
+	OPTIONS_DISABLE_BY(
+			"options.flight_Disable_By",
+			"NONE",
+			"",
+			"# If set to NONE, flight will not be disabled on players entering a claim.",
+			"# If set to ALLY, flight will be disabled by ALLIES, NEUTRAL and ENEMY players entering a claim.",
+			"# If set to NEUTRAL, flight will be disabled on NEUTRAL and ENEMY players entering a claim",
+			"# If set to ENEMY, flight will be disabled only when ENEMY players enter a claim",
+			"# Valid inputs: NONE, ALLY, NEUTRAL, ENEMY."),
+	OPTIONS_REENABLE_TIME(
+			"options.flight_Disable_Radius",
+					"50",
+					"",
+					"# Number of blocks away an enemy has to be to disable flying");
 
 	private final String Root;
 	private final String Default;
