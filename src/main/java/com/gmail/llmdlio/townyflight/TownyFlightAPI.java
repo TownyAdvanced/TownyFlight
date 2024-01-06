@@ -215,6 +215,7 @@ public class TownyFlightAPI {
 				continue;
 
 			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+			plugin.getServer().getLogger().info("Removed flight from players in town");
 		}	
 	}
 
@@ -234,6 +235,8 @@ public class TownyFlightAPI {
 
 				TownyFlightAPI.cachePlayerFlight(player, true);
 			}, 1);
+
+			plugin.getServer().getLogger().info("Added flight to players in town");
 		}
 	}
 

@@ -8,6 +8,7 @@ import com.palmergames.bukkit.towny.event.player.PlayerEntersIntoTownBorderEvent
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 
@@ -34,28 +35,34 @@ public class EnemyEnterTownListener implements Listener {
 		final Town town = event.getEnteredTown();
 
 		// Removes flight when anyone other than a town member enters your claim.
-		if(Settings.flightDisableBy == "ALLY"){
+		if(PlayerDisablesFlight(town, resident)){
+				TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
+				plugin.incrementEnemiesInTown(town);
+		}
+
+		plugin.getServer().getLogger().info("An enemy entered the town");
+
+	}
+
+	public boolean PlayerDisablesFlight(Town town, Resident resident){
+		if (Settings.flightDisableBy.equals("ALLY")){
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
-				TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
-				plugin.incrementEnemiesInTown(town);
+				return true;
 			}
-		}
 
-		// Removes flight when anyone other than a town member or ally enters your claim.
-		if(Settings.flightDisableBy == "NEUTRAL"){
+		}
+		if(Settings.flightDisableBy.equals("NEUTRAL")){
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident)) && !CombatUtil.isAlly(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
-				TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
-				plugin.incrementEnemiesInTown(town);
+				return true;
 			}
 		}
 
-		// Removes flight only if an enemy enters your claim.
-		if(Settings.flightDisableBy == "ENEMY"){
+		if(Settings.flightDisableBy.equals("ENEMY")) {
 			if (CombatUtil.isEnemy(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
-				TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
-				plugin.incrementEnemiesInTown(town);
+				return true;
 			}
 		}
 
+		return false;
 	}
 }

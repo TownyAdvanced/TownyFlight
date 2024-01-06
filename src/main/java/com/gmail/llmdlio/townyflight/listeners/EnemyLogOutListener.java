@@ -32,22 +32,23 @@ public class EnemyLogOutListener implements Listener {
 			return;
 
 
-		if(Settings.flightDisableBy == "ALLY"){
+		if(Settings.flightDisableBy.equals("ALLY")){
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
 				plugin.decrementEnemiesInTown(town);
 			}
 		}
 
-		if(Settings.flightDisableBy == "NEUTRAL"){
+		if(Settings.flightDisableBy.equals("NEUTRAL")){
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident)) && !CombatUtil.isAlly(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
 				plugin.decrementEnemiesInTown(town);
 			}
 		}
 
-		if(Settings.flightDisableBy == "ENEMY"){
+		if(Settings.flightDisableBy.equals("ENEMY")){
 			if (CombatUtil.isEnemy(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
 				plugin.decrementEnemiesInTown(town);
 			}
 		}
+		plugin.getServer().getLogger().info("An enemy logged out");
 	}
 }

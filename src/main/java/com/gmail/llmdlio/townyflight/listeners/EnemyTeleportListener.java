@@ -37,25 +37,27 @@ public class EnemyTeleportListener implements Listener {
 			return;
 
 		// Removes flight when anyone other than a town member enters your claim.
-		if(Settings.flightDisableBy == "ALLY"){
+		if(Settings.flightDisableBy.equals("ALLY")){
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
 				plugin.decrementEnemiesInTown(town);
 			}
 		}
 
 		// Removes flight when anyone other than a town member or ally enters your claim.
-		if(Settings.flightDisableBy == "NEUTRAL"){
+		if(Settings.flightDisableBy.equals("NEUTRAL")){
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident)) && !CombatUtil.isAlly(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
 				plugin.decrementEnemiesInTown(town);
 			}
 		}
 
 		// Removes flight only if an enemy enters your claim.
-		if(Settings.flightDisableBy == "ENEMY"){
+		if(Settings.flightDisableBy.equals("ENEMY")){
 			if (CombatUtil.isEnemy(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
 				plugin.decrementEnemiesInTown(town);
 			}
 		}
+
+		plugin.getServer().getLogger().info("An enemy teleported");
 
 	}
 

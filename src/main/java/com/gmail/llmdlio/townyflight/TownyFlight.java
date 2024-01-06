@@ -115,14 +115,18 @@ public class TownyFlight extends JavaPlugin {
 		pm.registerEvents(new PlayerEnterTownListener(this), this);
 
 		// TODO: Cleanup code.
-		// TODO: Add a feature which intermittently checks to re-enable flight automatically.
 		// TODO: Add all the events into one file to consolidate and make it simpler.
 		if (Settings.flightDisableBy != "NONE") {
 			pm.registerEvents(new EnemyEnterTownListener(this), this);
+			getLogger().info("EnemyEnterTownListener registered.");
 			pm.registerEvents(new EnemyLeaveTownListener(this), this);
+			getLogger().info("EnemyLeaveTownListener registered.");
 			pm.registerEvents(new EnemyLogOutListener(this), this);
+			getLogger().info("EnemyLogOutListener registered.");
 			pm.registerEvents(new EnemyTeleportListener(this), this);
+			getLogger().info("EnemyTeleportListener registered.");
 			enemiesInTown = new HashMap<Town, Integer>();
+			getLogger().info("Enemy HashMap created.");
 		}
 
 		if (Settings.disableCombatPrevention)
@@ -153,18 +157,22 @@ public class TownyFlight extends JavaPlugin {
 	public void incrementEnemiesInTown(Town town) {
 		if(enemiesInTown.containsKey(town)){
 			enemiesInTown.put(town, enemiesInTown.get(town) + 1);
+			getLogger().info("Enemies in town incremented to " + enemiesInTown.get(town) + " for town " + town.getName() + ".");
 		} else {
 			enemiesInTown.put(town, 1);
+			getLogger().info("Enemies in town incremented to 1 for town " + town.getName() + ".");
 		}
 	}
 
 	public void decrementEnemiesInTown(Town town) {
 		if(enemiesInTown.containsKey(town)){
 			enemiesInTown.put(town, enemiesInTown.get(town) - 1);
+			getLogger().info("Enemies in town decremented to " + enemiesInTown.get(town) + " for town " + town.getName() + ".");
 
 			// Re-add flight if there are no more enemies in town.
 			if(enemiesInTown.get(town) <= 0){
 				TownyFlightAPI.getInstance().addFlightToPlayersInTown(town);
+				getLogger().info("Flight re-added to players in town " + town.getName() + ".");
 			}
 		}
 		else{
@@ -173,6 +181,7 @@ public class TownyFlight extends JavaPlugin {
 	}
 	public boolean containsTown(Town town) {
 		if(enemiesInTown.containsKey(town) && enemiesInTown.get(town) > 0){
+			getLogger().info("Town " + town.getName() + " contains enemies.");
 			return true;
 		}
 		else{
