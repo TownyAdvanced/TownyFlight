@@ -5,12 +5,17 @@ import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.player.PlayerEntersIntoTownBorderEvent;
+import com.palmergames.bukkit.towny.event.player.PlayerExitsFromTownBorderEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 public class EnemyEnterTownListener implements Listener {
 	private final TownyFlight plugin;
@@ -42,6 +47,77 @@ public class EnemyEnterTownListener implements Listener {
 
 		plugin.getServer().getLogger().info("An enemy entered the town");
 
+	}
+
+	@EventHandler
+	private void enemyLeaveTownEvent(PlayerExitsFromTownBorderEvent event) {
+		final Resident resident = TownyAPI.getInstance().getResident(event.getPlayer().getUniqueId());
+
+		if (resident == null)
+			return;
+
+
+		final Town town = event.getLeftTown();
+
+		if(PlayerDisablesFlight(town, resident)){
+			plugin.decrementEnemiesInTown(town);
+		}
+
+		plugin.getServer().getLogger().info("An enemy left the town");
+	}
+
+	@EventHandler
+	public void enemyLogInListener(PlayerJoinEvent event) {
+
+		// Get the resident
+		final Resident resident = TownyAPI.getInstance().getResident(event.getPlayer().getUniqueId());
+		if (resident == null)
+			return;
+
+		// Get the town
+		final Town town = TownyAPI.getInstance().getTown(event.getPlayer().getLocation());
+		if (town == null)
+			return;
+
+		if(PlayerDisablesFlight(town, resident)){
+			plugin.incrementEnemiesInTown(town);
+		}
+	}
+
+	@EventHandler
+	public void enemyLogOutListener(PlayerQuitEvent event) {
+
+		// Get the resident
+		final Resident resident = TownyAPI.getInstance().getResident(event.getPlayer().getUniqueId());
+		if (resident == null)
+			return;
+
+		// Get the town
+		final Town town = TownyAPI.getInstance().getTown(event.getPlayer().getLocation());
+		if (town == null)
+			return;
+
+		if(PlayerDisablesFlight(town, resident)){
+			plugin.decrementEnemiesInTown(town);
+		}
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR)
+	private void enemyTeleports(PlayerTeleportEvent event) {
+		if (event.getCause() != PlayerTeleportEvent.TeleportCause.PLUGIN || event.getCause() != PlayerTeleportEvent.TeleportCause.COMMAND)
+			return;
+
+		Town town = TownyAPI.getInstance().getTown(event.getFrom());
+		if (town == null)
+			return;
+
+		final Resident resident = TownyAPI.getInstance().getResident(event.getPlayer().getUniqueId());
+		if (resident == null)
+			return;
+
+		if(PlayerDisablesFlight(town, resident)){
+			plugin.decrementEnemiesInTown(town);
+		}
 	}
 
 	public boolean PlayerDisablesFlight(Town town, Resident resident){

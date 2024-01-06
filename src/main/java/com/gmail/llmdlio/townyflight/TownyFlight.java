@@ -116,15 +116,9 @@ public class TownyFlight extends JavaPlugin {
 
 		// TODO: Cleanup code.
 		// TODO: Add all the events into one file to consolidate and make it simpler.
-		if (Settings.flightDisableBy != "NONE") {
+		if (!Settings.flightDisableBy.equals("NONE")) {
 			pm.registerEvents(new EnemyEnterTownListener(this), this);
 			getLogger().info("EnemyEnterTownListener registered.");
-			pm.registerEvents(new EnemyLeaveTownListener(this), this);
-			getLogger().info("EnemyLeaveTownListener registered.");
-			pm.registerEvents(new EnemyLogOutListener(this), this);
-			getLogger().info("EnemyLogOutListener registered.");
-			pm.registerEvents(new EnemyTeleportListener(this), this);
-			getLogger().info("EnemyTeleportListener registered.");
 			enemiesInTown = new HashMap<Town, Integer>();
 			getLogger().info("Enemy HashMap created.");
 		}
