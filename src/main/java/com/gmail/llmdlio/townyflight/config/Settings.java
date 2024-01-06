@@ -35,7 +35,6 @@ public class Settings {
 		showPermissionInMessage = Boolean.valueOf(getOption("show_Permission_After_No_Permission_Message"));
 		flightDisableTimer = Integer.valueOf(getOption("flight_Disable_Timer"));
 		flightDisableBy = String.valueOf(getOption("flight_Disable_By"));
-		flightReenableTimer = Integer.valueOf(getOption("flight_ReenableTimer"));
 	}
 
 	public static void loadStrings() {

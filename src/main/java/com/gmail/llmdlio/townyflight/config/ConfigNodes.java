@@ -138,12 +138,7 @@ public enum ConfigNodes {
 			"# If set to ALLY, flight will be disabled by ALLIES, NEUTRAL and ENEMY players entering a claim.",
 			"# If set to NEUTRAL, flight will be disabled on NEUTRAL and ENEMY players entering a claim",
 			"# If set to ENEMY, flight will be disabled only when ENEMY players enter a claim",
-			"# Valid inputs: NONE, ALLY, NEUTRAL, ENEMY."),
-	OPTIONS_REENABLE_TIME(
-			"options.flight_Disable_Radius",
-					"50",
-					"",
-					"# Number of blocks away an enemy has to be to disable flying");
+			"# Valid inputs: NONE, ALLY, NEUTRAL, ENEMY.");
 
 	private final String Root;
 	private final String Default;

@@ -114,6 +114,9 @@ public class TownyFlight extends JavaPlugin {
 		pm.registerEvents(new TownStatusScreenListener(), this);
 		pm.registerEvents(new PlayerEnterTownListener(this), this);
 
+		// TODO: Cleanup code.
+		// TODO: Add a feature which intermittently checks to re-enable flight automatically.
+		// TODO: Add all the events into one file to consolidate and make it simpler.
 		if (Settings.flightDisableBy != "NONE") {
 			pm.registerEvents(new EnemyEnterTownListener(this), this);
 			pm.registerEvents(new EnemyLeaveTownListener(this), this);
@@ -147,24 +150,29 @@ public class TownyFlight extends JavaPlugin {
 		}
 	}
 
-	public void incrementEnemiesInTown(Town t) {
-		if(enemiesInTown.containsKey(t)){
-			enemiesInTown.put(t, enemiesInTown.get(t) + 1);
+	public void incrementEnemiesInTown(Town town) {
+		if(enemiesInTown.containsKey(town)){
+			enemiesInTown.put(town, enemiesInTown.get(town) + 1);
 		} else {
-			enemiesInTown.put(t, 1);
+			enemiesInTown.put(town, 1);
 		}
 	}
 
-	public void decrementEnemiesInTown(Town t) {
-		if(enemiesInTown.containsKey(t)){
-			enemiesInTown.put(t, enemiesInTown.get(t) - 1);
+	public void decrementEnemiesInTown(Town town) {
+		if(enemiesInTown.containsKey(town)){
+			enemiesInTown.put(town, enemiesInTown.get(town) - 1);
+
+			// Re-add flight if there are no more enemies in town.
+			if(enemiesInTown.get(town) <= 0){
+				TownyFlightAPI.getInstance().addFlightToPlayersInTown(town);
+			}
 		}
 		else{
 			getLogger().severe("Tried to decrement enemies in town for a town that shouldn't have any enemies.");
 		}
 	}
-	public boolean containsTown(Town t) {
-		if(enemiesInTown.containsKey(t) && enemiesInTown.get(t) > 0){
+	public boolean containsTown(Town town) {
+		if(enemiesInTown.containsKey(town) && enemiesInTown.get(town) > 0){
 			return true;
 		}
 		else{

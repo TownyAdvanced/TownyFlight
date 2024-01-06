@@ -218,6 +218,25 @@ public class TownyFlightAPI {
 		}	
 	}
 
+	public void addFlightToPlayersInTown(Town town){
+		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
+
+			if(TownyAPI.getInstance().getTown(player.getUniqueId()) != town) return;
+
+			if (player.getAllowFlight()) return;
+
+
+			plugin.getScheduler().runLater(player, () -> {
+				if (!TownyFlightAPI.getInstance().canFly(player, true))
+					return;
+				if (Settings.autoEnableFlight)
+					TownyFlightAPI.getInstance().addFlight(player, Settings.autoEnableSilent);
+
+				TownyFlightAPI.cachePlayerFlight(player, true);
+			}, 1);
+		}
+	}
+
 	/**
 	 * This method allows the player to fly everywhere, even if they are not in a town. Useful for
 	 * plugins that have items that can make you fly.
