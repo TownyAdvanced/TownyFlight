@@ -44,7 +44,6 @@ public class EnemyEnterTownListener implements Listener {
 
 		// Removes flight when anyone other than a town member enters your claim.
 		if(PlayerDisablesFlight(town, resident)){
-			plugin.getServer().getLogger().info("An enemy entered the town:" + town.getName());
 			api.incrementEnemiesInTown(town);
 		}
 
@@ -64,8 +63,6 @@ public class EnemyEnterTownListener implements Listener {
 		if(PlayerDisablesFlight(town, resident)){
 			api.decrementEnemiesInTown(town);
 		}
-
-		plugin.getServer().getLogger().info("An enemy left the town");
 	}
 
 	@EventHandler
