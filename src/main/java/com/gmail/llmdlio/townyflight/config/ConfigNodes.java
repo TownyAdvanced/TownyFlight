@@ -39,6 +39,11 @@ public enum ConfigNodes {
 			"Entering PVP combat. ",
 			"",
 			"# Message shown when a player has flight taken away because of PVP."),
+	LANG_FLIGHTDEACTIVATEDENEMYNEARBYMSG(
+			"language.flightDeactivatedEnemyNearbyMsg",
+			"Flight has been disabled due to a player entering your town. ",
+			"",
+			"# Message shown when a player has flight taken away because of a player entering their town."),
 	LANG_FLIGHTDEACTIVATEDCONSOLEMSG(
 			"language.flightDeactivatedConsoleMsg",
 			"Flight priviledges removed. ",

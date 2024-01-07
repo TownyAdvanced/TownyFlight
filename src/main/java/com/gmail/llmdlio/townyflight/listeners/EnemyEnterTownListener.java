@@ -44,10 +44,10 @@ public class EnemyEnterTownListener implements Listener {
 
 		// Removes flight when anyone other than a town member enters your claim.
 		if(PlayerDisablesFlight(town, resident)){
-				api.incrementEnemiesInTown(town);
+			plugin.getServer().getLogger().info("An enemy entered the town:" + town.getName());
+			api.incrementEnemiesInTown(town);
 		}
 
-		plugin.getServer().getLogger().info("An enemy entered the town");
 
 	}
 
@@ -127,12 +127,10 @@ public class EnemyEnterTownListener implements Listener {
 
 			// If they don't belong to a town, treated as a NEUTRAL player
 			if(TownyAPI.getInstance().getResidentTownOrNull(resident) == null){
-				plugin.getServer().getLogger().info("Resident is not in a town");
 				return true;
 			}
 
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
-				plugin.getServer().getLogger().info("Is an enemy");
 				return true;
 			}
 
@@ -141,12 +139,10 @@ public class EnemyEnterTownListener implements Listener {
 
 			// If they don't belong to a town, treated as a NEUTRAL player
 			if(TownyAPI.getInstance().getResidentTownOrNull(resident) == null){
-				plugin.getServer().getLogger().info("Resident is not in a town");
 				return true;
 			}
 
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident)) && !CombatUtil.isAlly(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
-				plugin.getServer().getLogger().info("Is an enemy");
 				return true;
 			}
 		}
@@ -155,11 +151,9 @@ public class EnemyEnterTownListener implements Listener {
 
 			// If they don't belong to a town, treated as a NEUTRAL player
 			if(TownyAPI.getInstance().getResidentTownOrNull(resident) == null){
-				plugin.getServer().getLogger().info("Resident is not in a town");
 				return false;
 			}
 			if (CombatUtil.isEnemy(town, TownyAPI.getInstance().getResidentTownOrNull(resident)) || CombatUtil.isEnemy(TownyAPI.getInstance().getResidentTownOrNull(resident), town)) {
-				plugin.getServer().getLogger().info("Is an enemy");
 				return true;
 			}
 		}
