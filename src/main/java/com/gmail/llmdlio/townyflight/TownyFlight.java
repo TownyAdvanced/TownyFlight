@@ -113,8 +113,6 @@ public class TownyFlight extends JavaPlugin {
 		pm.registerEvents(new TownStatusScreenListener(), this);
 		pm.registerEvents(new PlayerEnterTownListener(this), this);
 
-		// TODO: Cleanup code.
-		// TODO: Add all the events into one file to consolidate and make it simpler.
 		if (!Settings.flightDisableBy.equals("NONE")) {
 			pm.registerEvents(new EnemyEnterTownListener(this, api), this);
 			getLogger().info("EnemyEnterTownListener registered.");
