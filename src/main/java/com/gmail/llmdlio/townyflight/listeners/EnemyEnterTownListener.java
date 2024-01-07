@@ -20,8 +20,11 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 public class EnemyEnterTownListener implements Listener {
 	private final TownyFlight plugin;
 
-	public EnemyEnterTownListener(TownyFlight plugin) {
+	private final TownyFlightAPI api;
+
+	public EnemyEnterTownListener(TownyFlight plugin, TownyFlightAPI api) {
 		this.plugin = plugin;
+		this.api = api;
 	}
 
 	/*
@@ -41,8 +44,7 @@ public class EnemyEnterTownListener implements Listener {
 
 		// Removes flight when anyone other than a town member enters your claim.
 		if(PlayerDisablesFlight(town, resident)){
-				TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
-				plugin.incrementEnemiesInTown(town);
+				api.incrementEnemiesInTown(town);
 		}
 
 		plugin.getServer().getLogger().info("An enemy entered the town");
@@ -60,7 +62,7 @@ public class EnemyEnterTownListener implements Listener {
 		final Town town = event.getLeftTown();
 
 		if(PlayerDisablesFlight(town, resident)){
-			plugin.decrementEnemiesInTown(town);
+			api.decrementEnemiesInTown(town);
 		}
 
 		plugin.getServer().getLogger().info("An enemy left the town");
@@ -80,7 +82,7 @@ public class EnemyEnterTownListener implements Listener {
 			return;
 
 		if(PlayerDisablesFlight(town, resident)){
-			plugin.incrementEnemiesInTown(town);
+			api.incrementEnemiesInTown(town);
 		}
 	}
 
@@ -98,7 +100,7 @@ public class EnemyEnterTownListener implements Listener {
 			return;
 
 		if(PlayerDisablesFlight(town, resident)){
-			plugin.decrementEnemiesInTown(town);
+			api.decrementEnemiesInTown(town);
 		}
 	}
 
@@ -116,25 +118,48 @@ public class EnemyEnterTownListener implements Listener {
 			return;
 
 		if(PlayerDisablesFlight(town, resident)){
-			plugin.decrementEnemiesInTown(town);
+			api.decrementEnemiesInTown(town);
 		}
 	}
 
 	public boolean PlayerDisablesFlight(Town town, Resident resident){
 		if (Settings.flightDisableBy.equals("ALLY")){
+
+			// If they don't belong to a town, treated as a NEUTRAL player
+			if(TownyAPI.getInstance().getResidentTownOrNull(resident) == null){
+				plugin.getServer().getLogger().info("Resident is not in a town");
+				return true;
+			}
+
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
+				plugin.getServer().getLogger().info("Is an enemy");
 				return true;
 			}
 
 		}
 		if(Settings.flightDisableBy.equals("NEUTRAL")){
+
+			// If they don't belong to a town, treated as a NEUTRAL player
+			if(TownyAPI.getInstance().getResidentTownOrNull(resident) == null){
+				plugin.getServer().getLogger().info("Resident is not in a town");
+				return true;
+			}
+
 			if (!CombatUtil.isSameTown(town, TownyAPI.getInstance().getResidentTownOrNull(resident)) && !CombatUtil.isAlly(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
+				plugin.getServer().getLogger().info("Is an enemy");
 				return true;
 			}
 		}
 
 		if(Settings.flightDisableBy.equals("ENEMY")) {
-			if (CombatUtil.isEnemy(town, TownyAPI.getInstance().getResidentTownOrNull(resident))) {
+
+			// If they don't belong to a town, treated as a NEUTRAL player
+			if(TownyAPI.getInstance().getResidentTownOrNull(resident) == null){
+				plugin.getServer().getLogger().info("Resident is not in a town");
+				return false;
+			}
+			if (CombatUtil.isEnemy(town, TownyAPI.getInstance().getResidentTownOrNull(resident)) || CombatUtil.isEnemy(TownyAPI.getInstance().getResidentTownOrNull(resident), town)) {
+				plugin.getServer().getLogger().info("Is an enemy");
 				return true;
 			}
 		}

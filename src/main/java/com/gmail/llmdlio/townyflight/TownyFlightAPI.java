@@ -1,9 +1,6 @@
 package com.gmail.llmdlio.townyflight;
 
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
@@ -32,10 +29,12 @@ public class TownyFlightAPI {
 	public Set<Player> fallProtectedPlayers = ConcurrentHashMap.newKeySet();
 	private static Map<UUID, Boolean> canFlyCache = new ConcurrentHashMap<>();
 	private static NamespacedKey forceAllowFlight;
+	private Map<Town, Integer> enemiesInTown = null;
 	
 	public TownyFlightAPI(TownyFlight plugin) {
 		TownyFlightAPI.plugin = plugin;
 		forceAllowFlight = new NamespacedKey(plugin, "force_allow_flight");
+		enemiesInTown = new HashMap<Town, Integer>();
 	}
 	
 	public static TownyFlightAPI getInstance() {
@@ -52,38 +51,48 @@ public class TownyFlightAPI {
 	 * @return true if the {@link Player} is allowed to fly.
 	 **/
 	public boolean canFly(Player player, boolean silent) {
+
+		// Get the town the player is currently standing in
 		Town town = TownyAPI.getInstance().getTown(player.getLocation());
+
+		//
 		if (player.hasPermission("townyflight.bypass") 
 			|| player.getGameMode().equals(GameMode.SPECTATOR) 
 			|| player.getGameMode().equals(GameMode.CREATIVE)
 			|| town != null && MetaData.getFreeFlightMeta(town)
 			|| getForceAllowFlight(player))
 			return true;
+		plugin.getServer().getLogger().info("CHECK - MADE IT PAST PRE CHECKS");
+		if (!Permission.has(player, "townyflight.command.tfly", true)) return false;
 
-		if (!Permission.has(player, "townyflight.command.tfly", silent)) return false;
-
+		plugin.getServer().getLogger().info("CHECK - HAS PERMISSION");
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
 		if (resident == null) return false;
 
+		plugin.getServer().getLogger().info("CHECK - HAS A RESIDENT");
 		if (!resident.hasTown() && !locationTrustsResidents(town, resident)) {
 			if (!silent) Message.of("noTownMsg").to(player);
 			return false;
 		}
 
+		plugin.getServer().getLogger().info("CHECK - PLAYER DOESNT HAVE A TOWN AND ISNT TRUSTED IN THIS AREA");
 		if (warPrevents(player.getLocation(), resident)) {
 			if (!silent) Message.of("notDuringWar").to(player);
 			return false;
 		}
 
+		plugin.getServer().getLogger().info("CHECK - NOT IN A WAR");
 		if (!allowedLocation(player, player.getLocation(), resident)) {
 			if (!silent) Message.of("notInTownMsg").to(player);
 			return false;
 		}
 
+		plugin.getServer().getLogger().info("CHECK - IS IN A CORRECT AREA");
 		// If the enemiesInTown hashmap contains this town and its value is >0, players cannot fly there.
-		if(plugin.containsTown(town)){
+		if(containsTown(town)){
 			return false;
 		}
+		plugin.getServer().getLogger().info("CHECK - THEIR TOWN IS NOT CONTAINED IN THE HASMAP");
 
 		return true;
 	}
@@ -171,9 +180,12 @@ public class TownyFlightAPI {
 	 * @param silent true will mean no message is shown to the {@link Player}.
 	 */
 	public void addFlight(Player player, boolean silent) {
-		if (!silent) Message.of("flightOnMsg").to(player);
-		player.setAllowFlight(true);
-		cachePlayerFlight(player, true);
+		// Added a canFly check
+		if(canFly(player, true)){
+			if (!silent) Message.of("flightOnMsg").to(player);
+			player.setAllowFlight(true);
+			cachePlayerFlight(player, true);
+		}
 	}
 
 	/**
@@ -207,12 +219,15 @@ public class TownyFlightAPI {
 	 */
 	public void takeFlightFromPlayersInTown(Town town) {
 		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
-			if (player.hasPermission("townyflight.bypass")
-				|| !player.getAllowFlight()
-				|| TownyAPI.getInstance().isWilderness(player.getLocation())
-				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
-				|| TownyFlightAPI.getInstance().canFly(player, true))
-				continue;
+
+			if((player.hasPermission("townflight.bypass")) || !player.getAllowFlight()) continue;
+
+//			if ((player.hasPermission("townyflight.bypass") || !player.getAllowFlight()
+//				|| !player.getAllowFlight()
+//				|| TownyAPI.getInstance().isWilderness(player.getLocation())
+//				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
+//				|| TownyFlightAPI.getInstance().canFly(player, true))
+//				continue;
 
 			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
 			plugin.getServer().getLogger().info("Removed flight from players in town");
@@ -222,16 +237,27 @@ public class TownyFlightAPI {
 	public void addFlightToPlayersInTown(Town town){
 		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
 
-			if(TownyAPI.getInstance().getTown(player.getUniqueId()) != town) return;
+			// If the player's town does not match the flight re-adding, dont add it.
+			if(TownyAPI.getInstance().getTown(player) != town) {
+				plugin.getServer().getLogger().info("ADD FLIGHT CHECK: FAIL");
+				return;
+			}
+			plugin.getServer().getLogger().info("ADD FLIGHT CHECK: Player is in correct town");
 
+			// If they can already fly, dont add it
 			if (player.getAllowFlight()) return;
+			plugin.getServer().getLogger().info("ADD FLIGHT CHECK: Player does not already have flight");
 
 
 			plugin.getScheduler().runLater(player, () -> {
-				if (!TownyFlightAPI.getInstance().canFly(player, true))
+				if (!TownyFlightAPI.getInstance().canFly(player, true)){
+					plugin.getServer().getLogger().info("ADD FLIGHT CHECK: FAIL - This player cannot fly currently");
 					return;
-				if (Settings.autoEnableFlight)
+				}
+				if (Settings.autoEnableFlight) {
+					plugin.getServer().getLogger().info("ADD FLIGHT CHECK: Adding flight successfully.");
 					TownyFlightAPI.getInstance().addFlight(player, Settings.autoEnableSilent);
+				}
 
 				TownyFlightAPI.cachePlayerFlight(player, true);
 			}, 1);
@@ -289,5 +315,42 @@ public class TownyFlightAPI {
 	
 	public static void removeCachedPlayer(Player player) {
 		canFlyCache.remove(player.getUniqueId());
+	}
+
+	public void incrementEnemiesInTown(Town town) {
+		if(enemiesInTown.containsKey(town)){
+			enemiesInTown.put(town, enemiesInTown.get(town) + 1);
+			plugin.getServer().getLogger().info("Enemies in town incremented to " + enemiesInTown.get(town) + " for town " + town.getName() + ".");
+			takeFlightFromPlayersInTown(town);
+		} else {
+			enemiesInTown.put(town, 1);
+			plugin.getServer().getLogger().info("Enemies in town incremented to 1 for town " + town.getName() + ".");
+			takeFlightFromPlayersInTown(town);
+		}
+	}
+
+	public void decrementEnemiesInTown(Town town) {
+		if(enemiesInTown.containsKey(town)){
+			enemiesInTown.put(town, enemiesInTown.get(town) - 1);
+			plugin.getServer().getLogger().info("Enemies in town decremented to " + enemiesInTown.get(town) + " for town " + town.getName() + ".");
+
+			// Re-add flight if there are no more enemies in town.
+			if(enemiesInTown.get(town) <= 0){
+				addFlightToPlayersInTown(town);
+				plugin.getServer().getLogger().info("Flight re-added to players in town " + town.getName() + ".");
+			}
+		}
+		else{
+			plugin.getServer().getLogger().severe("Tried to decrement enemies in town for a town that shouldn't have any enemies.");
+		}
+	}
+	public boolean containsTown(Town town) {
+		if(enemiesInTown.containsKey(town) && enemiesInTown.get(town) > 0){
+			plugin.getServer().getLogger().info("Town " + town.getName() + " contains enemies.");
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 }

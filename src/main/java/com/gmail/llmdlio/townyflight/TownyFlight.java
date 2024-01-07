@@ -27,7 +27,6 @@ public class TownyFlight extends JavaPlugin {
 	private static TownyFlightAPI api;
 	private TownyFlightPlaceholderExpansion papiExpansion = null;
 	private final TaskScheduler scheduler;
-	private Map<Town, Integer> enemiesInTown = null;
 
 	public TownyFlight() {
 		plugin = this;
@@ -117,9 +116,8 @@ public class TownyFlight extends JavaPlugin {
 		// TODO: Cleanup code.
 		// TODO: Add all the events into one file to consolidate and make it simpler.
 		if (!Settings.flightDisableBy.equals("NONE")) {
-			pm.registerEvents(new EnemyEnterTownListener(this), this);
+			pm.registerEvents(new EnemyEnterTownListener(this, api), this);
 			getLogger().info("EnemyEnterTownListener registered.");
-			enemiesInTown = new HashMap<Town, Integer>();
 			getLogger().info("Enemy HashMap created.");
 		}
 
@@ -148,38 +146,5 @@ public class TownyFlight extends JavaPlugin {
 		}
 	}
 
-	public void incrementEnemiesInTown(Town town) {
-		if(enemiesInTown.containsKey(town)){
-			enemiesInTown.put(town, enemiesInTown.get(town) + 1);
-			getLogger().info("Enemies in town incremented to " + enemiesInTown.get(town) + " for town " + town.getName() + ".");
-		} else {
-			enemiesInTown.put(town, 1);
-			getLogger().info("Enemies in town incremented to 1 for town " + town.getName() + ".");
-		}
-	}
 
-	public void decrementEnemiesInTown(Town town) {
-		if(enemiesInTown.containsKey(town)){
-			enemiesInTown.put(town, enemiesInTown.get(town) - 1);
-			getLogger().info("Enemies in town decremented to " + enemiesInTown.get(town) + " for town " + town.getName() + ".");
-
-			// Re-add flight if there are no more enemies in town.
-			if(enemiesInTown.get(town) <= 0){
-				TownyFlightAPI.getInstance().addFlightToPlayersInTown(town);
-				getLogger().info("Flight re-added to players in town " + town.getName() + ".");
-			}
-		}
-		else{
-			getLogger().severe("Tried to decrement enemies in town for a town that shouldn't have any enemies.");
-		}
-	}
-	public boolean containsTown(Town town) {
-		if(enemiesInTown.containsKey(town) && enemiesInTown.get(town) > 0){
-			getLogger().info("Town " + town.getName() + " contains enemies.");
-			return true;
-		}
-		else{
-			return false;
-		}
-	}
 }
