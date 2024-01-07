@@ -9,7 +9,6 @@ import com.palmergames.bukkit.towny.event.player.PlayerExitsFromTownBorderEvent;
 import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.CombatUtil;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -43,7 +42,7 @@ public class EnemyEnterTownListener implements Listener {
 		final Town town = event.getEnteredTown();
 
 		// Removes flight when anyone other than a town member enters your claim.
-		if(PlayerDisablesFlight(town, resident)){
+		if(playerDisablesFlight(town, resident)){
 			api.incrementEnemiesInTown(town);
 		}
 
@@ -60,7 +59,7 @@ public class EnemyEnterTownListener implements Listener {
 
 		final Town town = event.getLeftTown();
 
-		if(PlayerDisablesFlight(town, resident)){
+		if(playerDisablesFlight(town, resident)){
 			api.decrementEnemiesInTown(town);
 		}
 	}
@@ -78,7 +77,7 @@ public class EnemyEnterTownListener implements Listener {
 		if (town == null)
 			return;
 
-		if(PlayerDisablesFlight(town, resident)){
+		if(playerDisablesFlight(town, resident)){
 			api.incrementEnemiesInTown(town);
 		}
 	}
@@ -96,7 +95,7 @@ public class EnemyEnterTownListener implements Listener {
 		if (town == null)
 			return;
 
-		if(PlayerDisablesFlight(town, resident)){
+		if(playerDisablesFlight(town, resident)){
 			api.decrementEnemiesInTown(town);
 		}
 	}
@@ -114,12 +113,12 @@ public class EnemyEnterTownListener implements Listener {
 		if (resident == null)
 			return;
 
-		if(PlayerDisablesFlight(town, resident)){
+		if(playerDisablesFlight(town, resident)){
 			api.decrementEnemiesInTown(town);
 		}
 	}
 
-	public boolean PlayerDisablesFlight(Town town, Resident resident){
+	public boolean playerDisablesFlight(Town town, Resident resident){
 		if (Settings.flightDisableBy.equals("ALLY")){
 
 			// If they don't belong to a town, treated as a NEUTRAL player

@@ -1,6 +1,9 @@
 package com.gmail.llmdlio.townyflight;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.bukkit.Bukkit;
@@ -148,9 +151,9 @@ public class TownyFlightAPI {
 		if (!silent) {
 			if (forced) {
 				String reason = Message.getLangString("flightDeactivatedMsg");
-				if (cause == "pvp") reason = Message.getLangString("flightDeactivatedPVPMsg");
-				if (cause == "console") reason = Message.getLangString("flightDeactivatedConsoleMsg");
-				if (cause == "enemynearby") reason = Message.getLangString("flightDeactivatedEnemyNearbyMsg");
+				if (cause.equals("pvp")) reason = Message.getLangString("flightDeactivatedPVPMsg");
+				if (cause.equals("console")) reason = Message.getLangString("flightDeactivatedConsoleMsg");
+				if (cause.equals("enemynearby")) reason = Message.getLangString("flightDeactivatedEnemyNearbyMsg");
 				Message.of(reason + Message.getLangString("flightOffMsg")).to(player);
 			} else {
 				Message.of("flightOffMsg").to(player);
@@ -214,14 +217,13 @@ public class TownyFlightAPI {
 	public static void takeFlightFromPlayersInTown(Town town, String cause) {
 		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
 
-			if((player.hasPermission("townflight.bypass")) || !player.getAllowFlight()) continue;
 
-//			if ((player.hasPermission("townyflight.bypass") || !player.getAllowFlight()
-//				|| !player.getAllowFlight()
-//				|| TownyAPI.getInstance().isWilderness(player.getLocation())
-//				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
-//				|| TownyFlightAPI.getInstance().canFly(player, true))
-//				continue;
+			if ((player.hasPermission("townyflight.bypass") || !player.getAllowFlight()
+				|| !player.getAllowFlight()
+				|| TownyAPI.getInstance().isWilderness(player.getLocation())
+				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
+				|| TownyFlightAPI.getInstance().canFly(player, true)))
+				continue;
 
 			TownyFlightAPI.getInstance().removeFlight(player, false, true, cause);
 		}	

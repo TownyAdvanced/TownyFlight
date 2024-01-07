@@ -1,11 +1,8 @@
 package com.gmail.llmdlio.townyflight;
 
-import com.gmail.llmdlio.townyflight.listeners.*;
-import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
-import org.bukkit.entity.Entity;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -14,11 +11,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
 import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
+import com.gmail.llmdlio.townyflight.listeners.EnemyEnterTownListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerLogOutListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
+import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
+import com.gmail.llmdlio.townyflight.listeners.TownStatusScreenListener;
+import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.palmergames.bukkit.util.Version;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class TownyFlight extends JavaPlugin {
 	private static final Version requiredTownyVersion = Version.fromString("0.99.0.6");
@@ -115,8 +118,6 @@ public class TownyFlight extends JavaPlugin {
 
 		if (!Settings.flightDisableBy.equals("NONE")) {
 			pm.registerEvents(new EnemyEnterTownListener(this, api), this);
-			getLogger().info("EnemyEnterTownListener registered.");
-			getLogger().info("Enemy HashMap created.");
 		}
 
 		if (Settings.disableCombatPrevention)
