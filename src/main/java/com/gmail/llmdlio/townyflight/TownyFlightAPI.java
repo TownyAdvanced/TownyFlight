@@ -229,6 +229,10 @@ public class TownyFlightAPI {
 		}	
 	}
 
+	/**
+	 * Parse over the players online in the server and if they're in the given {@link Town},
+	 * Check if they can fly, and then add flight to them.
+	 */
 	public static void addFlightToPlayersInTown(Town town){
 		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
 			// If the player's town does not match the flight re-adding, dont add it.
@@ -305,6 +309,7 @@ public class TownyFlightAPI {
 		canFlyCache.remove(player.getUniqueId());
 	}
 
+	// Increments the enemiesInTown counter hashmap for the given town.
 	public static void incrementEnemiesInTown(Town town) {
 
 		UUID uuid = town.getUUID();
@@ -319,6 +324,7 @@ public class TownyFlightAPI {
 
     }
 
+	// Decrements the enemiesInTown counter hashmap for the given town.
 	public static void decrementEnemiesInTown(Town town) {
 
 		UUID uuid = town.getUUID();
@@ -335,6 +341,8 @@ public class TownyFlightAPI {
 			plugin.getServer().getLogger().severe("Tried to decrement enemies in town for a town that shouldn't have any enemies.");
 		}
 	}
+
+	// Returns true if the hashmap contains the supplied town and the value is >0.
 	public static boolean containsTown(Town town) {
 
 		UUID uuid = town.getUUID();

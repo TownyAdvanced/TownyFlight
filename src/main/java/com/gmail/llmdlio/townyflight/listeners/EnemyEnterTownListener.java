@@ -27,9 +27,8 @@ public class EnemyEnterTownListener implements Listener {
 	}
 
 	/*
-	 * Listener which takes flight from a town's online players if an enemy enters
-	 * into the town.
-	 *
+	 * Listener for when enemies enter a town.
+	 * It will increment the enemiesInTown counter for the town.
 	 */
 	@EventHandler
 	private void enemyEnterTownEvent(PlayerEntersIntoTownBorderEvent event) {
@@ -49,6 +48,10 @@ public class EnemyEnterTownListener implements Listener {
 
 	}
 
+	/*
+	 * Listener for when enemies leave a town.
+	 * It will decrement the enemiesInTown counter for the town.
+	 */
 	@EventHandler
 	private void enemyLeaveTownEvent(PlayerExitsFromTownBorderEvent event) {
 		final Resident resident = TownyAPI.getInstance().getResident(event.getPlayer().getUniqueId());
@@ -64,6 +67,10 @@ public class EnemyEnterTownListener implements Listener {
 		}
 	}
 
+	/*
+	 * Listener for when enemies login within town grounds.
+	 * It will increment the enemiesInTown counter for the town.
+	 */
 	@EventHandler
 	public void enemyLogInListener(PlayerJoinEvent event) {
 
@@ -82,6 +89,10 @@ public class EnemyEnterTownListener implements Listener {
 		}
 	}
 
+	/*
+	 * Listener for when enemies log out inside a town.
+	 * It will decrement the enemiesInTown counter for the town.
+	 */
 	@EventHandler
 	public void enemyLogOutListener(PlayerQuitEvent event) {
 
@@ -100,6 +111,10 @@ public class EnemyEnterTownListener implements Listener {
 		}
 	}
 
+	/*
+	 * Listener for when enemies teleport from a town.
+	 * It will decrement the enemiesInTown counter for the town.
+	 */
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void enemyTeleports(PlayerTeleportEvent event) {
 		if (event.getCause() != PlayerTeleportEvent.TeleportCause.PLUGIN || event.getCause() != PlayerTeleportEvent.TeleportCause.COMMAND)
@@ -118,6 +133,9 @@ public class EnemyEnterTownListener implements Listener {
 		}
 	}
 
+	/*
+	 * A helper method which returns true if a player should disable flight depending on config setting.
+	 */
 	public boolean playerDisablesFlight(Town town, Resident resident){
 		if (Settings.flightDisableBy.equals("ALLY")){
 
