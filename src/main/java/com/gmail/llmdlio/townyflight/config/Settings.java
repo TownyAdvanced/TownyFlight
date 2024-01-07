@@ -16,6 +16,8 @@ public class Settings {
 	public static Boolean showPermissionInMessage;
 	public static Boolean siegeWarFound;
 	public static int flightDisableTimer;
+	public static String flightDisableBy;
+	public static int flightReenableTimer;
 	private static Map<String, String> lang = new HashMap<String,String>();
 
 	public static boolean loadSettings(TownyFlightConfig _config) {
@@ -32,6 +34,7 @@ public class Settings {
 		disableCombatPrevention = Boolean.valueOf(getOption("disable_Combat_Prevention"));
 		showPermissionInMessage = Boolean.valueOf(getOption("show_Permission_After_No_Permission_Message"));
 		flightDisableTimer = Integer.valueOf(getOption("flight_Disable_Timer"));
+		flightDisableBy = String.valueOf(getOption("flight_Disable_By"));
 	}
 
 	public static void loadStrings() {
@@ -43,6 +46,7 @@ public class Settings {
 		lang.put("notInTownMsg", getString("notInTownMsg"));
 		lang.put("flightDeactivatedMsg", getString("flightDeactivatedMsg"));
 		lang.put("flightDeactivatedPVPMsg", getString("flightDeactivatedPVPMsg"));
+		lang.put("flightDeactivatedEnemyNearbyMsg", getString("flightDeactivatedEnemyNearbyMsg"));
 		lang.put("flightDeactivatedConsoleMsg", getString("flightDeactivatedConsoleMsg"));
 		lang.put("noPermission", getString("noPermission"));
 		lang.put("missingNode", getString("missingNode"));

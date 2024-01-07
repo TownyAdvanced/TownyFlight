@@ -32,10 +32,12 @@ public class TownyFlightAPI {
 	public Set<Player> fallProtectedPlayers = ConcurrentHashMap.newKeySet();
 	private static Map<UUID, Boolean> canFlyCache = new ConcurrentHashMap<>();
 	private static NamespacedKey forceAllowFlight;
+	private static Map<UUID, Integer> enemiesInTown = new ConcurrentHashMap<>();
 	
 	public TownyFlightAPI(TownyFlight plugin) {
 		TownyFlightAPI.plugin = plugin;
 		forceAllowFlight = new NamespacedKey(plugin, "force_allow_flight");
+
 	}
 	
 	public static TownyFlightAPI getInstance() {
@@ -52,15 +54,18 @@ public class TownyFlightAPI {
 	 * @return true if the {@link Player} is allowed to fly.
 	 **/
 	public boolean canFly(Player player, boolean silent) {
+
+		// Get the town the player is currently standing in
 		Town town = TownyAPI.getInstance().getTown(player.getLocation());
+
+		//
 		if (player.hasPermission("townyflight.bypass") 
 			|| player.getGameMode().equals(GameMode.SPECTATOR) 
 			|| player.getGameMode().equals(GameMode.CREATIVE)
 			|| town != null && MetaData.getFreeFlightMeta(town)
 			|| getForceAllowFlight(player))
 			return true;
-
-		if (!Permission.has(player, "townyflight.command.tfly", silent)) return false;
+		if (!Permission.has(player, "townyflight.command.tfly", true)) return false;
 
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
 		if (resident == null) return false;
@@ -79,6 +84,12 @@ public class TownyFlightAPI {
 			if (!silent) Message.of("notInTownMsg").to(player);
 			return false;
 		}
+
+		// If the enemiesInTown hashmap contains this town and its value is >0, players cannot fly there.
+		if(containsTown(town)){
+			return false;
+		}
+
 		return true;
 	}
 
@@ -140,8 +151,9 @@ public class TownyFlightAPI {
 		if (!silent) {
 			if (forced) {
 				String reason = Message.getLangString("flightDeactivatedMsg");
-				if (cause == "pvp") reason = Message.getLangString("flightDeactivatedPVPMsg");
-				if (cause == "console") reason = Message.getLangString("flightDeactivatedConsoleMsg");
+				if (cause.equals("pvp")) reason = Message.getLangString("flightDeactivatedPVPMsg");
+				if (cause.equals("console")) reason = Message.getLangString("flightDeactivatedConsoleMsg");
+				if (cause.equals("enemynearby")) reason = Message.getLangString("flightDeactivatedEnemyNearbyMsg");
 				Message.of(reason + Message.getLangString("flightOffMsg")).to(player);
 			} else {
 				Message.of("flightOffMsg").to(player);
@@ -165,9 +177,12 @@ public class TownyFlightAPI {
 	 * @param silent true will mean no message is shown to the {@link Player}.
 	 */
 	public void addFlight(Player player, boolean silent) {
-		if (!silent) Message.of("flightOnMsg").to(player);
-		player.setAllowFlight(true);
-		cachePlayerFlight(player, true);
+		// Added a canFly check
+		if(canFly(player, true)){
+			if (!silent) Message.of("flightOnMsg").to(player);
+			player.setAllowFlight(true);
+			cachePlayerFlight(player, true);
+		}
 	}
 
 	/**
@@ -199,17 +214,48 @@ public class TownyFlightAPI {
 	 * and are not given a flight bypass of some kind, remove their flight. Called when
 	 * a town has their free flight disabled.
 	 */
-	public void takeFlightFromPlayersInTown(Town town) {
+	public static void takeFlightFromPlayersInTown(Town town, String cause) {
 		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
-			if (player.hasPermission("townyflight.bypass")
+
+
+			if ((player.hasPermission("townyflight.bypass") || !player.getAllowFlight()
 				|| !player.getAllowFlight()
 				|| TownyAPI.getInstance().isWilderness(player.getLocation())
 				|| !TownyAPI.getInstance().getTown(player.getLocation()).equals(town)
-				|| TownyFlightAPI.getInstance().canFly(player, true))
+				|| TownyFlightAPI.getInstance().canFly(player, true)))
 				continue;
 
-			TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+			TownyFlightAPI.getInstance().removeFlight(player, false, true, cause);
 		}	
+	}
+
+	/**
+	 * Parse over the players online in the server and if they're in the given {@link Town},
+	 * Check if they can fly, and then add flight to them.
+	 */
+	public static void addFlightToPlayersInTown(Town town){
+		for (final Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
+			// If the player's town does not match the flight re-adding, dont add it.
+			if(TownyAPI.getInstance().getTown(player) != town) {
+				return;
+			}
+
+			// If they can already fly, dont add it
+			if (player.getAllowFlight()) return;
+
+
+			plugin.getScheduler().runLater(player, () -> {
+				if (!TownyFlightAPI.getInstance().canFly(player, true)){
+					return;
+				}
+				if (Settings.autoEnableFlight) {
+					TownyFlightAPI.getInstance().addFlight(player, Settings.autoEnableSilent);
+				}
+
+				TownyFlightAPI.cachePlayerFlight(player, true);
+			}, 1);
+
+		}
 	}
 
 	/**
@@ -261,5 +307,51 @@ public class TownyFlightAPI {
 	
 	public static void removeCachedPlayer(Player player) {
 		canFlyCache.remove(player.getUniqueId());
+	}
+
+	// Increments the enemiesInTown counter hashmap for the given town.
+	public static void incrementEnemiesInTown(Town town) {
+
+		UUID uuid = town.getUUID();
+
+		if(enemiesInTown.containsKey(uuid)){
+			enemiesInTown.put(uuid, enemiesInTown.get(uuid) + 1);
+        }
+		else{
+			enemiesInTown.put(uuid, 1);
+        }
+        takeFlightFromPlayersInTown(town, "enemynearby");
+
+    }
+
+	// Decrements the enemiesInTown counter hashmap for the given town.
+	public static void decrementEnemiesInTown(Town town) {
+
+		UUID uuid = town.getUUID();
+
+		if(enemiesInTown.containsKey(uuid)){
+			enemiesInTown.put(uuid, enemiesInTown.get(uuid) - 1);
+
+			// Re-add flight if there are no more enemies in town.
+			if(enemiesInTown.get(uuid) <= 0){
+				addFlightToPlayersInTown(town);
+			}
+		}
+		else{
+			plugin.getServer().getLogger().severe("Tried to decrement enemies in town for a town that shouldn't have any enemies.");
+		}
+	}
+
+	// Returns true if the hashmap contains the supplied town and the value is >0.
+	public static boolean containsTown(Town town) {
+
+		UUID uuid = town.getUUID();
+
+		if(enemiesInTown.containsKey(uuid) && enemiesInTown.get(uuid) > 0){
+			return true;
+		}
+		else{
+			return false;
+		}
 	}
 }

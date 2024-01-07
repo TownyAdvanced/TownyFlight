@@ -39,6 +39,11 @@ public enum ConfigNodes {
 			"Entering PVP combat. ",
 			"",
 			"# Message shown when a player has flight taken away because of PVP."),
+	LANG_FLIGHTDEACTIVATEDENEMYNEARBYMSG(
+			"language.flightDeactivatedEnemyNearbyMsg",
+			"Flight has been disabled due to a player entering your town. ",
+			"",
+			"# Message shown when a player has flight taken away because of a player entering their town."),
 	LANG_FLIGHTDEACTIVATEDCONSOLEMSG(
 			"language.flightDeactivatedConsoleMsg",
 			"Flight priviledges removed. ",
@@ -129,7 +134,16 @@ public enum ConfigNodes {
 			"options.flight_Disable_Timer",
 			"3",
 			"",
-			"# Number of seconds after leaving an allowed flight area before flight is taken away.", "# Set to 0 to take flight away immediately.");
+			"# Number of seconds after leaving an allowed flight area before flight is taken away.", "# Set to 0 to take flight away immediately."),
+	OPTIONS_DISABLE_BY(
+			"options.flight_Disable_By",
+			"NONE",
+			"",
+			"# If set to NONE, flight will not be disabled on players entering a claim.",
+			"# If set to ALLY, flight will be disabled by ALLIES, NEUTRAL and ENEMY players entering a claim.",
+			"# If set to NEUTRAL, flight will be disabled on NEUTRAL and ENEMY players entering a claim",
+			"# If set to ENEMY, flight will be disabled only when ENEMY players enter a claim",
+			"# Valid inputs: NONE, ALLY, NEUTRAL, ENEMY.");
 
 	private final String Root;
 	private final String Default;

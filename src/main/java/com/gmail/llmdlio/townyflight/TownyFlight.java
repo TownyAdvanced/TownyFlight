@@ -11,6 +11,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
 import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
+import com.gmail.llmdlio.townyflight.listeners.EnemyEnterTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
@@ -115,6 +116,10 @@ public class TownyFlight extends JavaPlugin {
 		pm.registerEvents(new TownStatusScreenListener(), this);
 		pm.registerEvents(new PlayerEnterTownListener(this), this);
 
+		if (!Settings.flightDisableBy.equals("NONE")) {
+			pm.registerEvents(new EnemyEnterTownListener(this, api), this);
+		}
+
 		if (Settings.disableCombatPrevention)
 			pm.registerEvents(new PlayerPVPListener(), this);
 	}
@@ -139,4 +144,6 @@ public class TownyFlight extends JavaPlugin {
 			return false;
 		}
 	}
+
+
 }
