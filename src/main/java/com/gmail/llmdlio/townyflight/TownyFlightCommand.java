@@ -12,6 +12,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
+import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.gmail.llmdlio.townyflight.util.Permission;
@@ -21,13 +22,14 @@ import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.util.Colors;
 import com.palmergames.util.StringMgmt;
+import com.palmergames.util.TimeTools;
 
 public class TownyFlightCommand implements TabExecutor {
 
 	private TownyFlight plugin;
 	private CommandSender sender;
 	private static final List<String> tflyTabCompletes = Arrays.asList(
-		"reload","town","help","?"
+		"reload","tempflight","town","help","?"
 	);
 
 	public TownyFlightCommand(TownyFlight plugin) {
@@ -38,6 +40,11 @@ public class TownyFlightCommand implements TabExecutor {
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		if (args.length > 0) {
 			switch (args[0].toLowerCase()) {
+			case "tempflight":
+				if (args.length == 2)
+					return getTownyStartingWith(args[1], "r");
+				if (args.length == 3)
+					return NameUtil.filterByStart(Arrays.asList("remove", "10", "1000s", "60m", "1h", "1d"), args[2]);
 			case "town":
 				if (args.length == 2)
 					return getTownyStartingWith(args[1], "t");
@@ -69,6 +76,9 @@ public class TownyFlightCommand implements TabExecutor {
 				} else if (args[0].equalsIgnoreCase("reload")) {
 					// Reload the plugin.
 					reloadPlugin();
+				} else if (args[0].equalsIgnoreCase("tempflight")) {
+					// We have /tfly tempflight and tested for permission node.
+					parseTempFlightCommand(StringMgmt.remFirstArg(args));
 				} else if (args[0].equalsIgnoreCase("town")) {
 					// parse /tfly town NAME OPTION command.
 					parseTownCommand(StringMgmt.remFirstArg(args));
@@ -88,6 +98,9 @@ public class TownyFlightCommand implements TabExecutor {
 				} else if (args[0].equalsIgnoreCase("reload") && Permission.has(sender,"townyflight.command.tfly.reload", false)) {
 					// We have /tfly reload and tested for permission node.
 					reloadPlugin();
+				} else if (args[0].equalsIgnoreCase("tempflight") && Permission.has(sender,"townyflight.command.tfly.tempflight", false)) {
+					// We have /tfly tempflight and tested for permission node.
+					parseTempFlightCommand(StringMgmt.remFirstArg(args));
 				} else if (args[0].equalsIgnoreCase("town") && Permission.has(sender,"townyflight.command.tfly.town", false)) {
 					// parse /tfly town NAME OPTION command.
 					parseTownCommand(StringMgmt.remFirstArg(args));
@@ -105,6 +118,47 @@ public class TownyFlightCommand implements TabExecutor {
 
 			toggleFlight((Player) sender, false, false, "");
 		}
+	}
+
+	private void parseTempFlightCommand(String[] args) {
+		if (args.length < 2) {
+			showTflyHelp();
+			return;
+		}
+
+		Player player = Bukkit.getPlayerExact(args[0]);
+		if (player == null) {
+			Message.of("Player " + args[0] + " not found. Could not grant temp flight.").to(sender);
+			return;
+		}
+
+		if (args[1].equalsIgnoreCase("remove")) {
+			TempFlightTask.removeAllPlayerTempFlightSeconds(player);
+			return;
+		}
+
+		long seconds = parseSeconds(args[1]);
+		if (seconds == 0L) {
+			Message.of("Could not grant 0 seconds of temp flight.").to(sender);
+			return;
+		}
+
+		TempFlightTask.addPlayerTempFlightSeconds(player.getUniqueId(), seconds);
+		MetaData.addTempFlight(player.getUniqueId(), seconds);
+	}
+
+	private long parseSeconds(String string) {
+		if (string.endsWith("s") || string.endsWith("m") || string.endsWith("h") || string.endsWith("d"))
+			return TimeTools.getSeconds(string);
+
+		long seconds;
+		try {
+			seconds = Long.valueOf(string);
+		} catch (NumberFormatException e) {
+			Message.of("The number " + string + " cannot be parsed into a number of seconds.").to(sender);
+			return 0L;
+		}
+		return seconds;
 	}
 
 	private void parseTownCommand(String[] args) {
@@ -137,6 +191,13 @@ public class TownyFlightCommand implements TabExecutor {
 			Message.of(Colors.White + "/tfly - Toggle flight.").to(sender);
 		if (Permission.has(sender, "townyflight.command.tfly.reload", true))
 			Message.of(Colors.White + "/tfly reload - Reload the TownyFlight config.").to(sender);
+		if (Permission.has(sender, "townyflight.command.tfly.tempflight", true)) {
+			Message.of(Colors.White + "/tfly tempflight [playername] [seconds] - Grant a player temp flight in seconds.").to(sender);
+			Message.of(Colors.White + "/tfly tempflight [playername] [time]m - Grant a player temp flight in minutes.").to(sender);
+			Message.of(Colors.White + "/tfly tempflight [playername] [time]h - Grant a player temp flight in hours.").to(sender);
+			Message.of(Colors.White + "/tfly tempflight [playername] [time]d - Grant a player temp flight in days.").to(sender);
+			Message.of(Colors.White + "/tfly tempflight [playername] remove - Remove a player's temp flight.").to(sender);
+		}
 		if (Permission.has(sender, "townyflight.command.tfly.other", true))
 			Message.of(Colors.White + "/tfly [playername] - Toggle flight for a player.").to(sender);
 		if (Permission.has(sender, "townyflight.command.tfly.town", true))

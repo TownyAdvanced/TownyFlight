@@ -44,6 +44,7 @@ public class Settings {
 		lang.put("flightDeactivatedMsg", getString("flightDeactivatedMsg"));
 		lang.put("flightDeactivatedPVPMsg", getString("flightDeactivatedPVPMsg"));
 		lang.put("flightDeactivatedConsoleMsg", getString("flightDeactivatedConsoleMsg"));
+		lang.put("flightDeactivatedTimeMsg", getString("flightDeactivatedTimeMsg"));
 		lang.put("noPermission", getString("noPermission"));
 		lang.put("missingNode", getString("missingNode"));
 		lang.put("notDuringWar", getString("notDuringWar"));

@@ -44,6 +44,11 @@ public enum ConfigNodes {
 			"Flight priviledges removed. ",
 			"",
 			"# Message shown when a player has flight taken away by console."),
+	LANG_FLIGHTDEACTIVATEDTIMEMSG(
+			"language.flightDeactivatedTimeMsg",
+			"You ran out of flight time. ",
+			"",
+			"# Message shown when a player has flight taken away because their tempflight ran out."),
 	LANG_NOPERMISSION(
 			"language.noPermission",
 			"You do not have permission for this command%s. ",

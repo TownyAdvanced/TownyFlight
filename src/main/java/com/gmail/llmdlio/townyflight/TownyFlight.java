@@ -20,6 +20,7 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
 import com.gmail.llmdlio.townyflight.listeners.TownStatusScreenListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
+import com.gmail.llmdlio.townyflight.tasks.TaskHandler;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
@@ -57,6 +58,8 @@ public class TownyFlight extends JavaPlugin {
 		registerCommands();
 		getLogger().info("Towny version " + townyVersion + " found.");
 		getLogger().info(this.getDescription().getFullName() + " by LlmDl Enabled.");
+		
+		cycleTimerTasksOn();
 	}
 
 	public static TownyFlight getPlugin() {
@@ -125,6 +128,15 @@ public class TownyFlight extends JavaPlugin {
 
 	private void registerCommands() {
 		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
+	}
+
+	private void cycleTimerTasksOn() {
+		cycleTimerTasksOff();
+		TaskHandler.toggleTempFlightTask(true);
+	}
+
+	private void cycleTimerTasksOff() {
+		TaskHandler.toggleTempFlightTask(false);
 	}
 
 	public TaskScheduler getScheduler() {

@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import com.gmail.goosius.siegewar.SiegeController;
 import com.gmail.goosius.siegewar.enums.SiegeStatus;
 import com.gmail.llmdlio.townyflight.config.Settings;
+import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.gmail.llmdlio.townyflight.util.Permission;
@@ -60,7 +61,7 @@ public class TownyFlightAPI {
 			|| getForceAllowFlight(player))
 			return true;
 
-		if (!Permission.has(player, "townyflight.command.tfly", silent)) return false;
+		if (!hasTempFlight(player) && !Permission.has(player, "townyflight.command.tfly", silent)) return false;
 
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
 		if (resident == null) return false;
@@ -142,6 +143,7 @@ public class TownyFlightAPI {
 				String reason = Message.getLangString("flightDeactivatedMsg");
 				if (cause == "pvp") reason = Message.getLangString("flightDeactivatedPVPMsg");
 				if (cause == "console") reason = Message.getLangString("flightDeactivatedConsoleMsg");
+				if (cause == "time") reason = Message.getLangString("flightDeactivatedTimeMsg");
 				Message.of(reason + Message.getLangString("flightOffMsg")).to(player);
 			} else {
 				Message.of("flightOffMsg").to(player);
@@ -231,6 +233,10 @@ public class TownyFlightAPI {
 	 */
 	public boolean getForceAllowFlight(Player player) {
 		return player.getPersistentDataContainer().getOrDefault(forceAllowFlight, PersistentDataType.BYTE, (byte) 0) == 1;
+	}
+
+	private boolean hasTempFlight(Player player) {
+		return TempFlightTask.getSeconds(player.getUniqueId()) > 0L;
 	}
 
 	private boolean warPrevents(Location location, Resident resident) {
