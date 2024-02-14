@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
+import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -24,6 +25,7 @@ public class TempFlightTask implements Runnable {
 	@Override
 	public void run() {
 		cycles++;
+
 		removeFlightFromPlayersWithNoTimeLeft();
 
 		Set<UUID> uuidsToDecrement = new HashSet<>();
@@ -58,7 +60,12 @@ public class TempFlightTask implements Runnable {
 				.filter(e -> e.getValue() <= 0)
 				.map(e -> e.getKey())
 				.collect(Collectors.toSet());
-		uuidsToRemove.forEach(uuid -> removeFlight(uuid));
+		uuidsToRemove.forEach(uuid -> {
+			removeFlight(uuid);
+			Player player = Bukkit.getPlayer(uuid);
+			if (player != null && player.isOnline())
+				Message.of(String.format(Message.getLangString("yourTempFlightHasExpired"))).to(player);
+		});
 	}
 
 	private void removeFlight(UUID uuid) {
@@ -74,12 +81,11 @@ public class TempFlightTask implements Runnable {
 	}
 
 	public static void addPlayerTempFlightSeconds(UUID uuid, long seconds) {
-		long existingSeconds = playerUUIDSecondsMap.containsKey(uuid) ? playerUUIDSecondsMap.get(uuid) : 0L;  
+		long existingSeconds = playerUUIDSecondsMap.containsKey(uuid) ? playerUUIDSecondsMap.get(uuid) : 0L;
 		playerUUIDSecondsMap.put(uuid, existingSeconds + seconds);
 	}
 
-	public static void removeAllPlayerTempFlightSeconds(Player player) {
-		UUID uuid = player.getUniqueId();
+	public static void removeAllPlayerTempFlightSeconds(UUID uuid) {
 		playerUUIDSecondsMap.put(uuid, 0L);
 	}
 

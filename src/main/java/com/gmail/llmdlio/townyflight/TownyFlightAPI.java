@@ -53,11 +53,9 @@ public class TownyFlightAPI {
 	 * @return true if the {@link Player} is allowed to fly.
 	 **/
 	public boolean canFly(Player player, boolean silent) {
-		Town town = TownyAPI.getInstance().getTown(player.getLocation());
 		if (player.hasPermission("townyflight.bypass") 
 			|| player.getGameMode().equals(GameMode.SPECTATOR) 
 			|| player.getGameMode().equals(GameMode.CREATIVE)
-			|| town != null && MetaData.getFreeFlightMeta(town)
 			|| getForceAllowFlight(player))
 			return true;
 
@@ -65,11 +63,6 @@ public class TownyFlightAPI {
 
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
 		if (resident == null) return false;
-
-		if (!resident.hasTown() && !locationTrustsResidents(town, resident)) {
-			if (!silent) Message.of("noTownMsg").to(player);
-			return false;
-		}
 
 		if (warPrevents(player.getLocation(), resident)) {
 			if (!silent) Message.of("notDuringWar").to(player);
@@ -82,11 +75,6 @@ public class TownyFlightAPI {
 		}
 		return true;
 	}
-
-	private boolean locationTrustsResidents(Town town, Resident resident) {
-		return town != null && town.hasTrustedResident(resident);
-	}
-
 
 	/**
 	 * Returns true if a player is allowed to fly at their current location. Checks
@@ -105,12 +93,19 @@ public class TownyFlightAPI {
 		if (TownyAPI.getInstance().isWilderness(location))
 			return false;
 
+		Town town = TownyAPI.getInstance().getTown(location);
+
 		if (player.hasPermission("townyflight.alltowns"))
 			return true;
 
-		Town town = TownyAPI.getInstance().getTown(location);
 		if (player.hasPermission("townyflight.trustedtowns") && town.hasTrustedResident(resident))
 			return true;
+
+		if (MetaData.getFreeFlightMeta(town))
+			return true;
+
+		if (!resident.hasTown())
+			return false;
 
 		Town residentTown = resident.getTownOrNull();
 		if (residentTown == null)

@@ -112,6 +112,9 @@ public class TownyFlightPlaceholderExpansion extends PlaceholderExpansion {
 			return String.valueOf(TownyFlightAPI.canFlyAccordingToCache(player));
 		case "temp_flight_seconds_remaining": // %townyflight_temp_flight_seconds_remaining%
 			return TimeMgmt.getFormattedTimeValue(TempFlightTask.getSeconds(offlineplayer.getUniqueId()) * 1000L);
+		case "temp_flight_seconds_remaining_raw": // %townyflight_temp_flight_seconds_remaining_raw%
+			return String.valueOf(TempFlightTask.getSeconds(offlineplayer.getUniqueId()));
+
 		default:
 			return "";
 		}

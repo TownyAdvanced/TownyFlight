@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -12,16 +13,19 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
+import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.gmail.llmdlio.townyflight.util.Permission;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.object.Resident;
 import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.utils.NameUtil;
 import com.palmergames.bukkit.util.Colors;
 import com.palmergames.util.StringMgmt;
+import com.palmergames.util.TimeMgmt;
 import com.palmergames.util.TimeTools;
 
 public class TownyFlightCommand implements TabExecutor {
@@ -126,14 +130,23 @@ public class TownyFlightCommand implements TabExecutor {
 			return;
 		}
 
-		Player player = Bukkit.getPlayerExact(args[0]);
-		if (player == null) {
-			Message.of("Player " + args[0] + " not found. Could not grant temp flight.").to(sender);
+		String name = args[0];
+		Player player = Bukkit.getPlayerExact(name);
+		UUID uuid = player != null ? player.getUniqueId() : null;
+		if (uuid == null && TownyUniverse.getInstance().hasResident(name)) {
+			Resident resident = TownyAPI.getInstance().getResident(name);
+			if (resident != null && resident.hasUUID())
+				uuid = resident.getUUID();
+		}
+
+		if (uuid == null) {
+			Message.of("Player " + name + " not found. Could not grant temp flight.").to(sender);
 			return;
 		}
 
 		if (args[1].equalsIgnoreCase("remove")) {
-			TempFlightTask.removeAllPlayerTempFlightSeconds(player);
+			TempFlightTask.removeAllPlayerTempFlightSeconds(uuid);
+			Message.of(name + " has had their flight time set to 0.").to(sender);
 			return;
 		}
 
@@ -143,8 +156,18 @@ public class TownyFlightCommand implements TabExecutor {
 			return;
 		}
 
-		TempFlightTask.addPlayerTempFlightSeconds(player.getUniqueId(), seconds);
-		MetaData.addTempFlight(player.getUniqueId(), seconds);
+		String formattedTimeValue = TimeMgmt.getFormattedTimeValue(seconds * 1000L);
+		Message.of(String.format(Message.getLangString("tempFlightGrantedToPlayer"), name, formattedTimeValue)).to(sender);
+		MetaData.addTempFlight(uuid, seconds);
+
+		if (player != null && player.isOnline()) {
+			TempFlightTask.addPlayerTempFlightSeconds(uuid, seconds);
+			Message.of(String.format(Message.getLangString("youHaveReceivedTempFlight"), formattedTimeValue)).to(player);
+
+			if (Settings.autoEnableFlight && TownyFlightAPI.getInstance().canFly(player, true))
+				TownyFlightAPI.getInstance().addFlight(player, Settings.autoEnableSilent);
+		}
+
 	}
 
 	private long parseSeconds(String string) {
