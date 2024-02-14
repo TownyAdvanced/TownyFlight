@@ -18,6 +18,11 @@ ___
 - /tfly reload - Reload the config.
 - /tfly {name} - Removes flight from someone.
 - /tfly town {townname} toggleflight - Enables free flight in a town (use this on your Spawn city if you want everyone to be able to fly there.)
+- /tfly tempflight {playername} 1000 - Gives 1000 seconds of tempflight.
+- /tfly tempflight {playername} 10s - Gives 10 seconds of tempflight.
+- /tfly tempflight {playername} 10m - Gives 10 minutes of tempflight.
+- /tfly tempflight {playername} 1h - Gives 1 hour of tempflight.
+- /tfly tempflight {playername} 1d - Gives 1 day of tempflight.
 
 ---
 
@@ -26,6 +31,7 @@ ___
 - townyflight.command.tfly - required to use `/tfly`.
 - townyflight.command.tfly.reload - required to use `/tfly reload`.
 - townyflight.command.tfly.town - required to use `/tfly town {townname} toggleflight`.
+- townyflight.command.tfly.tempflight - required to use `/tfly tempflight`.
 - townyflight.command.tfly.other - required to use `/tfly {name}`.
 - townyflight.alliedtowns - allows players to use `/tfly` in towns which consider that player an ally.
 - townyflight.nationtowns - allows players to use `/tfly` in towns which are part of the player's nation.
@@ -60,7 +66,8 @@ ___
 
 ## PAPI Placeholders:
 - `%townyflight_can_player_fly%` - Displays true or false, based on whether the player could fly at their current location.
-
+- `%townyflight_temp_flight_seconds_remaining%` - Shows a formatted flight time remaining, ie: 30 seconds, or 5 minutes 2 seconds.
+- `%townyflight_temp_flight_seconds_remaining_raw%` - Shows the number of seconds of flight time remaining with no formatting, ie: 30, or 302.
 ---
 
 I'm open to new features and willing to fix any bugs found.
