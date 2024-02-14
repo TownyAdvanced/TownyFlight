@@ -44,6 +44,7 @@ public class Settings {
 		lang.put("flightDeactivatedMsg", getString("flightDeactivatedMsg"));
 		lang.put("flightDeactivatedPVPMsg", getString("flightDeactivatedPVPMsg"));
 		lang.put("flightDeactivatedConsoleMsg", getString("flightDeactivatedConsoleMsg"));
+		lang.put("flightDeactivatedTimeMsg", getString("flightDeactivatedTimeMsg"));
 		lang.put("noPermission", getString("noPermission"));
 		lang.put("missingNode", getString("missingNode"));
 		lang.put("notDuringWar", getString("notDuringWar"));
@@ -54,6 +55,9 @@ public class Settings {
 		lang.put("enabled", getString("enabled"));
 		lang.put("statusScreenComponent", getString("statusScreenComponent"));
 		lang.put("statusScreenComponentHover", getString("statusScreenComponentHover"));
+		lang.put("tempFlightGrantedToPlayer", getString("tempFlightGrantedToPlayer"));
+		lang.put("youHaveReceivedTempFlight", getString("youHaveReceivedTempFlight"));
+		lang.put("yourTempFlightHasExpired", getString("yourTempFlightHasExpired"));
 	}
 
 	public static String getLangString(String languageString) {

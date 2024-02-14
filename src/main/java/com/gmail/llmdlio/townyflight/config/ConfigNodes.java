@@ -44,6 +44,11 @@ public enum ConfigNodes {
 			"Flight priviledges removed. ",
 			"",
 			"# Message shown when a player has flight taken away by console."),
+	LANG_FLIGHTDEACTIVATEDTIMEMSG(
+			"language.flightDeactivatedTimeMsg",
+			"You ran out of flight time. ",
+			"",
+			"# Message shown when a player has flight taken away because their tempflight ran out."),
 	LANG_NOPERMISSION(
 			"language.noPermission",
 			"You do not have permission for this command%s. ",
@@ -94,6 +99,22 @@ public enum ConfigNodes {
 			"Flight enabled for everyone within this town's borders.",
 			"",
 			"# The hover text shown on the free flight status screen component."),
+	LANG_TEMPFLIGHTGRANTEDTOPLAYER(
+			"language.tempFlightGrantedToPlayer",
+			"%s has had tempflight granted for %s.",
+			"",
+			"# The message shown to the admin/console when temp flight is given to a player."),
+	LANG_YOUHAVEBEENGIVENTEMPFLIGHT(
+			"language.youHaveReceivedTempFlight",
+			"You have been given %s of tempflight priviledges.",
+			"",
+			"# The message shown to the player when they receive temp flight."),
+	LANG_TEMPFLIGHTEXPIRED(
+			"language.yourTempFlightHasExpired",
+			"Your tempflight priviledges have expired.",
+			"",
+			"# The message shown to the player when they run out of temp flight."),
+
 	
 	OPTIONS("options", "", "",
 			"#################", 

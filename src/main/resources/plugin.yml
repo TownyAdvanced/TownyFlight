@@ -21,6 +21,9 @@ permissions:
   townyflight.command.tfly.reload:
     description: User is able to reload the config.
     default: op
+  townyflight.command.tfly.tempflight:
+    description: User is able to grant tempflight to players.
+    default: op
   townyflight.command.tfly.other:
     description: User is able to remove flight from other players.
     default: op

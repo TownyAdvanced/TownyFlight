@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import com.gmail.goosius.siegewar.SiegeController;
 import com.gmail.goosius.siegewar.enums.SiegeStatus;
 import com.gmail.llmdlio.townyflight.config.Settings;
+import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.gmail.llmdlio.townyflight.util.Permission;
@@ -52,23 +53,16 @@ public class TownyFlightAPI {
 	 * @return true if the {@link Player} is allowed to fly.
 	 **/
 	public boolean canFly(Player player, boolean silent) {
-		Town town = TownyAPI.getInstance().getTown(player.getLocation());
 		if (player.hasPermission("townyflight.bypass") 
 			|| player.getGameMode().equals(GameMode.SPECTATOR) 
 			|| player.getGameMode().equals(GameMode.CREATIVE)
-			|| town != null && MetaData.getFreeFlightMeta(town)
 			|| getForceAllowFlight(player))
 			return true;
 
-		if (!Permission.has(player, "townyflight.command.tfly", silent)) return false;
+		if (!hasTempFlight(player) && !Permission.has(player, "townyflight.command.tfly", silent)) return false;
 
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
 		if (resident == null) return false;
-
-		if (!resident.hasTown() && !locationTrustsResidents(town, resident)) {
-			if (!silent) Message.of("noTownMsg").to(player);
-			return false;
-		}
 
 		if (warPrevents(player.getLocation(), resident)) {
 			if (!silent) Message.of("notDuringWar").to(player);
@@ -81,11 +75,6 @@ public class TownyFlightAPI {
 		}
 		return true;
 	}
-
-	private boolean locationTrustsResidents(Town town, Resident resident) {
-		return town != null && town.hasTrustedResident(resident);
-	}
-
 
 	/**
 	 * Returns true if a player is allowed to fly at their current location. Checks
@@ -104,12 +93,19 @@ public class TownyFlightAPI {
 		if (TownyAPI.getInstance().isWilderness(location))
 			return false;
 
+		Town town = TownyAPI.getInstance().getTown(location);
+
 		if (player.hasPermission("townyflight.alltowns"))
 			return true;
 
-		Town town = TownyAPI.getInstance().getTown(location);
 		if (player.hasPermission("townyflight.trustedtowns") && town.hasTrustedResident(resident))
 			return true;
+
+		if (MetaData.getFreeFlightMeta(town))
+			return true;
+
+		if (!resident.hasTown())
+			return false;
 
 		Town residentTown = resident.getTownOrNull();
 		if (residentTown == null)
@@ -142,6 +138,7 @@ public class TownyFlightAPI {
 				String reason = Message.getLangString("flightDeactivatedMsg");
 				if (cause == "pvp") reason = Message.getLangString("flightDeactivatedPVPMsg");
 				if (cause == "console") reason = Message.getLangString("flightDeactivatedConsoleMsg");
+				if (cause == "time") reason = Message.getLangString("flightDeactivatedTimeMsg");
 				Message.of(reason + Message.getLangString("flightOffMsg")).to(player);
 			} else {
 				Message.of("flightOffMsg").to(player);
@@ -231,6 +228,10 @@ public class TownyFlightAPI {
 	 */
 	public boolean getForceAllowFlight(Player player) {
 		return player.getPersistentDataContainer().getOrDefault(forceAllowFlight, PersistentDataType.BYTE, (byte) 0) == 1;
+	}
+
+	private boolean hasTempFlight(Player player) {
+		return TempFlightTask.getSeconds(player.getUniqueId()) > 0L;
 	}
 
 	private boolean warPrevents(Location location, Resident resident) {

@@ -3,6 +3,9 @@ package com.gmail.llmdlio.townyflight;
 import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
+
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
@@ -20,6 +23,9 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
 import com.gmail.llmdlio.townyflight.listeners.TownStatusScreenListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
+import com.gmail.llmdlio.townyflight.tasks.TaskHandler;
+import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
+import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
@@ -57,6 +63,9 @@ public class TownyFlight extends JavaPlugin {
 		registerCommands();
 		getLogger().info("Towny version " + townyVersion + " found.");
 		getLogger().info(this.getDescription().getFullName() + " by LlmDl Enabled.");
+		
+		cycleTimerTasksOn();
+		reGrantTempFlightToOnlinePlayer();
 	}
 
 	public static TownyFlight getPlugin() {
@@ -125,6 +134,23 @@ public class TownyFlight extends JavaPlugin {
 
 	private void registerCommands() {
 		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
+	}
+
+	private void cycleTimerTasksOn() {
+		cycleTimerTasksOff();
+		TaskHandler.toggleTempFlightTask(true);
+	}
+
+	private void cycleTimerTasksOff() {
+		TaskHandler.toggleTempFlightTask(false);
+	}
+
+	private void reGrantTempFlightToOnlinePlayer() {
+		for (Player player : Bukkit.getOnlinePlayers()) {
+			long seconds = MetaData.getSeconds(player.getUniqueId());
+			if (seconds > 0L)
+				TempFlightTask.addPlayerTempFlightSeconds(player.getUniqueId(), seconds);
+		}
 	}
 
 	public TaskScheduler getScheduler() {

@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 
 import com.gmail.llmdlio.townyflight.TownyFlight;
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
+import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
+import com.palmergames.util.TimeMgmt;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 import net.md_5.bungee.api.ChatColor;
@@ -108,6 +110,11 @@ public class TownyFlightPlaceholderExpansion extends PlaceholderExpansion {
 		switch (identifier) {
 		case "can_player_fly": // %townyflight_can_player_fly%
 			return String.valueOf(TownyFlightAPI.canFlyAccordingToCache(player));
+		case "temp_flight_seconds_remaining": // %townyflight_temp_flight_seconds_remaining%
+			return TimeMgmt.getFormattedTimeValue(TempFlightTask.getSeconds(offlineplayer.getUniqueId()) * 1000L);
+		case "temp_flight_seconds_remaining_raw": // %townyflight_temp_flight_seconds_remaining_raw%
+			return String.valueOf(TempFlightTask.getSeconds(offlineplayer.getUniqueId()));
+
 		default:
 			return "";
 		}

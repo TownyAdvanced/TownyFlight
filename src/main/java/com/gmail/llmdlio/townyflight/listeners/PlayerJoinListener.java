@@ -9,6 +9,8 @@ import org.bukkit.event.player.PlayerJoinEvent;
 
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.gmail.llmdlio.townyflight.config.Settings;
+import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
+import com.gmail.llmdlio.townyflight.util.MetaData;
 
 public class PlayerJoinListener implements Listener {
 	private final TownyFlight plugin;
@@ -26,6 +28,10 @@ public class PlayerJoinListener implements Listener {
 		final Player player = event.getPlayer();
 
 		plugin.getScheduler().runLater(player, () -> {
+			long seconds = MetaData.getSeconds(player.getUniqueId());
+			if (seconds > 0L)
+				TempFlightTask.addPlayerTempFlightSeconds(player.getUniqueId(), seconds);
+
 			boolean canFly = TownyFlightAPI.getInstance().canFly(player, true);
 			boolean isFlying = player.isFlying();
 			if (isFlying && canFly)
