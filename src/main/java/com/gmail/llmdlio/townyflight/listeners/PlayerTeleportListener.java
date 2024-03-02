@@ -16,7 +16,7 @@ public class PlayerTeleportListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void playerTeleports(PlayerTeleportEvent event) {
-		if (event.getCause() != TeleportCause.PLUGIN || event.getCause() != TeleportCause.COMMAND)
+		if (!aTeleportCauseThatMatters(event.getCause()))
 			return;
 
 		Player player = event.getPlayer();
@@ -27,6 +27,11 @@ public class PlayerTeleportListener implements Listener {
 		}
 
 		TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+	}
+
+	private boolean aTeleportCauseThatMatters(TeleportCause teleportCause) {
+		return teleportCause == TeleportCause.PLUGIN || teleportCause == TeleportCause.COMMAND ||
+				teleportCause == TeleportCause.ENDER_PEARL || teleportCause == TeleportCause.CHORUS_FRUIT;
 	}
 
 	private boolean flightAllowedDestination(Player player, Location loc) {
