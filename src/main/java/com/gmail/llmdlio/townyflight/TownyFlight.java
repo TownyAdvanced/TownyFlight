@@ -21,6 +21,7 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerLeaveTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerLogOutListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerPVPListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
+import com.gmail.llmdlio.townyflight.listeners.TownRemoveResidentListener;
 import com.gmail.llmdlio.townyflight.listeners.TownStatusScreenListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.gmail.llmdlio.townyflight.tasks.TaskHandler;
@@ -118,6 +119,7 @@ public class TownyFlight extends JavaPlugin {
 		pm.registerEvents(new PlayerJoinListener(this), this);
 		pm.registerEvents(new PlayerLogOutListener(), this);
 		pm.registerEvents(new PlayerLeaveTownListener(this), this);
+		pm.registerEvents(new TownRemoveResidentListener(this), this);
 		pm.registerEvents(new TownUnclaimListener(this), this);
 		pm.registerEvents(new PlayerFallListener(), this);
 		pm.registerEvents(new PlayerTeleportListener(), this);
