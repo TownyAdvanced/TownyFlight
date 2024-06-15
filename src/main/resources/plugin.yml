@@ -45,3 +45,6 @@ permissions:
   townyflight.trustedtowns:
     description: Allows players to use /townyflight in towns in which they are Trusted.
     default: op
+  townyflight.wilderness:
+    description: Allows players to use /townyflight in the wilderness.
+    default: op
