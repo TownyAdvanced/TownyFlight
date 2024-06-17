@@ -90,9 +90,8 @@ public class TownyFlightAPI {
 		if (instance.getForceAllowFlight(player))
 			return true;
 
-		if (TownyAPI.getInstance().isWilderness(location)) {
+		if (TownyAPI.getInstance().isWilderness(location))
 			return player.hasPermission("townyflight.wilderness");
-		}
 
 		Town town = TownyAPI.getInstance().getTown(location);
 
