@@ -3,6 +3,9 @@ package com.gmail.llmdlio.townyflight.config;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import com.gmail.llmdlio.townyflight.TownyFlight;
 import com.palmergames.bukkit.config.CommentedConfiguration;
@@ -78,5 +81,23 @@ public class TownyFlightConfig {
 		if (value == null)
 			value = "";
 		newConfig.set(root, value.toString());
+	}
+
+	public static String getString(String root, String def) {
+
+		String data = config.getString(root.toLowerCase(), def);
+		if (data == null) {
+			TownyFlight.getPlugin().getLogger().warning(root.toLowerCase() + " from config.yml");
+			return "";
+		}
+		return data;
+	}
+
+	public static String getString(ConfigNodes node) {
+		return config.getString(node.getRoot().toLowerCase(), node.getDefault());
+	}
+
+	public List<String> getStrArr(ConfigNodes node) {
+		return Arrays.stream(getString(node).split(",")).collect(Collectors.toList());
 	}
 }

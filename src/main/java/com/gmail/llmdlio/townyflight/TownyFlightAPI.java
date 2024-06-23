@@ -59,6 +59,9 @@ public class TownyFlightAPI {
 			|| getForceAllowFlight(player))
 			return true;
 
+		if (hasTempFlight(player) && tempFlightAllowsLocation(player))
+			return true;
+
 		if (!hasTempFlight(player) && !Permission.has(player, "townyflight.command.tfly", silent)) return false;
 
 		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
@@ -75,6 +78,46 @@ public class TownyFlightAPI {
 		}
 		return true;
 	}
+
+	/**
+	 * Returns true when a player is at a suitable location, matching the allowed
+	 * areas in config.yml.
+	 * 
+	 * @param player Player to test.
+	 * @return true when tempflight is allowed here.
+	 */
+	private boolean tempFlightAllowsLocation(Player player) {
+		Location location = player.getLocation();
+		Resident resident = TownyAPI.getInstance().getResident(player);
+		if (resident == null)
+			return false;
+
+		if (TownyAPI.getInstance().isWilderness(location))
+			return Settings.isAllowedTempFlightArea("wilderness");
+
+		if (Settings.isAllowedTempFlightArea("alltowns"))
+			return true;
+
+		Town town = TownyAPI.getInstance().getTown(location);
+		if (Settings.isAllowedTempFlightArea("owntown") && town.hasResident(resident))
+			return true;
+
+		if (Settings.isAllowedTempFlightArea("trustedtowns") && town.getTrustedResidents().contains(resident))
+			return true;
+
+		if (!town.hasNation() || !resident.hasTown())
+			return false;
+
+		Town residentTown = resident.getTownOrNull();
+		if (Settings.isAllowedTempFlightArea("nationtowns") && CombatUtil.isSameNation(town, residentTown))
+			return true;
+
+		if (Settings.isAllowedTempFlightArea("alliedtowns") && CombatUtil.isAlly(town, residentTown))
+			return true;
+
+		return false;
+	}
+	
 
 	/**
 	 * Returns true if a player is allowed to fly at their current location. Checks
