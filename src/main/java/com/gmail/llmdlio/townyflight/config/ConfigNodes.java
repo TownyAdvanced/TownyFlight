@@ -141,6 +141,11 @@ public enum ConfigNodes {
 			"false",
 			"",
 			"# If set to false, TownyFlight will not prevent combat of flying people."),
+	OPTIONS_TEMPFLIGHT_ALLOWED_AREAS(
+			"options.tempflight_allowed_areas",
+			"owntown,nationtowns",
+			"",
+			"# The list of areas which allow tempflight, allowed words: owntown, nationtowns, alliedtowns, alltowns, trustedtowns, wilderness"),
 	OPTIONS_SHOW_PERMISSION(
 			"options.show_Permission_After_No_Permission_Message", 
 			"true",
