@@ -2,6 +2,8 @@ package com.gmail.llmdlio.townyflight.util;
 
 import org.bukkit.command.CommandSender;
 
+import com.palmergames.bukkit.towny.TownyMessaging;
+
 public class MessageBuilder {
 	String message;
 	boolean serious;
@@ -17,6 +19,7 @@ public class MessageBuilder {
 	
 	public void to(CommandSender sender) {
 		Message message = build();
-		sender.sendMessage(message.getMessage());
+		TownyMessaging.sendMsg(sender, message.getMessage());
+//		sender.sendMessage(message.getMessage());
 	}
 }
