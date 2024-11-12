@@ -1,8 +1,8 @@
 package com.gmail.llmdlio.townyflight.config;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -16,6 +16,7 @@ public class Settings {
 	public static Boolean showPermissionInMessage;
 	public static Boolean siegeWarFound;
 	public static int flightDisableTimer;
+	public static List<String> allowedTempFlightAreas;
 	private static Map<String, String> lang = new HashMap<String,String>();
 
 	public static boolean loadSettings(TownyFlightConfig _config) {
@@ -32,6 +33,7 @@ public class Settings {
 		disableCombatPrevention = Boolean.valueOf(getOption("disable_Combat_Prevention"));
 		showPermissionInMessage = Boolean.valueOf(getOption("show_Permission_After_No_Permission_Message"));
 		flightDisableTimer = Integer.valueOf(getOption("flight_Disable_Timer"));
+		allowedTempFlightAreas = allowedTempFlightAreas();
 	}
 
 	public static void loadStrings() {
@@ -75,11 +77,20 @@ public class Settings {
 	private static String getString(String string) {
 		return colour(getConfig("language").getString(string));
 	}
-	
+
 	private static ConfigurationSection getConfig(String path) {
 		return config.getConfig().getConfigurationSection(path);
 	}
+
 	private static String colour(String string) {
 		return ChatColor.translateAlternateColorCodes('&', string);
+	}
+
+	public static List<String> allowedTempFlightAreas() {
+		return config.getStrArr(ConfigNodes.OPTIONS_TEMPFLIGHT_ALLOWED_AREAS);
+	}
+	
+	public static boolean isAllowedTempFlightArea(String area) {
+		return allowedTempFlightAreas.contains(area);
 	}
 }
