@@ -178,6 +178,10 @@ public class TownyFlightAPI {
 	 */
 	@SuppressWarnings("deprecation")
 	public void removeFlight(Player player, boolean silent, boolean forced, String cause) {
+		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, false);
+		BukkitTools.fireEvent(event);
+		if (event.isCancelled()) return;
+
 		if (!silent) {
 			if (forced) {
 				String reason = Message.getLangString("flightDeactivatedMsg");
@@ -198,7 +202,6 @@ public class TownyFlightAPI {
 		}
 		player.setAllowFlight(false);
 		cachePlayerFlight(player, false);
-		BukkitTools.fireEvent(new PlayerFlightChangeEvent(player, false));
 	}
 
 	/**
@@ -208,10 +211,13 @@ public class TownyFlightAPI {
 	 * @param silent true will mean no message is shown to the {@link Player}.
 	 */
 	public void addFlight(Player player, boolean silent) {
+		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, true);
+		BukkitTools.fireEvent(event);
+		if (event.isCancelled()) return;
+
 		if (!silent) Message.of("flightOnMsg").to(player);
 		player.setAllowFlight(true);
 		cachePlayerFlight(player, true);
-		BukkitTools.fireEvent(new PlayerFlightChangeEvent(player, true));
 	}
 
 	/**
