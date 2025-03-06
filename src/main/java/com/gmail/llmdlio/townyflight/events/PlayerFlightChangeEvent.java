@@ -1,11 +1,11 @@
 package com.gmail.llmdlio.townyflight.events;
 
+import com.palmergames.bukkit.towny.event.CancellableTownyEvent;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
 
-public class PlayerFlightChangeEvent extends Event {
+public class PlayerFlightChangeEvent extends CancellableTownyEvent {
     private static final HandlerList handlers = new HandlerList();
     private final Player player;
     private final boolean flightAllowed;
