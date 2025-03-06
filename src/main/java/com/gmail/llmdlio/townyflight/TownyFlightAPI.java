@@ -196,6 +196,7 @@ public class TownyFlightAPI {
 		}
 		player.setAllowFlight(false);
 		cachePlayerFlight(player, false);
+		Bukkit.getServer().getPluginManager().callEvent(new PlayerFlightChangeEvent(player, false));
 	}
 
 	/**
@@ -208,6 +209,7 @@ public class TownyFlightAPI {
 		if (!silent) Message.of("flightOnMsg").to(player);
 		player.setAllowFlight(true);
 		cachePlayerFlight(player, true);
+		Bukkit.getServer().getPluginManager().callEvent(new PlayerFlightChangeEvent(player, true));
 	}
 
 	/**
