@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.gmail.llmdlio.townyflight.events.PlayerFlightChangeEvent;
+import com.palmergames.bukkit.util.BukkitTools;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -196,7 +198,7 @@ public class TownyFlightAPI {
 		}
 		player.setAllowFlight(false);
 		cachePlayerFlight(player, false);
-		Bukkit.getServer().getPluginManager().callEvent(new PlayerFlightChangeEvent(player, false));
+		BukkitTools.fireEvent(new PlayerFlightChangeEvent(player, false));
 	}
 
 	/**
@@ -209,7 +211,7 @@ public class TownyFlightAPI {
 		if (!silent) Message.of("flightOnMsg").to(player);
 		player.setAllowFlight(true);
 		cachePlayerFlight(player, true);
-		Bukkit.getServer().getPluginManager().callEvent(new PlayerFlightChangeEvent(player, true));
+		BukkitTools.fireEvent(new PlayerFlightChangeEvent(player, true));
 	}
 
 	/**

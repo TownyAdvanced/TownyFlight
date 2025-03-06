@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight;
+package com.gmail.llmdlio.townyflight.events;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
