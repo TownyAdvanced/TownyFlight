@@ -178,7 +178,7 @@ public class TownyFlightAPI {
 	 */
 	@SuppressWarnings("deprecation")
 	public void removeFlight(Player player, boolean silent, boolean forced, String cause) {
-		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, false, silent);
+		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, false);
 		BukkitTools.fireEvent(event);
 		if (event.isCancelled()) {
 			if (!silent) {
@@ -216,7 +216,7 @@ public class TownyFlightAPI {
 	 * @param silent true will mean no message is shown to the {@link Player}.
 	 */
 	public void addFlight(Player player, boolean silent) {
-		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, true, silent);
+		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, true);
 		BukkitTools.fireEvent(event);
 		if (event.isCancelled()) {
 			if (!silent) {

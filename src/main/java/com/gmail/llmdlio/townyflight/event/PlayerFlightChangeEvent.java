@@ -9,12 +9,10 @@ public class PlayerFlightChangeEvent extends CancellableTownyEvent {
     private static final HandlerList HANDLER_LIST = new HandlerList();
     private final Player player;
     private final boolean flightAllowed;
-    private boolean silent;
 
-    public PlayerFlightChangeEvent(Player player, boolean flightAllowed, boolean silent) {
+    public PlayerFlightChangeEvent(Player player, boolean flightAllowed) {
         this.player = player;
         this.flightAllowed = flightAllowed;
-        this.silent = silent;
     }
 
     public Player getPlayer() {
@@ -23,14 +21,6 @@ public class PlayerFlightChangeEvent extends CancellableTownyEvent {
 
     public boolean isFlightAllowed() {
         return flightAllowed;
-    }
-
-    public boolean isSilent() {
-        return silent;
-    }
-
-    public void setSilent(boolean silent) {
-        this.silent = silent;
     }
 
     public static HandlerList getHandlerList() {
