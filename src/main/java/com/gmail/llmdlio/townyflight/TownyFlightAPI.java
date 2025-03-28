@@ -181,8 +181,8 @@ public class TownyFlightAPI {
 		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, false);
 		BukkitTools.fireEvent(event);
 		if (event.isCancelled()) {
-			if (!silent) {
-				player.sendMessage(event.getCancelMessage());
+			if (!silent && event.getCancelMessage() != null && !event.getCancelMessage().isEmpty()) {
+				Message.of(event.getCancelMessage()).serious().to(player);
 			}
 			return;
 		}
@@ -219,8 +219,8 @@ public class TownyFlightAPI {
 		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, true);
 		BukkitTools.fireEvent(event);
 		if (event.isCancelled()) {
-			if (!silent) {
-				player.sendMessage(event.getCancelMessage());
+			if (!silent && event.getCancelMessage() != null && !event.getCancelMessage().isEmpty()) {
+				Message.of(event.getCancelMessage()).serious().to(player);
 			}
 			return;
 		}
