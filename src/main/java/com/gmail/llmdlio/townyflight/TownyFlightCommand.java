@@ -58,20 +58,20 @@ public class TownyFlightCommand implements TabExecutor {
 			default:
 				if (args.length == 1)
 					return filterByStartOrGetTownyStartingWith(tflyTabCompletes, args[0], "r");
-				else
+				else 
 					Collections.emptyList();
 			}
 		}
 		return Collections.emptyList();
 	}
-
+	
 	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 		this.sender = sender;
 		parseCommand(args);
 		return true;
 	}
-
+	
 	private void parseCommand(String[] args) {
 		if (sender instanceof ConsoleCommandSender) {
 			if (args.length > 0) {
@@ -112,7 +112,7 @@ public class TownyFlightCommand implements TabExecutor {
 					// It's not any other subcommand of /tfly so handle removing flight via /tfly {name}
 					if (Permission.has(sender, "townyflight.command.tfly.other", false))
 						toggleFlightOnOther(args[0]);
-				}
+				} 
 				return;
 			}
 
@@ -185,7 +185,7 @@ public class TownyFlightCommand implements TabExecutor {
 	}
 
 	private void parseTownCommand(String[] args) {
-		if (args.length < 1) {
+		if (args.length < 1) { 
 			showTflyHelp();
 			return;
 		}
@@ -206,7 +206,7 @@ public class TownyFlightCommand implements TabExecutor {
 
 			boolean futurestate = !MetaData.getFreeFlightMeta(town);
 			MetaData.setFreeFlightMeta(town, futurestate);
-			Message.of(String.format(Message.getLangString("townWideFlight"), Message.getLangString(futurestate ? "enabled" : "disabled"), town)).to(sender);
+			Message.of(String.format(Message.getLangString("townWideFlight"), Message.getLangString(futurestate? "enabled" : "disabled"), town)).to(sender);
 			if (!futurestate)
 				TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
 			return;
@@ -215,27 +215,27 @@ public class TownyFlightCommand implements TabExecutor {
 				showTflyHelp();
 				return;
 			}
-
+			
 			Town town = TownyAPI.getInstance().getTown(args[0]);
 			if (town == null) {
 				Message.of(String.format(Message.getLangString("noTownFound"), args[0])).serious().to(sender);
 				return;
 			}
-
+	
 			if (args[1].equalsIgnoreCase("toggleflight")) {
 				boolean futurestate = !MetaData.getFreeFlightMeta(town);
 				MetaData.setFreeFlightMeta(town, futurestate);
-				Message.of(String.format(Message.getLangString("townWideFlight"), Message.getLangString(futurestate ? "enabled" : "disabled"), town)).to(sender);
+				Message.of(String.format(Message.getLangString("townWideFlight"), Message.getLangString(futurestate? "enabled" : "disabled"), town)).to(sender);
 				if (!futurestate)
 					TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
 				return;
 			}
-
+			
 		}
 
 		showTflyHelp();
 	}
-
+	
 
 	private void showTflyHelp() {
 		if (Permission.has(sender, "townyflight.command.tfly", true))
@@ -259,7 +259,7 @@ public class TownyFlightCommand implements TabExecutor {
 
 	/**
 	 * If flight is on, turn it off and vice versa
-	 *
+	 * 
 	 * @param player {@link Player} toggling flight.
 	 * @param silent true will mean no message is shown to the {@link Player}.
 	 * @param forced true if this is a forced deactivation or not.
@@ -292,7 +292,7 @@ public class TownyFlightCommand implements TabExecutor {
 		plugin.registerEvents();
 		Message.of("TownyFlight Config & Listeners reloaded.").to(sender);
 	}
-
+	
 
 	/**
 	 * Returns a List<String> containing strings of resident, town, and/or nation names that match with arg.
@@ -325,9 +325,9 @@ public class TownyFlightCommand implements TabExecutor {
 
 		return matches;
 	}
-
+	
 	/**
-	 * Checks if arg starts with filters, if not returns matches from {@link #getTownyStartingWith(String, String)}.
+	 * Checks if arg starts with filters, if not returns matches from {@link #getTownyStartingWith(String, String)}. 
 	 * Add a "+" to the type to return both cases
 	 *
 	 * @param filters the strings to filter arg with
