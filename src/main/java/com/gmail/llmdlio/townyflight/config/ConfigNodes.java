@@ -19,6 +19,11 @@ public enum ConfigNodes {
 			"Flight De-Activated. ",
 			"",
 			"# Message shown when flight de-activated."),
+	LANG_NOTMAYOR(
+			"language.notMayorMsg",
+			"You are not the mayor of a town. ",
+			"",
+			"# Message shown when player lacks mayor status somewhere."),
 	LANG_NOTOWN(
 			"language.noTownMsg",
 			"Flight cannot be activated, you don't belong to a town. ",
@@ -60,7 +65,7 @@ public enum ConfigNodes {
 			"",
 			"# Message attached to noPermission when options.show_Permission_After_No_Permission_Message is true"),
 	LANG_NOTDURINGWAR(
-			"language.notDuringWar", 
+			"language.notDuringWar",
 			"You cannot use flight while Towny war is active. ",
 			"",
 			"# Message shown when war is active and flight is disallowed."),
@@ -80,7 +85,7 @@ public enum ConfigNodes {
 			"",
 			"# Message when a town has free flight enabled or disabled."),
 	LANG_DISABLED(
-			"language.disabled", 
+			"language.disabled",
 			"disabled",
 			"",
 			"# The word disabled."),
@@ -90,7 +95,7 @@ public enum ConfigNodes {
 			"",
 			"# The world enabled."),
 	LANG_STATUSSCREENCOMP(
-			"language.statusScreenComponent", 
+			"language.statusScreenComponent",
 			"Free Flight",
 			"",
 			"# The component shown on towns' status screens when they have free flight enabled."),
@@ -115,10 +120,10 @@ public enum ConfigNodes {
 			"",
 			"# The message shown to the player when they run out of temp flight."),
 
-	
+
 	OPTIONS("options", "", "",
-			"#################", 
-			"#    Options    #", 
+			"#################",
+			"#    Options    #",
 			"#################"),
 	OPTIONS_AUTO_ENABLE_FLIGHT(
 			"options.auto_Enable_Flight",
@@ -127,17 +132,17 @@ public enum ConfigNodes {
 			"# If set to true, players entering their town will have flight auto-enabled.",
 			"# When set to true, the plugin will use slightly more resources due to the EnterTown listener."),
 	OPTIONS_AUTO_ENABLE_SILENT(
-			"options.auto_Enable_Silent", 
+			"options.auto_Enable_Silent",
 			"false",
 			"",
 			"# If set to true, players entering their town will have flight auto-enabled without being notified in chat."),
 	OPTIONS_DISABLE_DURING_WARTIME(
-			"options.disable_During_Wartime", 
+			"options.disable_During_Wartime",
 			"true",
 			"",
 			"# If set to false, players can still fly in their town while war is active."),
 	OPTIONS_DISABLE_COMBAT_PREVENT(
-			"options.disable_Combat_Prevention", 
+			"options.disable_Combat_Prevention",
 			"false",
 			"",
 			"# If set to false, TownyFlight will not prevent combat of flying people."),
@@ -147,7 +152,7 @@ public enum ConfigNodes {
 			"",
 			"# The list of areas which allow tempflight, allowed words: owntown, nationtowns, alliedtowns, alltowns, trustedtowns, wilderness"),
 	OPTIONS_SHOW_PERMISSION(
-			"options.show_Permission_After_No_Permission_Message", 
+			"options.show_Permission_After_No_Permission_Message",
 			"true",
 			"",
 			"# If set to false, the language.noPermission message will not display the permission node."),
