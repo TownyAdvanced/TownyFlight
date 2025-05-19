@@ -33,7 +33,7 @@ public class TownyFlightCommand implements TabExecutor {
 	private TownyFlight plugin;
 	private CommandSender sender;
 	private static final List<String> tflyTabCompletes = Arrays.asList(
-		"reload","tempflight","town","help","?"
+			"reload","tempflight","town","help","?"
 	);
 
 	public TownyFlightCommand(TownyFlight plugin) {
@@ -44,22 +44,22 @@ public class TownyFlightCommand implements TabExecutor {
 	public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
 		if (args.length > 0) {
 			switch (args[0].toLowerCase()) {
-			case "tempflight":
-				if (args.length == 2)
-					return getTownyStartingWith(args[1], "r");
-				if (args.length == 3)
-					return NameUtil.filterByStart(Arrays.asList("remove", "10", "1000s", "60m", "1h", "1d"), args[2]);
-			case "town":
-				if (args.length == 2)
-					return getTownyStartingWith(args[1], "t");
-				if (args.length == 3)
-					return Collections.singletonList("toggleflight");
-				break;
-			default:
-				if (args.length == 1)
-					return filterByStartOrGetTownyStartingWith(tflyTabCompletes, args[0], "r");
-				else
-					Collections.emptyList();
+				case "tempflight":
+					if (args.length == 2)
+						return getTownyStartingWith(args[1], "r");
+					if (args.length == 3)
+						return NameUtil.filterByStart(Arrays.asList("remove", "10", "1000s", "60m", "1h", "1d"), args[2]);
+				case "town":
+					if (args.length == 2)
+						return getTownyStartingWith(args[1], "t");
+					if (args.length == 3)
+						return Collections.singletonList("toggleflight");
+					break;
+				default:
+					if (args.length == 1)
+						return filterByStartOrGetTownyStartingWith(tflyTabCompletes, args[0], "r");
+					else
+						Collections.emptyList();
 			}
 		}
 		return Collections.emptyList();
@@ -185,52 +185,24 @@ public class TownyFlightCommand implements TabExecutor {
 	}
 
 	private void parseTownCommand(String[] args) {
-		if (args.length < 1) {
+		if (args.length < 2) {
 			showTflyHelp();
 			return;
 		}
 
-		if(args[0].equalsIgnoreCase("toggleflight") && sender instanceof Player) {
-			Resident resident = TownyAPI.getInstance().getResident((Player)sender);
-			if (resident == null) {
-				Message.of(String.format(Message.getLangString("notMayorMsg"))).to(sender);
-				return;
-			}
+		Town town = TownyAPI.getInstance().getTown(args[0]);
+		if (town == null) {
+			Message.of(String.format(Message.getLangString("noTownFound"), args[0])).serious().to(sender);
+			return;
+		}
 
-			if (!resident.isMayor()) {
-				Message.of(String.format(Message.getLangString("notMayorMsg"))).to(sender);
-				return;
-			}
-
-			Town town = resident.getTownOrNull();
-
+		if (args[1].equalsIgnoreCase("toggleflight")) {
 			boolean futurestate = !MetaData.getFreeFlightMeta(town);
 			MetaData.setFreeFlightMeta(town, futurestate);
-			Message.of(String.format(Message.getLangString("townWideFlight"), Message.getLangString(futurestate ? "enabled" : "disabled"), town)).to(sender);
+			Message.of(String.format(Message.getLangString("townWideFlight"), Message.getLangString(futurestate? "enabled" : "disabled"), town)).to(sender);
 			if (!futurestate)
 				TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
 			return;
-		} else if(Permission.has(sender,"townyflight.command.tfly.town.other", false)){
-			if(args.length < 2) {
-				showTflyHelp();
-				return;
-			}
-
-			Town town = TownyAPI.getInstance().getTown(args[0]);
-			if (town == null) {
-				Message.of(String.format(Message.getLangString("noTownFound"), args[0])).serious().to(sender);
-				return;
-			}
-
-			if (args[1].equalsIgnoreCase("toggleflight")) {
-				boolean futurestate = !MetaData.getFreeFlightMeta(town);
-				MetaData.setFreeFlightMeta(town, futurestate);
-				Message.of(String.format(Message.getLangString("townWideFlight"), Message.getLangString(futurestate ? "enabled" : "disabled"), town)).to(sender);
-				if (!futurestate)
-					TownyFlightAPI.getInstance().takeFlightFromPlayersInTown(town);
-				return;
-			}
-
 		}
 
 		showTflyHelp();
@@ -252,8 +224,6 @@ public class TownyFlightCommand implements TabExecutor {
 		if (Permission.has(sender, "townyflight.command.tfly.other", true))
 			Message.of(Colors.White + "/tfly [playername] - Toggle flight for a player.").to(sender);
 		if (Permission.has(sender, "townyflight.command.tfly.town", true))
-			Message.of(Colors.White + "/tfly town toggleflight - Toggle free flight in your town.").to(sender);
-		if (Permission.has(sender, "townyflight.command.tfly.town.other", true))
 			Message.of(Colors.White + "/tfly town [townname] toggleflight - Toggle free flight in the given town.").to(sender);
 	}
 

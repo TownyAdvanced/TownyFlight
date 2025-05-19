@@ -64,7 +64,7 @@ public class TownyFlight extends JavaPlugin {
 		registerCommands();
 		getLogger().info("Towny version " + townyVersion + " found.");
 		getLogger().info(this.getDescription().getFullName() + " by LlmDl Enabled.");
-		
+
 		cycleTimerTasksOn();
 		reGrantTempFlightToOnlinePlayer();
 	}
@@ -136,6 +136,7 @@ public class TownyFlight extends JavaPlugin {
 
 	private void registerCommands() {
 		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
+		new TownyFlightCommand(this);
 	}
 
 	private void cycleTimerTasksOn() {
