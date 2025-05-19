@@ -38,7 +38,7 @@ public class TownyCommandIntegration implements CommandExecutor {
                 return true;
             }
 
-            if(!Permission.has(sender,"townyflight.command.tfly.town", false)) return false;
+            if(!Permission.has(sender,"townyflight.toggleflight", false)) return false;
 
             Town town = resident.getTownOrNull();
 
