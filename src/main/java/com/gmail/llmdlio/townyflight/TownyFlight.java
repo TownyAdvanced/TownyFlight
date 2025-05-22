@@ -1,6 +1,6 @@
 package com.gmail.llmdlio.townyflight;
 
-import com.gmail.llmdlio.townyflight.integrations.TownyCommandIntegration;
+import com.gmail.llmdlio.townyflight.integrations.TownToggleFlightCommandAddon;
 import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
@@ -137,7 +137,7 @@ public class TownyFlight extends JavaPlugin {
 
 	private void registerCommands() {
 		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
-		new TownyCommandIntegration;(this);
+		new TownToggleFlightCommandAddon;(this);
 	}
 
 	private void cycleTimerTasksOn() {
