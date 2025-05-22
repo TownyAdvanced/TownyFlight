@@ -20,12 +20,12 @@ import org.bukkit.entity.Player;
 
 import org.jetbrains.annotations.NotNull;
 
-public class TownyCommandIntegration implements CommandExecutor {
+public class TownToggleFlightCommandAddon implements CommandExecutor {
 
     private final TownyFlight plugin;
 
 
-    public TownyCommandIntegration(TownyFlight plugin) {
+    public TownToggleFlightCommandAddon(TownyFlight plugin) {
         this.plugin = plugin;
         TownyCommandAddonAPI.addSubCommand(new AddonCommand(CommandType.TOWN_TOGGLE, "flight", this));
     }
