@@ -38,7 +38,7 @@ public class TownToggleFlightCommandAddon implements CommandExecutor {
                 return true;
             }
 
-            if(!Permission.has(sender,"townyflight.command.town.toggle.flight", false)) return false;
+            if(!Permission.has(sender,"townyflight.command.town.toggle.flight", false)) return true;
 
             Town town = resident.getTownOrNull();
 
