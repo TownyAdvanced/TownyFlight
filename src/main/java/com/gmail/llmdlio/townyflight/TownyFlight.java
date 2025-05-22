@@ -137,7 +137,7 @@ public class TownyFlight extends JavaPlugin {
 
 	private void registerCommands() {
 		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
-		new TownToggleFlightCommandAddon;(this);
+		new TownToggleFlightCommandAddon(this);
 	}
 
 	private void cycleTimerTasksOn() {
