@@ -34,7 +34,7 @@ public class TownToggleFlightCommandAddon implements CommandExecutor {
         if(sender instanceof Player) {
             Resident resident = TownyAPI.getInstance().getResident((Player)sender);
             if (resident == null || !resident.isMayor()) {
-                Message.of(String.format(Message.getLangString("notMayorMsg"))).serious().to(sender);
+                Message.of("notMayorMsg").serious().to(sender);
                 return true;
             }
 
