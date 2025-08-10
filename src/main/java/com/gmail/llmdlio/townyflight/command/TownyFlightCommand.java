@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight.integrations;
+package com.gmail.llmdlio.townyflight.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -12,9 +12,9 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.gmail.llmdlio.townyflight.command.TownToggleFlightCommandAddon;
+import com.gmail.llmdlio.townyflight.command.TownyFlightCommand;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
-import com.gmail.llmdlio.townyflight.integrations.TownyFlightCommand;
 import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
 import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
