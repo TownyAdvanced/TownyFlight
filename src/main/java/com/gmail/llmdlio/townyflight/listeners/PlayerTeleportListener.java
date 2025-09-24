@@ -31,7 +31,7 @@ public class PlayerTeleportListener implements Listener {
 
 	private boolean aTeleportCauseThatMatters(TeleportCause teleportCause) {
 		return teleportCause == TeleportCause.PLUGIN || teleportCause == TeleportCause.COMMAND ||
-				teleportCause == TeleportCause.ENDER_PEARL || teleportCause == TeleportCause.CHORUS_FRUIT;
+				teleportCause == TeleportCause.ENDER_PEARL || teleportCause == TeleportCause.CONSUMABLE_EFFECT;
 	}
 
 	private boolean flightAllowedDestination(Player player, Location loc) {

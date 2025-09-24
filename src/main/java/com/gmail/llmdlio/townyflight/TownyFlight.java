@@ -30,7 +30,7 @@ import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static final Version requiredTownyVersion = Version.fromString("0.100.3.0");
+	private static final Version requiredTownyVersion = Version.fromString("0.101.2.5");
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	private static TownyFlight plugin;
 	private static TownyFlightAPI api;
@@ -44,7 +44,7 @@ public class TownyFlight extends JavaPlugin {
 
 	public void onEnable() {
 		api = new TownyFlightAPI(this);
-		String townyVersion = getServer().getPluginManager().getPlugin("Towny").getDescription().getVersion();
+		String townyVersion = getServer().getPluginManager().getPlugin("Towny").getPluginMeta().getVersion();
 
 		if (!loadSettings()) {
 			getLogger().severe("Config failed to load!");
@@ -63,7 +63,7 @@ public class TownyFlight extends JavaPlugin {
 		registerEvents();
 		registerCommands();
 		getLogger().info("Towny version " + townyVersion + " found.");
-		getLogger().info(this.getDescription().getFullName() + " by LlmDl Enabled.");
+		getLogger().info(this.getPluginMeta().getDisplayName() + " by LlmDl Enabled.");
 		
 		cycleTimerTasksOn();
 		reGrantTempFlightToOnlinePlayer();

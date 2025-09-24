@@ -56,7 +56,7 @@ public class TownyFlightPlaceholderExpansion extends PlaceholderExpansion {
 	 */
 	@Override
 	public String getAuthor() {
-		return plugin.getDescription().getAuthors().toString();
+		return plugin.getPluginMeta().getAuthors().toString();
 	}
 
 	/**
@@ -82,7 +82,7 @@ public class TownyFlightPlaceholderExpansion extends PlaceholderExpansion {
 	 */
 	@Override
 	public String getVersion() {
-		return plugin.getDescription().getVersion();
+		return plugin.getPluginMeta().getVersion();
 	}
 	
 	/**

@@ -40,7 +40,7 @@ public class TownyFlightConfig {
 		if (!config.load())
 			return false;
 
-		setDefaults(plugin.getDescription().getVersion(), f.toPath());
+		setDefaults(plugin.getPluginMeta().getVersion(), f.toPath());
 
 		config.save();
 
