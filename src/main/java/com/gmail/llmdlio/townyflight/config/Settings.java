@@ -49,6 +49,7 @@ public class Settings {
 		lang.put("flightDeactivatedTimeMsg", getString("flightDeactivatedTimeMsg"));
 		lang.put("noPermission", getString("noPermission"));
 		lang.put("missingNode", getString("missingNode"));
+		lang.put("notMayorMsg", getString("notMayorMsg"));
 		lang.put("notDuringWar", getString("notDuringWar"));
 		lang.put("returnToAllowedArea", getString("returnToAllowedArea"));
 		lang.put("noTownFound", getString("noTownFound"));

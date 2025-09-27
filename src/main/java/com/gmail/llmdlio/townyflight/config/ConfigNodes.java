@@ -19,6 +19,11 @@ public enum ConfigNodes {
 			"Flight De-Activated. ",
 			"",
 			"# Message shown when flight de-activated."),
+	LANG_NOTMAYOR(
+			"language.notMayorMsg",
+			"You are not the mayor of a town. ",
+			"",
+			"# Message shown when player lacks mayor status somewhere."),
 	LANG_NOTOWN(
 			"language.noTownMsg",
 			"Flight cannot be activated, you don't belong to a town. ",

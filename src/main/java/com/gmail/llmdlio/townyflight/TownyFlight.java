@@ -11,6 +11,8 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.gmail.llmdlio.townyflight.command.TownToggleFlightCommandAddon;
+import com.gmail.llmdlio.townyflight.command.TownyFlightCommand;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
 import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
@@ -85,7 +87,7 @@ public class TownyFlight extends JavaPlugin {
 		getLogger().severe("TownyFlight Disabled.");
 	}
 
-	protected boolean loadSettings() {
+	public boolean loadSettings() {
 		return loadConfig() && Settings.loadSettings(config);
 	}
 
@@ -113,7 +115,7 @@ public class TownyFlight extends JavaPlugin {
 		}
 	}
 
-	protected void registerEvents() {
+	public void registerEvents() {
 		final PluginManager pm = getServer().getPluginManager();
 
 		pm.registerEvents(new PlayerJoinListener(this), this);
@@ -130,12 +132,13 @@ public class TownyFlight extends JavaPlugin {
 			pm.registerEvents(new PlayerPVPListener(), this);
 	}
 
-	protected void unregisterEvents() {
+	public void unregisterEvents() {
 		HandlerList.unregisterAll(this);
 	}
 
 	private void registerCommands() {
 		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
+		new TownToggleFlightCommandAddon();
 	}
 
 	private void cycleTimerTasksOn() {
