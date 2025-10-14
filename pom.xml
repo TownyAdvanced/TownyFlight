@@ -8,7 +8,7 @@
 	<name>TownyFlight</name>
 	<description>A flight plugin for Towny servers.</description>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 		<project.bukkitAPIVersion>1.19</project.bukkitAPIVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<towny.version>0.101.2.5</towny.version>
@@ -21,6 +21,7 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version>
 				<configuration>
+					<release>${java.version}</release>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
 				</configuration>
