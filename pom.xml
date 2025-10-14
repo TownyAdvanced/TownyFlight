@@ -21,12 +21,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.11.0</version>
 				<configuration>
-					<release>8</release>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
-					<compilerArgs>
-						<arg>-Xplugin:jabel</arg>
-					</compilerArgs>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -62,16 +58,11 @@
 			<version>1.21.8-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
-<!--		<dependency>
+		<dependency>
 			<groupId>com.palmergames.bukkit.towny</groupId>
 			<artifactId>towny</artifactId>
 			<version>${towny.version}</version>
 			<scope>provided</scope>
-		</dependency>-->
-		<dependency>
-			<groupId>com.github.TownyAdvanced.Towny</groupId>
-			<artifactId>towny</artifactId>
-			<version>master-4907b3123a-1</version>
 		</dependency>
 		<dependency>
 			<groupId>com.github.TownyAdvanced</groupId>
@@ -89,12 +80,6 @@
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.github.bsideup.jabel</groupId>
-            <artifactId>jabel-javac-plugin</artifactId>
-            <version>1.0.0</version>
             <scope>provided</scope>
         </dependency>
 	</dependencies>
