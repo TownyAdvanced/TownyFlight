@@ -3,8 +3,9 @@ package com.gmail.llmdlio.townyflight.config;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
+
+import com.palmergames.bukkit.util.Colors;
 
 public class Settings {
 
@@ -83,7 +84,7 @@ public class Settings {
 	}
 
 	private static String colour(String string) {
-		return ChatColor.translateAlternateColorCodes('&', string);
+		return Colors.translateColorCodes(string);
 	}
 
 	public static List<String> allowedTempFlightAreas() {

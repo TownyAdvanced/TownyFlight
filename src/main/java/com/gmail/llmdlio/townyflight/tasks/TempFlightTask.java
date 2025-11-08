@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.MetaData;
+import com.gmail.llmdlio.townyflight.util.Permission;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.object.Resident;
 
@@ -30,6 +31,10 @@ public class TempFlightTask implements Runnable {
 
 		Set<UUID> uuidsToDecrement = new HashSet<>();
 		for (Player player : new ArrayList<>(Bukkit.getOnlinePlayers())) {
+			if (!TownyAPI.getInstance().isTownyWorld(player.getWorld()))
+				continue;
+			if (Permission.has(player, "townyflight.bypass", true))
+				continue;
 			if (!player.getAllowFlight() || !player.isFlying())
 				continue;
 			UUID uuid = player.getUniqueId();
