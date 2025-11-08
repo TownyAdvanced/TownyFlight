@@ -19,7 +19,6 @@ public class MessageBuilder {
 	
 	public void to(CommandSender sender) {
 		Message message = build();
-		TownyMessaging.sendMsg(sender, message.getMessage());
-//		sender.sendMessage(message.getMessage());
+		TownyMessaging.sendMessage(sender, message.getMessage());
 	}
 }

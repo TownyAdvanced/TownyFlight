@@ -1,4 +1,4 @@
-package com.gmail.llmdlio.townyflight;
+package com.gmail.llmdlio.townyflight.command;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +13,8 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 
+import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
 import com.gmail.llmdlio.townyflight.util.Message;
