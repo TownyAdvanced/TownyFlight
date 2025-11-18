@@ -6,7 +6,6 @@ api-version: ${project.bukkitAPIVersion}
 depend: [Towny]
 softdepend: [SiegeWar]
 prefix: TownyFlight
-folia-supported: true
 
 commands:
   tfly:
@@ -50,4 +49,5 @@ permissions:
     default: op
   townyflight.wilderness:
     description: Allows players to use /townyflight in the wilderness.
+
     default: op
