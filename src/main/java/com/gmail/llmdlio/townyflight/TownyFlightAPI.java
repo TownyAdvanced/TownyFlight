@@ -6,6 +6,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.gmail.llmdlio.townyflight.event.PlayerFlightChangeEvent;
+import com.palmergames.bukkit.util.BukkitTools;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -176,6 +178,15 @@ public class TownyFlightAPI {
 	 */
 	@SuppressWarnings("deprecation")
 	public void removeFlight(Player player, boolean silent, boolean forced, String cause) {
+		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, false);
+		BukkitTools.fireEvent(event);
+		if (event.isCancelled()) {
+			if (!silent && event.getCancelMessage() != null && !event.getCancelMessage().isEmpty()) {
+				Message.of(event.getCancelMessage()).serious().to(player);
+			}
+			return;
+		}
+
 		if (!silent) {
 			if (forced) {
 				String reason = Message.getLangString("flightDeactivatedMsg");
@@ -205,6 +216,15 @@ public class TownyFlightAPI {
 	 * @param silent true will mean no message is shown to the {@link Player}.
 	 */
 	public void addFlight(Player player, boolean silent) {
+		PlayerFlightChangeEvent event = new PlayerFlightChangeEvent(player, true);
+		BukkitTools.fireEvent(event);
+		if (event.isCancelled()) {
+			if (!silent && event.getCancelMessage() != null && !event.getCancelMessage().isEmpty()) {
+				Message.of(event.getCancelMessage()).serious().to(player);
+			}
+			return;
+		}
+
 		if (!silent) Message.of("flightOnMsg").to(player);
 		player.setAllowFlight(true);
 		cachePlayerFlight(player, true);
