@@ -2,7 +2,7 @@
 
 Finally, you can allow towny residents to fly while in their own towns, for free, from the lead developer of Towny.
 
-__As of version 1.5.0 This plugin supports Towny 0.94.0.2+ and MC 1.14.*.__
+__As of version 1.14.2 This plugin supports Paper 1.21.4+, Towny 0.101.2.5+ and Folia.__
 __Pre-1.5 versions requires the use of Towny 0.92.0.0 or older.__
 
 Players that are flying and make a PVP combat attack will have their attack cancelled and their flight taken away. Players that are in creative and make attacks will be allowed to continue flying, but will have their pvp attack canceled.

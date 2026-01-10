@@ -1,0 +1,57 @@
+name: TownyFlight
+version: ${version}
+main: com.gmail.llmdlio.townyflight.TownyFlight
+description: A flight plugin for Towny servers.
+author: LlmDl
+api-version: "${bukkitAPIVersion}"
+folia-supported: true
+
+dependencies:
+  server:
+    Towny:
+      load: BEFORE
+      required: true
+    SiegeWar:
+      load: BEFORE
+      required: false
+    PlaceholderAPI:
+      load: BEFORE
+      required: false
+
+permissions:
+  townyflight.command.tfly:
+    description: User is able to toggle flight on while in their town.
+    default: op
+  townyflight.command.tfly.reload:
+    description: User is able to reload the config.
+    default: op
+  townyflight.command.tfly.tempflight:
+    description: User is able to grant tempflight to players.
+    default: op
+  townyflight.command.tfly.other:
+    description: User is able to remove flight from other players.
+    default: op
+  townyflight.command.tfly.town:
+    description: User is able to use /tfly town command.
+    default: op
+  townyflight.command.town.toggle.flight:
+    description: Mayors can toggle flight on and off for their town.
+    default: op
+  townyflight.bypass:
+    description: Bypass permission node for admins to not have their flight disabled while they travel the server.
+    default: op
+  townyflight.alliedtowns:
+    description: Allows players to use /townyflight in towns which are allied to their own.
+    default: op
+  townyflight.alltowns:
+    description: Allows players to use /townyflight in any town. Wilderness is still disallowed.
+    default: op
+  townyflight.nationtowns:
+    description: Allows players to use /townyflight in towns which are in their nation.
+    default: op
+  townyflight.trustedtowns:
+    description: Allows players to use /townyflight in towns in which they are Trusted.
+    default: op
+  townyflight.wilderness:
+    description: Allows players to use /townyflight in the wilderness.
+    default: op

@@ -1,17 +1,12 @@
 name: TownyFlight
 author: LlmDl
 main: com.gmail.llmdlio.townyflight.TownyFlight
-version: ${project.version}
-api-version: ${project.bukkitAPIVersion}
+version: ${version}
+api-version: ${bukkitAPIVersion}
 depend: [Towny]
-softdepend: [SiegeWar]
+softdepend: [SiegeWar, PlaceholderAPI]
 prefix: TownyFlight
-
-commands:
-  tfly:
-    description: Turns flight on and off.
-    aliases: [townyfly, townyflight]
-    usage: "/<command>"
+folia-supported: true
 
 permissions:
   townyflight.command.tfly:

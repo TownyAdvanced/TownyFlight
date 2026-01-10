@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.gmail.llmdlio.townyflight.config.Settings;
+import com.gmail.llmdlio.townyflight.util.FlightCountdownManager;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.event.player.PlayerEntersIntoTownBorderEvent;
 import com.palmergames.bukkit.towny.object.Resident;
@@ -28,6 +29,17 @@ public class PlayerEnterTownListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	private void playerEnterTownEvent(PlayerEntersIntoTownBorderEvent event) {
 		final Player player = event.getPlayer();
+		
+		// Cancel any pending flight disable countdown if player returns to valid area
+		if (player.getAllowFlight() && FlightCountdownManager.hasActiveCountdown(player)) {
+			plugin.getScheduler().runLater(player, () -> {
+				if (TownyFlightAPI.getInstance().canFly(player, true)) {
+					FlightCountdownManager.cancelCountdown(player);
+				}
+			}, 1);
+			return;
+		}
+		
 		// Do nothing to players who are already flying.
 		if (player.getAllowFlight()) return;
 		

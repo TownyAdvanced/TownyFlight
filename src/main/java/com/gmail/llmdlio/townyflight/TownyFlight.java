@@ -5,14 +5,18 @@ import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.incendo.cloud.annotations.AnnotationParser;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.paper.LegacyPaperCommandManager;
 
 import com.gmail.llmdlio.townyflight.command.TownToggleFlightCommandAddon;
-import com.gmail.llmdlio.townyflight.command.TownyFlightCommand;
+import com.gmail.llmdlio.townyflight.command.TownyFlightCommands;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
 import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
@@ -28,6 +32,8 @@ import com.gmail.llmdlio.townyflight.listeners.TownStatusScreenListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
 import com.gmail.llmdlio.townyflight.tasks.TaskHandler;
 import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
+import com.gmail.llmdlio.townyflight.util.BossBarUtil;
+import com.gmail.llmdlio.townyflight.util.FlightCountdownManager;
 import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.palmergames.bukkit.util.Version;
 
@@ -38,12 +44,14 @@ public class TownyFlight extends JavaPlugin {
 	private static TownyFlightAPI api;
 	private TownyFlightPlaceholderExpansion papiExpansion = null;
 	private final TaskScheduler scheduler;
+	private LegacyPaperCommandManager<CommandSender> commandManager;
 
 	public TownyFlight() {
 		plugin = this;
 		this.scheduler = isFoliaClassPresent() ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this);
 	}
 
+	@Override
 	public void onEnable() {
 		api = new TownyFlightAPI(this);
 		String townyVersion = getServer().getPluginManager().getPlugin("Towny").getPluginMeta().getVersion();
@@ -69,6 +77,14 @@ public class TownyFlight extends JavaPlugin {
 		
 		cycleTimerTasksOn();
 		reGrantTempFlightToOnlinePlayer();
+	}
+
+	@Override
+	public void onDisable() {
+		FlightCountdownManager.cleanup();
+		BossBarUtil.cleanup();
+		cycleTimerTasksOff();
+		unregisterEvents();
 	}
 
 	public static TownyFlight getPlugin() {
@@ -137,7 +153,22 @@ public class TownyFlight extends JavaPlugin {
 	}
 
 	private void registerCommands() {
-		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
+		// Initialize Cloud command manager
+		this.commandManager = LegacyPaperCommandManager.createNative(
+				this,
+				ExecutionCoordinator.simpleCoordinator()
+		);
+
+		// Create annotation parser and parse commands
+		AnnotationParser<CommandSender> annotationParser = new AnnotationParser<>(
+				commandManager,
+				CommandSender.class
+		);
+
+		// Register command class
+		annotationParser.parse(new TownyFlightCommands(this));
+
+		// Register Towny's town toggle flight addon
 		new TownToggleFlightCommandAddon();
 	}
 
