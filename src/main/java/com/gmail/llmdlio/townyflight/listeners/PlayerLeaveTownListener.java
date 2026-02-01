@@ -8,6 +8,7 @@ import org.bukkit.event.Listener;
 
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.gmail.llmdlio.townyflight.config.Settings;
+import com.gmail.llmdlio.townyflight.config.Settings.MessageLocation;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.palmergames.bukkit.towny.event.player.PlayerExitsFromTownBorderEvent;
 
@@ -40,7 +41,10 @@ public class PlayerLeaveTownListener implements Listener {
 			if (Settings.flightDisableTimer < 1) {
 				TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
 			} else {
-				Message.of(String.format(Message.getLangString("returnToAllowedArea"), Settings.flightDisableTimer)).serious().to(player);
+				if (!Settings.returnToTownMessageAppearsInTitle)
+					Message.of(String.format(Message.getLangString("returnToAllowedArea"), Settings.flightDisableTimer)).serious().to(player);
+				else 
+					Message.of(String.format(Message.getLangString("returnToAllowedArea"), Settings.flightDisableTimer)).serious().to(player, MessageLocation.title);
 				plugin.getScheduler().runLater(player, () -> TownyFlightAPI.getInstance().testForFlight(player, true), Settings.flightDisableTimer * 20);
 			}
 		}

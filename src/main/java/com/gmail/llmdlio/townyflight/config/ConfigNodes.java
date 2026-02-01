@@ -151,6 +151,16 @@ public enum ConfigNodes {
 			"owntown,nationtowns",
 			"",
 			"# The list of areas which allow tempflight, allowed words: owntown, nationtowns, alliedtowns, alltowns, trustedtowns, wilderness"),
+	OPTIONS_MESSAGES_DESTINATION(
+			"options.messages_appear_in",
+			"chat",
+			"",
+			"# Where messages will appear, options are: chat, actionbar, title"),
+	OPTIONS_RETURN_TO_TOWN_MESSAGE_DESTINATION(
+			"options.returnToAllowedArea_appears_in_title_message_override",
+			"false",
+			"",
+			"# When false, the returnToAllowedArea message will appear in the default message location, when it is true it will always appear as a title message."),
 	OPTIONS_SHOW_PERMISSION(
 			"options.show_Permission_After_No_Permission_Message", 
 			"true",

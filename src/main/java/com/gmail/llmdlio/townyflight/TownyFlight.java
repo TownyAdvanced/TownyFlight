@@ -32,7 +32,7 @@ import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static final Version requiredTownyVersion = Version.fromString("0.101.2.5");
+	private static final Version requiredTownyVersion = Version.fromString("0.102.0.0");
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	private static TownyFlight plugin;
 	private static TownyFlightAPI api;
