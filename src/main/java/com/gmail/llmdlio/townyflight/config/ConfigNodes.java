@@ -114,6 +114,11 @@ public enum ConfigNodes {
 			"You have been given %s of tempflight priviledges.",
 			"",
 			"# The message shown to the player when they receive temp flight."),
+	LANG_TEMPFLIGHTTIMEREMAINING(
+			"language.tempFlightTimeRemainging",
+			"%s seconds of tempflight remaining.",
+			"",
+			"# The message shown to the player in the action bar displaying flight time remaining."),
 	LANG_TEMPFLIGHTEXPIRED(
 			"language.yourTempFlightHasExpired",
 			"Your tempflight priviledges have expired.",
@@ -146,6 +151,11 @@ public enum ConfigNodes {
 			"false",
 			"",
 			"# If set to false, TownyFlight will not prevent combat of flying people."),
+	OPTIONS_TEMPFLIGHT_SHOW_TIME_REMAINING_IN_ACTIONBAR(
+			"options.show_tempflight_time_remaining_in_actionbar",
+			"false",
+			"",
+			"# When set to true, the tempflight time remaining will appear in the action bar, while the player is flying."),
 	OPTIONS_TEMPFLIGHT_ALLOWED_AREAS(
 			"options.tempflight_allowed_areas",
 			"owntown,nationtowns",

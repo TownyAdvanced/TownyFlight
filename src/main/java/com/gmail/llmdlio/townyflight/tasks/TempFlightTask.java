@@ -12,10 +12,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
+import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.util.Message;
 import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.gmail.llmdlio.townyflight.util.Permission;
 import com.palmergames.bukkit.towny.TownyAPI;
+import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.Resident;
 
 public class TempFlightTask implements Runnable {
@@ -51,6 +53,10 @@ public class TempFlightTask implements Runnable {
 	private void decrementSeconds(UUID uuid) {
 		long seconds = playerUUIDSecondsMap.get(uuid);
 		playerUUIDSecondsMap.put(uuid, --seconds);
+
+		if (Settings.showTempFlightTimeRemainingInActionBar)
+			sendActionBarMessage(uuid, seconds);
+
 		// Save players every 10 seconds;
 		if (cycles % 10 == 0) {
 			Resident resident = TownyAPI.getInstance().getResident(uuid);
@@ -105,5 +111,14 @@ public class TempFlightTask implements Runnable {
 			return;
 		MetaData.setSeconds(resident, seconds, true);
 		playerUUIDSecondsMap.remove(player.getUniqueId());
+	}
+
+	private void sendActionBarMessage(UUID uuid, long seconds) {
+		Player player = Bukkit.getPlayer(uuid);
+		if (player == null || !player.isOnline())
+			return;
+
+		String message = String.format(Message.getLangString("tempFlightTimeRemainging"), seconds);
+		TownyMessaging.sendActionBarMessageToPlayer(player, message);
 	}
 }
