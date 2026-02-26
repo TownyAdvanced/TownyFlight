@@ -26,10 +26,10 @@ public class PlayerLeaveTownListener implements Listener {
 	@EventHandler(priority = EventPriority.LOWEST)
 	private void playerLeftTownEvent(PlayerExitsFromTownBorderEvent event) {
 		Player player = event.getPlayer();
-		if (!player.getAllowFlight() || player.hasPermission("townyflight.bypass"))
+		if (!TownyFlightAPI.canFlyAccordingToCache(player) || player.hasPermission("townyflight.bypass"))
 			return;
 
-		plugin.getScheduler().runLater(player, () -> executeLeaveTown(player), 1);
+		plugin.getScheduler().runLater(player, () -> executeLeaveTown(player), 5);
 	}
 
 	/*
