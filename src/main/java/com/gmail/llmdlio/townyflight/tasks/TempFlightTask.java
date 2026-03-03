@@ -19,6 +19,7 @@ import com.gmail.llmdlio.townyflight.util.Permission;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.util.TimeMgmt;
 
 public class TempFlightTask implements Runnable {
 
@@ -118,7 +119,7 @@ public class TempFlightTask implements Runnable {
 		if (player == null || !player.isOnline())
 			return;
 
-		String message = String.format(Message.getLangString("tempFlightTimeRemainging"), seconds);
+		String message = String.format(Message.getLangString("tempFlightTimeRemainging"), TimeMgmt.getFormattedTimeValue(seconds * 1000L));
 		TownyMessaging.sendActionBarMessageToPlayer(player, message);
 	}
 }
