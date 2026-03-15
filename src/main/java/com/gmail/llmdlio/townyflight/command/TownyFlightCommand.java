@@ -213,20 +213,20 @@ public class TownyFlightCommand implements TabExecutor {
 
 	private void showTflyHelp() {
 		if (Permission.has(sender, "townyflight.command.tfly", true))
-			Message.of(Colors.White + "/tfly - Toggle flight.").to(sender);
+			Message.of(Colors.WHITE + "/tfly - Toggle flight.").to(sender);
 		if (Permission.has(sender, "townyflight.command.tfly.reload", true))
-			Message.of(Colors.White + "/tfly reload - Reload the TownyFlight config.").to(sender);
+			Message.of(Colors.WHITE + "/tfly reload - Reload the TownyFlight config.").to(sender);
 		if (Permission.has(sender, "townyflight.command.tfly.tempflight", true)) {
-			Message.of(Colors.White + "/tfly tempflight [playername] [seconds] - Grant a player temp flight in seconds.").to(sender);
-			Message.of(Colors.White + "/tfly tempflight [playername] [time]m - Grant a player temp flight in minutes.").to(sender);
-			Message.of(Colors.White + "/tfly tempflight [playername] [time]h - Grant a player temp flight in hours.").to(sender);
-			Message.of(Colors.White + "/tfly tempflight [playername] [time]d - Grant a player temp flight in days.").to(sender);
-			Message.of(Colors.White + "/tfly tempflight [playername] remove - Remove a player's temp flight.").to(sender);
+			Message.of(Colors.WHITE + "/tfly tempflight [playername] [seconds] - Grant a player temp flight in seconds.").to(sender);
+			Message.of(Colors.WHITE + "/tfly tempflight [playername] [time]m - Grant a player temp flight in minutes.").to(sender);
+			Message.of(Colors.WHITE + "/tfly tempflight [playername] [time]h - Grant a player temp flight in hours.").to(sender);
+			Message.of(Colors.WHITE + "/tfly tempflight [playername] [time]d - Grant a player temp flight in days.").to(sender);
+			Message.of(Colors.WHITE + "/tfly tempflight [playername] remove - Remove a player's temp flight.").to(sender);
 		}
 		if (Permission.has(sender, "townyflight.command.tfly.other", true))
-			Message.of(Colors.White + "/tfly [playername] - Toggle flight for a player.").to(sender);
+			Message.of(Colors.WHITE + "/tfly [playername] - Toggle flight for a player.").to(sender);
 		if (Permission.has(sender, "townyflight.command.tfly.town", true))
-			Message.of(Colors.White + "/tfly town [townname] toggleflight - Toggle free flight in the given town.").to(sender);
+			Message.of(Colors.WHITE + "/tfly town [townname] toggleflight - Toggle free flight in the given town.").to(sender);
 	}
 
 	/**

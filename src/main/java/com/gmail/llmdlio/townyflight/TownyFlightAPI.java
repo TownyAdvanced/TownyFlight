@@ -87,7 +87,18 @@ public class TownyFlightAPI {
 	 * @return true when tempflight is allowed here.
 	 */
 	private boolean tempFlightAllowsLocation(Player player) {
-		Location location = player.getLocation();
+		return tempFlightAllowsLocation(player, player.getLocation());
+	}
+
+	/**
+	 * Returns true when a player is at a suitable location, matching the allowed
+	 * areas in config.yml.
+	 * 
+	 * @param player Player to test.
+	 * @param location Location to test.
+	 * @return true when tempflight is allowed here.
+	 */
+	private static boolean tempFlightAllowsLocation(Player player, Location location) {
 		Resident resident = TownyAPI.getInstance().getResident(player);
 		if (resident == null)
 			return false;
@@ -117,7 +128,6 @@ public class TownyFlightAPI {
 
 		return false;
 	}
-	
 
 	/**
 	 * Returns true if a player is allowed to fly at their current location. Checks
@@ -145,6 +155,9 @@ public class TownyFlightAPI {
 			return true;
 
 		if (MetaData.getFreeFlightMeta(town))
+			return true;
+
+		if (hasTempFlight(player) && tempFlightAllowsLocation(player, location))
 			return true;
 
 		if (!resident.hasTown())
@@ -273,7 +286,7 @@ public class TownyFlightAPI {
 		return player.getPersistentDataContainer().getOrDefault(forceAllowFlight, PersistentDataType.BYTE, (byte) 0) == 1;
 	}
 
-	private boolean hasTempFlight(Player player) {
+	private static boolean hasTempFlight(Player player) {
 		return TempFlightTask.getSeconds(player.getUniqueId()) > 0L;
 	}
 
