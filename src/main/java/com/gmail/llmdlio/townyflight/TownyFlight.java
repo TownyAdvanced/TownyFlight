@@ -32,142 +32,170 @@ import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static final Version requiredTownyVersion = Version.fromString("0.102.0.0");
-	private TownyFlightConfig config = new TownyFlightConfig(this);
-	private static TownyFlight plugin;
-	private static TownyFlightAPI api;
-	private TownyFlightPlaceholderExpansion papiExpansion = null;
-	private final TaskScheduler scheduler;
+    private static final Version requiredTownyVersion = Version.fromString("0.102.0.0");
+    private TownyFlightConfig config = new TownyFlightConfig(this);
+    private static TownyFlight plugin;
+    private static TownyFlightAPI api;
+    private TownyFlightPlaceholderExpansion papiExpansion = null;
+    private final TaskScheduler scheduler;
 
-	public TownyFlight() {
-		plugin = this;
-		this.scheduler = isFoliaClassPresent() ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this);
-	}
+    // Used to cleanly cancel the Folia task on disable
+    private io.papermc.paper.threadedregions.scheduler.ScheduledTask foliaFlightTask;
 
-	public void onEnable() {
-		api = new TownyFlightAPI(this);
-		String townyVersion = getServer().getPluginManager().getPlugin("Towny").getPluginMeta().getVersion();
+    public TownyFlight() {
+        plugin = this;
+        this.scheduler = isFoliaClassPresent() ? new FoliaTaskScheduler(this) : new BukkitTaskScheduler(this);
+    }
 
-		if (!loadSettings()) {
-			getLogger().severe("Config failed to load!");
-			disable();
-			return;
-		}
+    public void onEnable() {
+        api = new TownyFlightAPI(this);
+        String townyVersion = getServer().getPluginManager().getPlugin("Towny").getPluginMeta().getVersion();
 
-		if (!townyVersionCheck(townyVersion)) {
-			getLogger().severe("Towny version does not meet required version: " + requiredTownyVersion.toString());
-			disable();
-			return;
-		}
+        if (!loadSettings()) {
+            getLogger().severe("Config failed to load!");
+            disable();
+            return;
+        }
 
-		checkWarPlugins();
-		checkIntegrations();
-		registerEvents();
-		registerCommands();
-		getLogger().info("Towny version " + townyVersion + " found.");
-		getLogger().info(this.getPluginMeta().getDisplayName() + " by LlmDl Enabled.");
-		
-		cycleTimerTasksOn();
-		reGrantTempFlightToOnlinePlayer();
-	}
+        if (!townyVersionCheck(townyVersion)) {
+            getLogger().severe("Towny version does not meet required version: " + requiredTownyVersion.toString());
+            disable();
+            return;
+        }
 
-	public static TownyFlight getPlugin() {
-		return plugin;
-	}
+        checkWarPlugins();
+        checkIntegrations();
+        registerEvents();
+        registerCommands();
+        getLogger().info("Towny version " + townyVersion + " found.");
+        getLogger().info(this.getPluginMeta().getDisplayName() + " by LlmDl Enabled.");
 
-	/**
-	 * @return the API.
-	 */
-	public static TownyFlightAPI getAPI() {
-		return api;
-	}
+        // Folia-safe repeating flight check (fixes same-server teleports on Folia)
+        if (isFoliaClassPresent()) {
+            startFoliaFlightCheckTask();
+        }
 
-	private void disable() {
-		unregisterEvents();
-		getLogger().severe("TownyFlight Disabled.");
-	}
+        cycleTimerTasksOn();
+        reGrantTempFlightToOnlinePlayer();
+    }
 
-	public boolean loadSettings() {
-		return loadConfig() && Settings.loadSettings(config);
-	}
+    @Override
+    public void onDisable() {
+        if (foliaFlightTask != null) {
+            foliaFlightTask.cancel();
+            foliaFlightTask = null;
+        }
+        disable();
+    }
 
-	private boolean loadConfig() {
-		if (!getDataFolder().exists())
-			getDataFolder().mkdirs();
-		return config.reload();
-	}
+    public static TownyFlight getPlugin() {
+        return plugin;
+    }
 
-	private boolean townyVersionCheck(String version) {
-		return Version.fromString(version).compareTo(requiredTownyVersion) >= 0;
-	}
+    public static TownyFlightAPI getAPI() {
+        return api;
+    }
 
-	private void checkWarPlugins() {
-		Settings.siegeWarFound = getServer().getPluginManager().getPlugin("SiegeWar") != null;
-	}
+    private void disable() {
+        unregisterEvents();
+        getLogger().severe("TownyFlight Disabled.");
+    }
 
+    public boolean loadSettings() {
+        return loadConfig() && Settings.loadSettings(config);
+    }
 
-	private void checkIntegrations() {
-		Plugin test;
-		test = getServer().getPluginManager().getPlugin("PlaceholderAPI");
-		if (test != null) {
-			papiExpansion = new TownyFlightPlaceholderExpansion(this);
-			papiExpansion.register();
-		}
-	}
+    private boolean loadConfig() {
+        if (!getDataFolder().exists())
+            getDataFolder().mkdirs();
+        return config.reload();
+    }
 
-	public void registerEvents() {
-		final PluginManager pm = getServer().getPluginManager();
+    private boolean townyVersionCheck(String version) {
+        return Version.fromString(version).compareTo(requiredTownyVersion) >= 0;
+    }
 
-		pm.registerEvents(new PlayerJoinListener(this), this);
-		pm.registerEvents(new PlayerLogOutListener(), this);
-		pm.registerEvents(new PlayerLeaveTownListener(this), this);
-		pm.registerEvents(new TownRemoveResidentListener(this), this);
-		pm.registerEvents(new TownUnclaimListener(this), this);
-		pm.registerEvents(new PlayerFallListener(), this);
-		pm.registerEvents(new PlayerTeleportListener(), this);
-		pm.registerEvents(new TownStatusScreenListener(), this);
-		pm.registerEvents(new PlayerEnterTownListener(this), this);
+    private void checkWarPlugins() {
+        Settings.siegeWarFound = getServer().getPluginManager().getPlugin("SiegeWar") != null;
+    }
 
-		if (Settings.disableCombatPrevention)
-			pm.registerEvents(new PlayerPVPListener(), this);
-	}
+    private void checkIntegrations() {
+        Plugin test;
+        test = getServer().getPluginManager().getPlugin("PlaceholderAPI");
+        if (test != null) {
+            papiExpansion = new TownyFlightPlaceholderExpansion(this);
+            papiExpansion.register();
+        }
+    }
 
-	public void unregisterEvents() {
-		HandlerList.unregisterAll(this);
-	}
+    public void registerEvents() {
+        final PluginManager pm = getServer().getPluginManager();
 
-	private void registerCommands() {
-		getCommand("tfly").setExecutor(new TownyFlightCommand(this));
-		new TownToggleFlightCommandAddon();
-	}
+        pm.registerEvents(new PlayerJoinListener(this), this);
+        pm.registerEvents(new PlayerLogOutListener(), this);
+        pm.registerEvents(new PlayerLeaveTownListener(this), this);
+        pm.registerEvents(new TownRemoveResidentListener(this), this);
+        pm.registerEvents(new TownUnclaimListener(this), this);
+        pm.registerEvents(new PlayerFallListener(), this);
+        pm.registerEvents(new PlayerTeleportListener(this), this);
+        pm.registerEvents(new TownStatusScreenListener(), this);
+        pm.registerEvents(new PlayerEnterTownListener(this), this);
 
-	private void cycleTimerTasksOn() {
-		cycleTimerTasksOff();
-		TaskHandler.toggleTempFlightTask(true);
-	}
+        if (Settings.disableCombatPrevention)
+            pm.registerEvents(new PlayerPVPListener(), this);
+    }
 
-	private void cycleTimerTasksOff() {
-		TaskHandler.toggleTempFlightTask(false);
-	}
+    public void unregisterEvents() {
+        HandlerList.unregisterAll(this);
+    }
 
-	private void reGrantTempFlightToOnlinePlayer() {
-		for (Player player : Bukkit.getOnlinePlayers()) {
-			long seconds = MetaData.getSeconds(player.getUniqueId());
-			if (seconds > 0L)
-				TempFlightTask.addPlayerTempFlightSeconds(player.getUniqueId(), seconds);
-		}
-	}
+    private void registerCommands() {
+        getCommand("tfly").setExecutor(new TownyFlightCommand(this));
+        new TownToggleFlightCommandAddon();
+    }
 
-	public TaskScheduler getScheduler() {
-		return this.scheduler;
-	}
+    private void cycleTimerTasksOn() {
+        cycleTimerTasksOff();
+        TaskHandler.toggleTempFlightTask(true);
+    }
 
-	private static boolean isFoliaClassPresent() {
-		try {
-			Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
-			return true;
-		} catch (ClassNotFoundException e) {
-			return false;
-		}
-	}
+    private void cycleTimerTasksOff() {
+        TaskHandler.toggleTempFlightTask(false);
+    }
+
+    private void reGrantTempFlightToOnlinePlayer() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            long seconds = MetaData.getSeconds(player.getUniqueId());
+            if (seconds > 0L)
+                TempFlightTask.addPlayerTempFlightSeconds(player.getUniqueId(), seconds);
+        }
+    }
+
+    public TaskScheduler getScheduler() {
+        return this.scheduler;
+    }
+
+    private static boolean isFoliaClassPresent() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
+
+    private void startFoliaFlightCheckTask() {
+        foliaFlightTask = Bukkit.getGlobalRegionScheduler().runAtFixedRate(this, task -> checkFlightForAllPlayers(), 20L, 10L);
+        getLogger().info("[TownyFlight] Folia flight-check task started (handles HuskHomes/teleports)");
+    }
+
+    private void checkFlightForAllPlayers() {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (player.getAllowFlight() && !player.hasPermission("townyflight.bypass")) {
+                if (!TownyFlightAPI.getInstance().canFly(player, true)) {
+                    TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+                }
+            }
+        }
+    }
 }

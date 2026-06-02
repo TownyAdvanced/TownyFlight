@@ -3,6 +3,7 @@ author: LlmDl
 main: com.gmail.llmdlio.townyflight.TownyFlight
 version: ${project.version}
 api-version: ${project.bukkitAPIVersion}
+folia-supported: true
 depend: [Towny]
 softdepend: [SiegeWar]
 prefix: TownyFlight

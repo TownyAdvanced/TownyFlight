@@ -1,42 +1,70 @@
 package com.gmail.llmdlio.townyflight.listeners;
 
-import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
+import com.gmail.llmdlio.townyflight.TownyFlight;
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
-import com.palmergames.bukkit.towny.TownyUniverse;
-import com.palmergames.bukkit.towny.object.Resident;
+import com.gmail.llmdlio.townyflight.config.Settings;
+import com.gmail.llmdlio.townyflight.config.Settings.MessageLocation;
+import com.gmail.llmdlio.townyflight.util.Message;
 
 public class PlayerTeleportListener implements Listener {
 
-	@EventHandler(priority = EventPriority.MONITOR)
-	private void playerTeleports(PlayerTeleportEvent event) {
-		if (!aTeleportCauseThatMatters(event.getCause()))
-			return;
+    private final TownyFlight plugin;
 
-		Player player = event.getPlayer();
-		if (player.hasPermission("townyflight.bypass") 
-				|| !player.getAllowFlight()
-				|| flightAllowedDestination(player, event.getTo())) {
-			return;
-		}
+    public PlayerTeleportListener(TownyFlight plugin) {
+        this.plugin = plugin;
+        plugin.getLogger().info("[TownyFlight DEBUG] PlayerTeleportListener CONSTRUCTOR called - listener is now loaded!");
+    }
 
-		TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
-	}
+    @EventHandler(priority = EventPriority.MONITOR)
+    private void playerTeleports(PlayerTeleportEvent event) {
+        Player player = event.getPlayer();
 
-	private boolean aTeleportCauseThatMatters(TeleportCause teleportCause) {
-		return teleportCause == TeleportCause.PLUGIN || teleportCause == TeleportCause.COMMAND ||
-				teleportCause == TeleportCause.ENDER_PEARL || teleportCause == TeleportCause.CHORUS_FRUIT; // TODO: change over when 1.21.4 and older support is dropped.
-	}
+        plugin.getLogger().info("[TownyFlight DEBUG] TeleportEvent fired for " + player.getName()
+                + " | Cause: " + event.getCause());
 
-	private boolean flightAllowedDestination(Player player, Location loc) {
-		Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
-		return resident != null && TownyFlightAPI.allowedLocation(player, loc, resident);
-	}
+        // Folia-safe with extra delay and full protection
+        plugin.getScheduler().runLater(player, () -> {
+            try {
+                executeTeleportCheck(player);
+            } catch (Exception e) {
+                plugin.getLogger().severe("[TownyFlight ERROR] Exception in teleport check for " + player.getName());
+                e.printStackTrace();
+            }
+        }, 15); // slightly higher delay for Folia stability
+    }
 
+    private void executeTeleportCheck(Player player) {
+        plugin.getLogger().info("[TownyFlight DEBUG] Running safe teleport check for " + player.getName()
+                + " at " + player.getLocation());
+
+        try {
+            if (!TownyFlightAPI.canFlyAccordingToCache(player) || player.hasPermission("townyflight.bypass"))
+                return;
+
+            if (!TownyFlightAPI.getInstance().canFly(player, true)) {
+                plugin.getLogger().info("[TownyFlight DEBUG] → Player left allowed area → disabling flight");
+
+                if (Settings.flightDisableTimer < 1) {
+                    TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
+                } else {
+                    if (!Settings.returnToTownMessageAppearsInTitle)
+                        Message.of(String.format(Message.getLangString("returnToAllowedArea"), Settings.flightDisableTimer)).serious().to(player);
+                    else 
+                        Message.of(String.format(Message.getLangString("returnToAllowedArea"), Settings.flightDisableTimer)).serious().to(player, MessageLocation.title);
+                    plugin.getScheduler().runLater(player, () -> TownyFlightAPI.getInstance().testForFlight(player, true), Settings.flightDisableTimer * 20);
+                }
+            } else {
+                plugin.getLogger().info("[TownyFlight DEBUG] → Still allowed to fly");
+            }
+        } catch (Exception e) {
+            plugin.getLogger().severe("[TownyFlight ERROR] Exception inside executeTeleportCheck for " + player.getName());
+            e.printStackTrace();
+        }
+    }
 }
