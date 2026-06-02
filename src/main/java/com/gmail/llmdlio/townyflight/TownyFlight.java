@@ -3,14 +3,12 @@ package com.gmail.llmdlio.townyflight;
 import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
-
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
 import com.gmail.llmdlio.townyflight.command.TownToggleFlightCommandAddon;
 import com.gmail.llmdlio.townyflight.command.TownyFlightCommand;
 import com.gmail.llmdlio.townyflight.config.Settings;
@@ -26,12 +24,14 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
 import com.gmail.llmdlio.townyflight.listeners.TownRemoveResidentListener;
 import com.gmail.llmdlio.townyflight.listeners.TownStatusScreenListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
+import com.gmail.llmdlio.townyflight.tasks.FoliaFlightCheckTask;
 import com.gmail.llmdlio.townyflight.tasks.TaskHandler;
 import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
 import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
+
     private static final Version requiredTownyVersion = Version.fromString("0.102.0.0");
     private TownyFlightConfig config = new TownyFlightConfig(this);
     private static TownyFlight plugin;
@@ -39,8 +39,8 @@ public class TownyFlight extends JavaPlugin {
     private TownyFlightPlaceholderExpansion papiExpansion = null;
     private final TaskScheduler scheduler;
 
-    // Used to cleanly cancel the Folia task on disable
-    private io.papermc.paper.threadedregions.scheduler.ScheduledTask foliaFlightTask;
+    // Folia flight check task
+    private FoliaFlightCheckTask foliaFlightCheckTask;
 
     public TownyFlight() {
         plugin = this;
@@ -67,12 +67,14 @@ public class TownyFlight extends JavaPlugin {
         checkIntegrations();
         registerEvents();
         registerCommands();
+
         getLogger().info("Towny version " + townyVersion + " found.");
         getLogger().info(this.getPluginMeta().getDisplayName() + " by LlmDl Enabled.");
 
-        // Folia-safe repeating flight check (fixes same-server teleports on Folia)
+        // Start Folia flight check task if running on Folia
         if (isFoliaClassPresent()) {
-            startFoliaFlightCheckTask();
+            foliaFlightCheckTask = new FoliaFlightCheckTask(this);
+            foliaFlightCheckTask.start();
         }
 
         cycleTimerTasksOn();
@@ -81,9 +83,8 @@ public class TownyFlight extends JavaPlugin {
 
     @Override
     public void onDisable() {
-        if (foliaFlightTask != null) {
-            foliaFlightTask.cancel();
-            foliaFlightTask = null;
+        if (foliaFlightCheckTask != null) {
+            foliaFlightCheckTask.cancel();
         }
         disable();
     }
@@ -130,17 +131,15 @@ public class TownyFlight extends JavaPlugin {
 
     public void registerEvents() {
         final PluginManager pm = getServer().getPluginManager();
-
         pm.registerEvents(new PlayerJoinListener(this), this);
         pm.registerEvents(new PlayerLogOutListener(), this);
         pm.registerEvents(new PlayerLeaveTownListener(this), this);
         pm.registerEvents(new TownRemoveResidentListener(this), this);
         pm.registerEvents(new TownUnclaimListener(this), this);
         pm.registerEvents(new PlayerFallListener(), this);
-        pm.registerEvents(new PlayerTeleportListener(this), this);
+        pm.registerEvents(new PlayerTeleportListener(), this);
         pm.registerEvents(new TownStatusScreenListener(), this);
         pm.registerEvents(new PlayerEnterTownListener(this), this);
-
         if (Settings.disableCombatPrevention)
             pm.registerEvents(new PlayerPVPListener(), this);
     }
@@ -181,21 +180,6 @@ public class TownyFlight extends JavaPlugin {
             return true;
         } catch (ClassNotFoundException e) {
             return false;
-        }
-    }
-
-    private void startFoliaFlightCheckTask() {
-        foliaFlightTask = Bukkit.getGlobalRegionScheduler().runAtFixedRate(this, task -> checkFlightForAllPlayers(), 20L, 10L);
-        getLogger().info("[TownyFlight] Folia flight-check task started (handles HuskHomes/teleports)");
-    }
-
-    private void checkFlightForAllPlayers() {
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            if (player.getAllowFlight() && !player.hasPermission("townyflight.bypass")) {
-                if (!TownyFlightAPI.getInstance().canFly(player, true)) {
-                    TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
-                }
-            }
         }
     }
 }
