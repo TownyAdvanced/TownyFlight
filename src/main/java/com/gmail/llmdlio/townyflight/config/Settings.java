@@ -17,8 +17,10 @@ public class Settings {
 	public static Boolean showPermissionInMessage;
 	public static Boolean showTempFlightTimeRemainingInActionBar; 
 	public static Boolean siegeWarFound;
+	public static boolean essentialsFound;
 	public static MessageLocation messageLocation;
 	public static Boolean returnToTownMessageAppearsInTitle;
+	public static Boolean pauseTempFlightTimeWhileEssentialsAFK;
 	public static int flightDisableTimer;
 	public static List<String> allowedTempFlightAreas;
 	private static Map<String, String> lang = new HashMap<String,String>();
@@ -38,6 +40,7 @@ public class Settings {
 		showPermissionInMessage = Boolean.valueOf(getOption("show_Permission_After_No_Permission_Message"));
 		flightDisableTimer = Integer.valueOf(getOption("flight_Disable_Timer"));
 		showTempFlightTimeRemainingInActionBar = Boolean.valueOf(getOption("show_tempflight_time_remaining_in_actionbar"));
+		pauseTempFlightTimeWhileEssentialsAFK = Boolean.valueOf(getOption("pause_tempflight_time_while_essentials_afk"));
 		allowedTempFlightAreas = allowedTempFlightAreas();
 		messageLocation = getMessageLocation();
 		returnToTownMessageAppearsInTitle = Boolean.valueOf(getOption("returnToAllowedArea_appears_in_title_message_override"));

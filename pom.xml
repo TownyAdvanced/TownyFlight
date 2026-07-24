@@ -51,6 +51,10 @@
 			<id>glaremasters repo</id>
 			<url>https://repo.glaremasters.me/repository/towny/</url>
 		</repository>
+		<repository>
+			<id>essentialsx-releases</id>
+			<url>https://repo.essentialsx.net/releases/</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -81,6 +85,12 @@
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.essentialsx</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.21.2</version>
             <scope>provided</scope>
         </dependency>
 	</dependencies>
