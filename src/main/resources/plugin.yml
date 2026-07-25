@@ -6,6 +6,7 @@ api-version: ${project.bukkitAPIVersion}
 depend: [Towny]
 softdepend: [SiegeWar, Essentials]
 prefix: TownyFlight
+canvas-supported: true
 
 commands:
   tfly:
