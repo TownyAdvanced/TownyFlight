@@ -11,7 +11,7 @@
 		<java.version>21</java.version>
 		<project.bukkitAPIVersion>1.19</project.bukkitAPIVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<towny.version>0.102.0.0</towny.version>
+		<towny.version>0.102.0.11</towny.version>
 	</properties>
 	<build>
 		<defaultGoal>clean package</defaultGoal>
