@@ -157,7 +157,7 @@ public enum ConfigNodes {
 			"",
 			"# When set to true, the tempflight time remaining will appear in the action bar, while the player is flying."),
 	OPTIONS_TEMPFLIGHT_PAUSE_TIME_WHILE_ESSENTIALS_AFK(
-			"options.pause_tempflight_time_while_essentials_afk",
+			"options.pause_tempflight_time_while_afk",
 			"false",
 			"",
 			"# When true, tempflight time will not decrease while a player is marked as AFK by EssentialsX.",
