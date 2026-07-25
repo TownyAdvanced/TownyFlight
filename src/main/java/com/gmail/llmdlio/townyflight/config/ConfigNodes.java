@@ -160,8 +160,8 @@ public enum ConfigNodes {
 			"options.pause_tempflight_time_while_afk",
 			"false",
 			"",
-			"# When true, tempflight time will not decrease while a player is marked as AFK by EssentialsX.",
-			"# This option has no effect when EssentialsX is not installed."),
+			"# When true, tempflight time will not decrease while a player is marked as AFK.",
+			"# This option currently only supports EssentialsX's afk status."),
 	OPTIONS_TEMPFLIGHT_ALLOWED_AREAS(
 			"options.tempflight_allowed_areas",
 			"owntown,nationtowns",
