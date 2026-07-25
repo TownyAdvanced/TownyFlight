@@ -40,7 +40,7 @@ public class Settings {
 		showPermissionInMessage = Boolean.valueOf(getOption("show_Permission_After_No_Permission_Message"));
 		flightDisableTimer = Integer.valueOf(getOption("flight_Disable_Timer"));
 		showTempFlightTimeRemainingInActionBar = Boolean.valueOf(getOption("show_tempflight_time_remaining_in_actionbar"));
-		pauseTempFlightTimeWhileEssentialsAFK = Boolean.valueOf(getOption("pause_tempflight_time_while_essentials_afk"));
+		pauseTempFlightTimeWhileEssentialsAFK = Boolean.valueOf(getOption("pause_tempflight_time_while_afk"));
 		allowedTempFlightAreas = allowedTempFlightAreas();
 		messageLocation = getMessageLocation();
 		returnToTownMessageAppearsInTitle = Boolean.valueOf(getOption("returnToAllowedArea_appears_in_title_message_override"));
