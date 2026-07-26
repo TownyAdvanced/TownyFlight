@@ -98,6 +98,46 @@ public class TempFlightTask implements Runnable {
 		return playerUUIDSecondsMap.containsKey(uuid) ? playerUUIDSecondsMap.get(uuid) : 0L;
 	}
 
+	public static boolean transferPlayerTempFlightSeconds(UUID senderUUID, UUID recipientUUID, long seconds) {
+		if (seconds <= 0L || senderUUID.equals(recipientUUID))
+			return false;
+
+		Resident senderResident = TownyAPI.getInstance().getResident(senderUUID);
+		Resident recipientResident = TownyAPI.getInstance().getResident(recipientUUID);
+		if (senderResident == null || recipientResident == null)
+			return false;
+
+		long senderSeconds = playerUUIDSecondsMap.containsKey(senderUUID)
+				? playerUUIDSecondsMap.get(senderUUID)
+				: MetaData.getSeconds(senderUUID);
+
+		if (senderSeconds < seconds)
+			return false;
+
+		long recipientSeconds = playerUUIDSecondsMap.containsKey(recipientUUID)
+				? playerUUIDSecondsMap.get(recipientUUID)
+				: MetaData.getSeconds(recipientUUID);
+
+		if (recipientSeconds > Long.MAX_VALUE - seconds)
+			return false;
+
+		long senderRemainingSeconds = senderSeconds - seconds;
+		long recipientTotalSeconds = recipientSeconds + seconds;
+
+		MetaData.setSeconds(senderResident, senderRemainingSeconds, true);
+		MetaData.setSeconds(recipientResident, recipientTotalSeconds, true);
+
+		Player senderPlayer = Bukkit.getPlayer(senderUUID);
+		Player recipientPlayer = Bukkit.getPlayer(recipientUUID);
+
+		if (senderPlayer != null && senderPlayer.isOnline())
+			playerUUIDSecondsMap.put(senderUUID, senderRemainingSeconds);
+		if (recipientPlayer != null && recipientPlayer.isOnline())
+			playerUUIDSecondsMap.put(recipientUUID, recipientTotalSeconds);
+
+		return true;
+	}
+
 	public static void addPlayerTempFlightSeconds(UUID uuid, long seconds) {
 		long existingSeconds = playerUUIDSecondsMap.containsKey(uuid) ? playerUUIDSecondsMap.get(uuid) : 0L;
 		playerUUIDSecondsMap.put(uuid, existingSeconds + seconds);

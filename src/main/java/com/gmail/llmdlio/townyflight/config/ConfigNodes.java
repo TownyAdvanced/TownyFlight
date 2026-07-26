@@ -124,8 +124,42 @@ public enum ConfigNodes {
 			"Your tempflight priviledges have expired.",
 			"",
 			"# The message shown to the player when they run out of temp flight."),
+	LANG_TEMPFLIGHTPAYMENTSDISABLED(
+			"language.tempFlightPaymentsDisabled",
+			"Tempflight payments are disabled.",
+			"",
+			"# Message shown when a player attempts to transfer tempflight while payments are disabled."),
+	LANG_TEMPFLIGHTPAYMENTSELF(
+			"language.tempFlightPaymentSelf",
+			"You cannot transfer tempflight time to yourself.",
+			"",
+			"# Message shown when a player attempts to transfer tempflight to themselves."),
+	LANG_TEMPFLIGHTPAYMENTINSUFFICIENT(
+			"language.tempFlightPaymentInsufficient",
+			"You do not have enough tempflight time to make that payment.",
+			"",
+			"# Message shown when a player does not have enough tempflight time to transfer."),
+	LANG_TEMPFLIGHTPAYMENTSENT(
+			"language.tempFlightPaymentSent",
+			"You transferred %s of tempflight time to %s.",
+			"",
+			"# Message shown to a player after successfully transferring tempflight time."),
+	LANG_TEMPFLIGHTPAYMENTRECEIVED(
+			"language.tempFlightPaymentReceived",
+			"You received %s of tempflight time from %s.",
+			"",
+			"# Message shown to an online player after receiving tempflight time."),
+	LANG_TEMPFLIGHTPAYMENTINVALID(
+			"language.tempFlightPaymentInvalid",
+			"You must transfer more than 0 seconds of tempflight time.",
+			"",
+			"# Message shown when a player attempts to transfer an invalid amount."),
+	LANG_TEMPFLIGHTPAYMENTFAILED(
+			"language.tempFlightPaymentFailed",
+			"The tempflight payment could not be completed.",
+			"",
+			"# Message shown when a tempflight payment fails unexpectedly."),
 
-	
 	OPTIONS("options", "", "",
 			"#################", 
 			"#    Options    #", 
@@ -167,6 +201,11 @@ public enum ConfigNodes {
 			"owntown,nationtowns",
 			"",
 			"# The list of areas which allow tempflight, allowed words: owntown, nationtowns, alliedtowns, alltowns, trustedtowns, wilderness"),
+	OPTIONS_TEMPFLIGHT_ALLOW_PAYMENTS(
+			"options.allow_tempflight_payments",
+			"false",
+			"",
+			"# When true, players with the townyflight.command.tfly.pay permission can transfer tempflight time to other players."),
 	OPTIONS_MESSAGES_DESTINATION(
 			"options.messages_appear_in",
 			"chat",

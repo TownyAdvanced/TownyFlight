@@ -35,7 +35,7 @@ public class TownyFlightCommand implements TabExecutor {
 	private TownyFlight plugin;
 	private CommandSender sender;
 	private static final List<String> tflyTabCompletes = Arrays.asList(
-		"reload","tempflight","town","help","?"
+		"reload","tempflight","pay","town","help","?"
 	);
 
 	public TownyFlightCommand(TownyFlight plugin) {
@@ -56,6 +56,12 @@ public class TownyFlightCommand implements TabExecutor {
 					return getTownyStartingWith(args[1], "t");
 				if (args.length == 3)
 					return Collections.singletonList("toggleflight");
+				break;
+			case "pay":
+				if (args.length == 2)
+					return getTownyStartingWith(args[1], "r");
+				if (args.length == 3)
+					return NameUtil.filterByStart(Arrays.asList("10", "1000s", "60m", "1h", "1d"), args[2]);
 				break;
 			default:
 				if (args.length == 1)
@@ -104,6 +110,8 @@ public class TownyFlightCommand implements TabExecutor {
 				} else if (args[0].equalsIgnoreCase("reload") && Permission.has(sender,"townyflight.command.tfly.reload", false)) {
 					// We have /tfly reload and tested for permission node.
 					reloadPlugin();
+				} else if (args[0].equalsIgnoreCase("pay") && Permission.has(sender, "townyflight.command.tfly.pay", false)) {
+					parseTempFlightPaymentCommand(StringMgmt.remFirstArg(args));
 				} else if (args[0].equalsIgnoreCase("tempflight") && Permission.has(sender,"townyflight.command.tfly.tempflight", false)) {
 					// We have /tfly tempflight and tested for permission node.
 					parseTempFlightCommand(StringMgmt.remFirstArg(args));
@@ -172,6 +180,74 @@ public class TownyFlightCommand implements TabExecutor {
 
 	}
 
+	private void parseTempFlightPaymentCommand(String[] args) {
+		Player senderPlayer = (Player) sender;
+
+		if (!Settings.allowTempFlightPayments) {
+			Message.of(Message.getLangString("tempFlightPaymentsDisabled")).to(sender);
+			return;
+		}
+
+		if (args.length < 2) {
+			showTflyHelp();
+			return;
+		}
+
+		String recipientName = args[0];
+		Player recipientPlayer = Bukkit.getPlayerExact(recipientName);
+		UUID recipientUUID = recipientPlayer != null ? recipientPlayer.getUniqueId() : null;
+
+		if (recipientUUID == null && TownyUniverse.getInstance().hasResident(recipientName)) {
+			Resident resident = TownyAPI.getInstance().getResident(recipientName);
+			if (resident != null && resident.hasUUID())
+				recipientUUID = resident.getUUID();
+		}
+
+		if (recipientUUID == null) {
+			Message.of("Player " + recipientName + " not found. Could not transfer tempflight.").to(sender);
+			return;
+		}
+
+		if (senderPlayer.getUniqueId().equals(recipientUUID)) {
+			Message.of(Message.getLangString("tempFlightPaymentSelf")).to(sender);
+			return;
+		}
+
+		long seconds = parseSeconds(args[1]);
+		if (seconds <= 0L) {
+			Message.of(Message.getLangString("tempFlightPaymentInvalid")).to(sender);
+			return;
+		}
+
+		if (TempFlightTask.getSeconds(senderPlayer.getUniqueId()) < seconds) {
+			Message.of(Message.getLangString("tempFlightPaymentInsufficient")).to(sender);
+			return;
+		}
+
+		if (!TempFlightTask.transferPlayerTempFlightSeconds(senderPlayer.getUniqueId(), recipientUUID, seconds)) {
+			Message.of(Message.getLangString("tempFlightPaymentFailed")).to(sender);
+			return;
+		}
+
+		String formattedTimeValue = TimeMgmt.getFormattedTimeValue(seconds * 1000L);
+		Message.of(String.format(
+				Message.getLangString("tempFlightPaymentSent"),
+				formattedTimeValue,
+				recipientName
+		)).to(sender);
+
+		if (recipientPlayer != null && recipientPlayer.isOnline()) {
+			Message.of(String.format(
+					Message.getLangString("tempFlightPaymentReceived"),
+					formattedTimeValue,
+					senderPlayer.getName()
+			)).to(recipientPlayer);
+
+			if (Settings.autoEnableFlight && TownyFlightAPI.getInstance().canFly(recipientPlayer, true))
+				TownyFlightAPI.getInstance().addFlight(recipientPlayer, Settings.autoEnableSilent);
+		}
+	}
+
 	private long parseSeconds(String string) {
 		if (string.endsWith("s") || string.endsWith("m") || string.endsWith("h") || string.endsWith("d"))
 			return TimeTools.getSeconds(string);
@@ -227,6 +303,8 @@ public class TownyFlightCommand implements TabExecutor {
 			Message.of(Colors.WHITE + "/tfly [playername] - Toggle flight for a player.").to(sender);
 		if (Permission.has(sender, "townyflight.command.tfly.town", true))
 			Message.of(Colors.WHITE + "/tfly town [townname] toggleflight - Toggle free flight in the given town.").to(sender);
+		if (Permission.has(sender, "townyflight.command.tfly.pay", true))
+			Message.of(Colors.WHITE + "/tfly pay [playername] [time] - Transfer tempflight time to another player.").to(sender);
 	}
 
 	/**
