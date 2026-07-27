@@ -194,19 +194,14 @@ public class TownyFlightCommand implements TabExecutor {
 		}
 
 		String recipientName = args[0];
-		Player recipientPlayer = Bukkit.getPlayerExact(recipientName);
-		UUID recipientUUID = recipientPlayer != null ? recipientPlayer.getUniqueId() : null;
+		Resident recipientResident = TownyAPI.getInstance().getResident(recipientName);
 
-		if (recipientUUID == null && TownyUniverse.getInstance().hasResident(recipientName)) {
-			Resident resident = TownyAPI.getInstance().getResident(recipientName);
-			if (resident != null && resident.hasUUID())
-				recipientUUID = resident.getUUID();
-		}
-
-		if (recipientUUID == null) {
+		if (recipientResident == null || !recipientResident.hasUUID()) {
 			Message.of("Player " + recipientName + " not found. Could not transfer tempflight.").to(sender);
 			return;
 		}
+
+		UUID recipientUUID = recipientResident.getUUID();
 
 		if (senderPlayer.getUniqueId().equals(recipientUUID)) {
 			Message.of(Message.getLangString("tempFlightPaymentSelf")).to(sender);
@@ -236,7 +231,9 @@ public class TownyFlightCommand implements TabExecutor {
 				recipientName
 		)).to(sender);
 
-		if (recipientPlayer != null && recipientPlayer.isOnline()) {
+		if (recipientResident.isOnline()) {
+			Player recipientPlayer = recipientResident.getPlayer();
+
 			Message.of(String.format(
 					Message.getLangString("tempFlightPaymentReceived"),
 					formattedTimeValue,

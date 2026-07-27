@@ -127,12 +127,10 @@ public class TempFlightTask implements Runnable {
 		MetaData.setSeconds(senderResident, senderRemainingSeconds, true);
 		MetaData.setSeconds(recipientResident, recipientTotalSeconds, true);
 
-		Player senderPlayer = Bukkit.getPlayer(senderUUID);
-		Player recipientPlayer = Bukkit.getPlayer(recipientUUID);
-
-		if (senderPlayer != null && senderPlayer.isOnline())
+		if (senderResident.isOnline())
 			playerUUIDSecondsMap.put(senderUUID, senderRemainingSeconds);
-		if (recipientPlayer != null && recipientPlayer.isOnline())
+
+		if (recipientResident.isOnline())
 			playerUUIDSecondsMap.put(recipientUUID, recipientTotalSeconds);
 
 		return true;
