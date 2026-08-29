@@ -4,14 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.gmail.llmdlio</groupId>
 	<artifactId>TownyFlight</artifactId>
-	<version>1.15.1</version>
+	<version>1.16.0</version>
 	<name>TownyFlight</name>
 	<description>A flight plugin for Towny servers.</description>
 	<properties>
 		<java.version>21</java.version>
 		<project.bukkitAPIVersion>1.19</project.bukkitAPIVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<towny.version>0.102.0.0</towny.version>
+		<towny.version>0.102.0.11</towny.version>
 	</properties>
 	<build>
 		<defaultGoal>clean package</defaultGoal>
@@ -55,6 +55,10 @@
 			<id>glaremasters repo</id>
 			<url>https://repo.glaremasters.me/repository/towny/</url>
 		</repository>
+		<repository>
+			<id>essentialsx-releases</id>
+			<url>https://repo.essentialsx.net/releases/</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<dependency>
@@ -85,6 +89,12 @@
             <groupId>me.clip</groupId>
             <artifactId>placeholderapi</artifactId>
             <version>2.11.6</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.essentialsx</groupId>
+            <artifactId>EssentialsX</artifactId>
+            <version>2.21.2</version>
             <scope>provided</scope>
         </dependency>
 	</dependencies>

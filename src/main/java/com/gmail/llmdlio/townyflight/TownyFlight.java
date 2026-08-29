@@ -17,6 +17,7 @@ import com.gmail.llmdlio.townyflight.command.TownToggleFlightCommandAddon;
 import com.gmail.llmdlio.townyflight.command.TownyFlightCommand;
 import com.gmail.llmdlio.townyflight.config.Settings;
 import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
+import com.gmail.llmdlio.townyflight.integrations.EssentialsIntegration;
 import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
 import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
@@ -34,7 +35,7 @@ import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static final Version requiredTownyVersion = Version.fromString("0.102.0.0");
+	private static final Version requiredTownyVersion = Version.fromString("0.102.0.11");
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	private static TownyFlight plugin;
 	private static TownyFlightAPI api;
@@ -115,6 +116,10 @@ public class TownyFlight extends JavaPlugin {
 			papiExpansion = new TownyFlightPlaceholderExpansion(this);
 			papiExpansion.register();
 		}
+		test = getServer().getPluginManager().getPlugin("Essentials");
+		Settings.essentialsFound = test != null;
+		if (Settings.essentialsFound)
+			EssentialsIntegration.initialize(test);
 	}
 
 	public void registerEvents() {
