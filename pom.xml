@@ -43,6 +43,10 @@
 			<id>papermc</id>
 			<url>https://repo.papermc.io/repository/maven-public/</url>
 		</repository>
+		<repository>
+			<id>canvasmc</id>
+			<url>https://maven.canvasmc.io/snapshots</url>
+		</repository>
         <repository>
             <id>placeholderapi</id>
             <url>https://repo.extendedclip.com/content/repositories/placeholderapi/</url>
@@ -58,9 +62,9 @@
 	</repositories>
 	<dependencies>
 		<dependency>
-			<groupId>io.papermc.paper</groupId>
-			<artifactId>paper-api</artifactId>
-			<version>1.21.8-R0.1-SNAPSHOT</version>
+			<groupId>io.canvasmc.canvas</groupId>
+			<artifactId>canvas-api</artifactId>
+			<version>1.21.11-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

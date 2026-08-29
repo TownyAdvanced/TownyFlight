@@ -16,13 +16,16 @@ public class PlayerTeleportListener implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	private void playerTeleports(PlayerTeleportEvent event) {
-		if (!aTeleportCauseThatMatters(event.getCause()))
+		handlePlayerTeleportation(event.getCause(), event.getPlayer(), event.getTo());
+	}
+
+	public void handlePlayerTeleportation(TeleportCause cause, Player player, Location to) {
+		if (!aTeleportCauseThatMatters(cause))
 			return;
 
-		Player player = event.getPlayer();
-		if (player.hasPermission("townyflight.bypass") 
+		if (player.hasPermission("townyflight.bypass")
 				|| !player.getAllowFlight()
-				|| flightAllowedDestination(player, event.getTo())) {
+				|| flightAllowedDestination(player, to)) {
 			return;
 		}
 
