@@ -24,6 +24,9 @@ permissions:
   townyflight.command.tfly.tempflight:
     description: User is able to grant tempflight to players.
     default: op
+  townyflight.command.tfly.pay:
+    description: User is able to transfer their tempflight time to another player.
+    default: true
   townyflight.command.tfly.other:
     description: User is able to remove flight from other players.
     default: op
@@ -50,5 +53,4 @@ permissions:
     default: op
   townyflight.wilderness:
     description: Allows players to use /townyflight in the wilderness.
-
     default: op
