@@ -20,21 +20,13 @@ public class PlayerTeleportListener implements Listener {
 	}
 
 	public void handlePlayerTeleportation(TeleportCause cause, Player player, Location to) {
-		if (!aTeleportCauseThatMatters(cause))
-			return;
-
-		if (player.hasPermission("townyflight.bypass")
-				|| !player.getAllowFlight()
+		if(!player.getAllowFlight()
+				|| player.hasPermission("townyflight.bypass")
 				|| flightAllowedDestination(player, to)) {
 			return;
 		}
 
-		TownyFlightAPI.getInstance().removeFlight(player, false, true, "");
-	}
-
-	private boolean aTeleportCauseThatMatters(TeleportCause teleportCause) {
-		return teleportCause == TeleportCause.PLUGIN || teleportCause == TeleportCause.COMMAND ||
-				teleportCause == TeleportCause.ENDER_PEARL || teleportCause == TeleportCause.CHORUS_FRUIT; // TODO: change over when 1.21.4 and older support is dropped.
+		TownyFlightAPI.getInstance().removeFlight(player, false, true, String.valueOf(cause));
 	}
 
 	private boolean flightAllowedDestination(Player player, Location loc) {
