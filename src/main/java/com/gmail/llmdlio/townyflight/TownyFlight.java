@@ -5,7 +5,6 @@ import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
 
-import net.kyori.adventure.key.Key;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -35,7 +34,7 @@ import com.gmail.llmdlio.townyflight.util.MetaData;
 import com.palmergames.bukkit.util.Version;
 
 public class TownyFlight extends JavaPlugin {
-	private static final Version requiredTownyVersion = Version.fromString("0.102.0.11");
+	private static final Version requiredTownyVersion = Version.fromString("0.103.2.0");
 	private TownyFlightConfig config = new TownyFlightConfig(this);
 	private static TownyFlight plugin;
 	private static TownyFlightAPI api;
