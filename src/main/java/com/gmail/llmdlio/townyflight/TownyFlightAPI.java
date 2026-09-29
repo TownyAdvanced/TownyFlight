@@ -58,9 +58,9 @@ public class TownyFlightAPI {
 			|| player.getGameMode().equals(GameMode.CREATIVE)
 			|| getForceAllowFlight(player))
 			return true;
-
-		if (hasTempFlight(player) && tempFlightAllowsLocation(player))
-			return true;
+//
+//		if (hasTempFlight(player) && tempFlightAllowsLocation(player))
+//			return true;
 
 		if (!hasTempFlight(player) && !Permission.has(player, "townyflight.command.tfly", silent)) return false;
 
@@ -104,26 +104,26 @@ public class TownyFlightAPI {
 			return false;
 
 		if (TownyAPI.getInstance().isWilderness(location))
-			return Settings.isAllowedTempFlightArea("wilderness");
+			return Settings.isAllowedTempFlightArea("wilderness") || player.hasPermission("townyflight.tempflight.wilderness");
 
-		if (Settings.isAllowedTempFlightArea("alltowns"))
+		if (Settings.isAllowedTempFlightArea("alltowns") || player.hasPermission("townyflight.tempflight.alltowns"))
 			return true;
 
 		Town town = TownyAPI.getInstance().getTown(location);
-		if (Settings.isAllowedTempFlightArea("owntown") && town.hasResident(resident))
+		if ((Settings.isAllowedTempFlightArea("owntown") || player.hasPermission("townyflight.tempflight.owntown")) && town.hasResident(resident))
 			return true;
 
-		if (Settings.isAllowedTempFlightArea("trustedtowns") && town.getTrustedResidents().contains(resident))
+		if ((Settings.isAllowedTempFlightArea("trustedtowns") || player.hasPermission("townyflight.tempflight.trustedtowns")) && town.getTrustedResidents().contains(resident))
 			return true;
 
 		if (!town.hasNation() || !resident.hasTown())
 			return false;
 
 		Town residentTown = resident.getTownOrNull();
-		if (Settings.isAllowedTempFlightArea("nationtowns") && CombatUtil.isSameNation(town, residentTown))
+		if ((Settings.isAllowedTempFlightArea("nationtowns") || player.hasPermission("townyflight.tempflight.nationtowns")) && CombatUtil.isSameNation(town, residentTown))
 			return true;
 
-		if (Settings.isAllowedTempFlightArea("alliedtowns") && CombatUtil.isAlly(town, residentTown))
+		if ((Settings.isAllowedTempFlightArea("alliedtowns") || player.hasPermission("townyflight.tempflight.alliedtowns")) && CombatUtil.isAlly(town, residentTown))
 			return true;
 
 		return false;
