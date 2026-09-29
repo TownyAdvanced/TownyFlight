@@ -50,5 +50,42 @@ permissions:
     default: op
   townyflight.wilderness:
     description: Allows players to use /townyflight in the wilderness.
-
     default: op
+  townyflight.tempflight.wilderness:
+    description: Allows players to use tempflight to use /townyflight in the wilderness.
+    default: op
+  townyflight.tempflight.owntown:
+    description: Allows players to use tempflight to use /townyflight in their own town.
+    default: op
+  townyflight.tempflight.trustedtowns:
+    description: Allows players to use tempflight to use /townyflight in towns where the player is Trusted.
+    default: op
+  townyflight.tempflight.nationtowns:
+    description: Allows players to use tempflight to use /townyflight in towns that are in their nation.
+    default: op
+  townyflight.tempflight.alliedtowns:
+    description: Allows players to use tempflight to use /townyflight in towns that are allied to their own.
+    default: op
+  townyflight.tempflight.alltowns:
+    description: Allows players to use tempflight to use /townyflight in any town.
+    default: op
+  townyflight.tempflight.wilderness.free_flight:
+    description: Allows players to use tempflight to use /townyflight in the wilderness without costing them flight seconds.
+    default: op
+  townyflight.tempflight.owntown.free_flight:
+    description: Allows players to use tempflight to use /townyflight in their own town without costing them flight seconds.
+    default: op
+  townyflight.tempflight.trustedtowns.free_flight:
+    description: Allows players to use tempflight to use /townyflight in towns where the player is Trusted without costing them flight seconds.
+    default: op
+  townyflight.tempflight.nationtowns.free_flight:
+    description: Allows players to use tempflight to use /townyflight in towns that are in their nation without costing them flight seconds.
+    default: op
+  townyflight.tempflight.alliedtowns.free_flight:
+    description: Allows players to use tempflight to use /townyflight in towns that are allied to their own without costing them flight seconds.
+    default: op
+  townyflight.tempflight.alltowns.free_flight:
+    description: Allows players to use tempflight to use /townyflight in any town without costing them flight seconds.
+    default: op
+
+    

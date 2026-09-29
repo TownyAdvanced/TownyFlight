@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 import com.gmail.llmdlio.townyflight.TownyFlightAPI;
@@ -20,7 +21,9 @@ import com.gmail.llmdlio.townyflight.util.Permission;
 import com.palmergames.bukkit.towny.TownyAPI;
 import com.palmergames.bukkit.towny.TownyMessaging;
 import com.palmergames.bukkit.towny.object.Resident;
+import com.palmergames.bukkit.towny.object.Town;
 import com.palmergames.bukkit.towny.object.Translation;
+import com.palmergames.bukkit.towny.utils.CombatUtil;
 import com.palmergames.util.TimeMgmt;
 
 public class TempFlightTask implements Runnable {
@@ -46,6 +49,8 @@ public class TempFlightTask implements Runnable {
 				continue;
 			if (!player.getAllowFlight() || !player.isFlying())
 				continue;
+			if (isInFreeFlightLocation(player))
+				continue;
 			UUID uuid = player.getUniqueId();
 			if (!playerUUIDSecondsMap.containsKey(uuid))
 				continue;
@@ -55,6 +60,38 @@ public class TempFlightTask implements Runnable {
 		uuidsToDecrement.forEach(uuid -> decrementSeconds(uuid));
 		if (cycles % 10 == 0)
 			cycles = 0;
+	}
+
+	private boolean isInFreeFlightLocation(Player player) {
+		Location location = player.getLocation();
+		Resident resident = TownyAPI.getInstance().getResident(player);
+		if (resident == null)
+			return false;
+
+		if (TownyAPI.getInstance().isWilderness(location) && player.hasPermission("townyflight.tempflight.wilderness.free_flight"))
+			return true;
+
+		if (player.hasPermission("townyflight.tempflight.alltowns.free_flight"))
+			return true;
+
+		Town town = TownyAPI.getInstance().getTown(location);
+		if (player.hasPermission("townyflight.tempflight.owntown.free_flight") && town.hasResident(resident))
+			return true;
+
+		if (player.hasPermission("townyflight.tempflight.trustedtowns.free_flight") && town.getTrustedResidents().contains(resident))
+			return true;
+
+		if (!town.hasNation() || !resident.hasTown())
+			return false;
+
+		Town residentTown = resident.getTownOrNull();
+		if (player.hasPermission("townyflight.tempflight.nationtowns.free_flight") && CombatUtil.isSameNation(town, residentTown))
+			return true;
+
+		if (player.hasPermission("townyflight.tempflight.alliedtowns.free_flight") && CombatUtil.isAlly(town, residentTown))
+			return true;
+
+		return false;
 	}
 
 	private void decrementSeconds(UUID uuid) {

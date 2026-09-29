@@ -39,6 +39,18 @@ ___
 - townyflight.alltowns - allows players to use `/tfly` in any town, but not the wilderness.
 - townyflight.wilderness - allows players to use `/tfly` in the wilderness.
 - townyflight.bypass - default to Ops, bypasses removal of flight, use `/tfly` anywhere.
+- townyflight.tempflight.wilderness - default to Ops, allows players to use tempflight to use /townyflight in the wilderness.
+- townyflight.tempflight.owntown - default to Ops, allows players to use tempflight to use /townyflight in their own town.
+- townyflight.tempflight.trustedtowns - defaults to Ops, allows players to use tempflight to use /townyflight in towns where the player is Trusted.
+- townyflight.tempflight.nationtowns - defaults to Ops, allows players to use tempflight to use /townyflight in towns that are in their nation.
+- townyflight.tempflight.alliedtowns - defaults to Ops, allows players to use tempflight to use /townyflight in towns that are allied to their own.
+- townyflight.tempflight.alltowns - defaults to Ops, allows players to use tempflight to use /townyflight in any town.
+- townyflight.tempflight.wilderness.free_flight - defaults to Ops, allows players to use tempflight to use /townyflight in the wilderness without costing them flight seconds.
+- townyflight.tempflight.owntown.free_flight - defaults to Ops, allows players to use tempflight to use /townyflight in their own town without costing them flight seconds.
+- townyflight.tempflight.trustedtowns.free_flight - defaults to Ops, allows players to use tempflight to use /townyflight in towns where the player is Trusted without costing them flight seconds.
+- townyflight.tempflight.nationtowns.free_flight - defaults to Ops, allows players to use tempflight to use /townyflight in towns that are in their nation without costing them flight seconds.
+- townyflight.tempflight.alliedtowns.free_flight - defaults to Ops, allows players to use tempflight to use /townyflight in towns that are allied to their own without costing them flight seconds.
+- townyflight.tempflight.alltowns.free_flight - defaults to Ops, allows players to use tempflight to use /townyflight in any town without costing them flight seconds.
 
 ---
 
