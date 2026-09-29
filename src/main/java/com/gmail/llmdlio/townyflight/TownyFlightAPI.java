@@ -58,9 +58,6 @@ public class TownyFlightAPI {
 			|| player.getGameMode().equals(GameMode.CREATIVE)
 			|| getForceAllowFlight(player))
 			return true;
-//
-//		if (hasTempFlight(player) && tempFlightAllowsLocation(player))
-//			return true;
 
 		if (!hasTempFlight(player) && !Permission.has(player, "townyflight.command.tfly", silent)) return false;
 
@@ -77,17 +74,6 @@ public class TownyFlightAPI {
 			return false;
 		}
 		return true;
-	}
-
-	/**
-	 * Returns true when a player is at a suitable location, matching the allowed
-	 * areas in config.yml.
-	 * 
-	 * @param player Player to test.
-	 * @return true when tempflight is allowed here.
-	 */
-	private boolean tempFlightAllowsLocation(Player player) {
-		return tempFlightAllowsLocation(player, player.getLocation());
 	}
 
 	/**
