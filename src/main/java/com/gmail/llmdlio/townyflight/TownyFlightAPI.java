@@ -153,7 +153,7 @@ public class TownyFlightAPI {
 		if (residentTown == null)
 			return false;
 
-		if (residentTown.getUUID() == town.getUUID())
+		if (player.hasPermission("townyflight.owntown") && residentTown.getUUID() == town.getUUID())
 			return true;
 
 		if (player.hasPermission("townyflight.nationtowns") && CombatUtil.isSameNation(residentTown, town))

@@ -29,10 +29,12 @@ ___
 ## Permission nodes:
 
 - townyflight.command.tfly - required to use `/tfly`.
+  - Comes with the child node `townyflight.owntown` allowing players to use `/tfly` in their own town.
 - townyflight.command.tfly.reload - required to use `/tfly reload`.
 - townyflight.command.tfly.town - required to use `/tfly town {townname} toggleflight`.
 - townyflight.command.tfly.tempflight - required to use `/tfly tempflight`.
 - townyflight.command.tfly.other - required to use `/tfly {name}`.
+- townyflight.owntown - allows players to use `/tfly` in their own town.
 - townyflight.alliedtowns - allows players to use `/tfly` in towns which consider that player an ally.
 - townyflight.nationtowns - allows players to use `/tfly` in towns which are part of the player's nation.
 - townyflight.trustedtowns - allows players to use `/tfly` in towns which they are trusted.
