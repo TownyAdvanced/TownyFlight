@@ -65,11 +65,11 @@ public class TempFlightTask implements Runnable {
 	private boolean isInFreeFlightLocation(Player player) {
 		Location location = player.getLocation();
 		Resident resident = TownyAPI.getInstance().getResident(player);
+		if (TownyAPI.getInstance().isWilderness(location))
+			return player.hasPermission("townyflight.tempflight.wilderness.free_flight");
+
 		if (resident == null)
 			return false;
-
-		if (TownyAPI.getInstance().isWilderness(location) && player.hasPermission("townyflight.tempflight.wilderness.free_flight"))
-			return true;
 
 		if (player.hasPermission("townyflight.tempflight.alltowns.free_flight"))
 			return true;
