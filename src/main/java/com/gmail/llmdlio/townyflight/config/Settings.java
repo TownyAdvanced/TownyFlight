@@ -15,7 +15,8 @@ public class Settings {
 	public static Boolean disableCombatPrevention;
 	public static Boolean disableDuringWar;
 	public static Boolean showPermissionInMessage;
-	public static Boolean showTempFlightTimeRemainingInActionBar; 
+	public static Boolean showTempFlightTimeRemainingInActionBar;
+	public static Boolean allowTempFlightPayments;
 	public static Boolean siegeWarFound;
 	public static boolean essentialsFound;
 	public static MessageLocation messageLocation;
@@ -41,6 +42,7 @@ public class Settings {
 		flightDisableTimer = Integer.valueOf(getOption("flight_Disable_Timer"));
 		showTempFlightTimeRemainingInActionBar = Boolean.valueOf(getOption("show_tempflight_time_remaining_in_actionbar"));
 		pauseTempFlightTimeWhileEssentialsAFK = Boolean.valueOf(getOption("pause_tempflight_time_while_afk"));
+		allowTempFlightPayments = Boolean.valueOf(getOption("allow_tempflight_payments"));
 		allowedTempFlightAreas = allowedTempFlightAreas();
 		messageLocation = getMessageLocation();
 		returnToTownMessageAppearsInTitle = Boolean.valueOf(getOption("returnToAllowedArea_appears_in_title_message_override"));
@@ -72,6 +74,13 @@ public class Settings {
 		lang.put("youHaveReceivedTempFlight", getString("youHaveReceivedTempFlight"));
 		lang.put("yourTempFlightHasExpired", getString("yourTempFlightHasExpired"));
 		lang.put("tempFlightTimeRemainging", getString("tempFlightTimeRemainging"));
+		lang.put("tempFlightPaymentsDisabled", getString("tempFlightPaymentsDisabled"));
+		lang.put("tempFlightPaymentSelf", getString("tempFlightPaymentSelf"));
+		lang.put("tempFlightPaymentInsufficient", getString("tempFlightPaymentInsufficient"));
+		lang.put("tempFlightPaymentSent", getString("tempFlightPaymentSent"));
+		lang.put("tempFlightPaymentReceived", getString("tempFlightPaymentReceived"));
+		lang.put("tempFlightPaymentInvalid", getString("tempFlightPaymentInvalid"));
+		lang.put("tempFlightPaymentFailed", getString("tempFlightPaymentFailed"));
 	}
 
 	public static String getLangString(String languageString) {
