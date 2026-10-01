@@ -130,7 +130,9 @@ public class TownyFlightAPI {
 			return true;
 
 		if (TownyAPI.getInstance().isWilderness(location))
-			return player.hasPermission("townyflight.wilderness");
+			return player.hasPermission("townyflight.wilderness") ||
+					(hasTempFlight(player) && (Settings.isAllowedTempFlightArea("wilderness") || player.hasPermission("townyflight.tempflight.wilderness")));
+
 
 		Town town = TownyAPI.getInstance().getTown(location);
 
