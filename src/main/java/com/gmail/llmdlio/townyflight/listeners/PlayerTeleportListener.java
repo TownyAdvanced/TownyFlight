@@ -33,7 +33,8 @@ public class PlayerTeleportListener implements Listener {
 	}
 
 	private boolean aTeleportCauseThatMatters(TeleportCause teleportCause) {
-		return teleportCause == TeleportCause.PLUGIN || teleportCause == TeleportCause.COMMAND ||
+		return teleportCause == TeleportCause.END_PORTAL || teleportCause == TeleportCause.NETHER_PORTAL || teleportCause == TeleportCause.END_GATEWAY ||
+				teleportCause == TeleportCause.PLUGIN || teleportCause == TeleportCause.COMMAND ||
 				teleportCause == TeleportCause.ENDER_PEARL || teleportCause == TeleportCause.CHORUS_FRUIT; // TODO: change over when 1.21.4 and older support is dropped.
 	}
 

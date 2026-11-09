@@ -2,10 +2,19 @@ package com.gmail.llmdlio.townyflight.listeners;
 
 import io.canvasmc.canvas.event.EntityPostPortalAsyncEvent;
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent;
+import io.canvasmc.canvas.event.PlayerRespawnAsyncEvent;
+
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerTeleportEvent;
+
+import com.gmail.llmdlio.townyflight.TownyFlight;
+import com.gmail.llmdlio.townyflight.TownyFlightAPI;
+import com.palmergames.bukkit.towny.TownyUniverse;
+import com.palmergames.bukkit.towny.object.Resident;
 
 public class ExternalCanvasListener implements Listener {
 
@@ -33,7 +42,24 @@ public class ExternalCanvasListener implements Listener {
                 case END_GATEWAY -> cause = PlayerTeleportEvent.TeleportCause.END_GATEWAY;
                 default -> cause = PlayerTeleportEvent.TeleportCause.PLUGIN;
             }
-            delegate.handlePlayerTeleportation(cause, player, player.getLocation());
+            TownyFlight.getPlugin().getScheduler().runLater(player, () -> delegate.handlePlayerTeleportation(cause, player, player.getLocation()), 5);
         }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void playerRespawnEvent(PlayerRespawnAsyncEvent event) {
+        Player victim = event.getPlayer();
+        if(!victim.getAllowFlight()
+                || victim.hasPermission("townyflight.bypass")
+                || flightAllowedDestination(victim, event.getRespawnLocation())) {
+            return;
+        }
+
+        TownyFlightAPI.getInstance().removeFlight(victim, false, true, "");
+    }
+
+    private boolean flightAllowedDestination(Player player, Location loc) {
+        Resident resident = TownyUniverse.getInstance().getResident(player.getUniqueId());
+        return resident != null && TownyFlightAPI.allowedLocation(player, loc, resident);
     }
 }
