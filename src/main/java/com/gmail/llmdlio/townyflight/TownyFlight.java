@@ -124,7 +124,7 @@ public class TownyFlight extends JavaPlugin {
 	public void registerEvents() {
 		final PluginManager pm = getServer().getPluginManager();
 
-		PlayerTeleportListener playerTeleportListener = new PlayerTeleportListener();
+		PlayerTeleportListener playerTeleportListener = new PlayerTeleportListener(this);
 
 		pm.registerEvents(new PlayerJoinListener(this), this);
 		pm.registerEvents(new PlayerLogOutListener(), this);

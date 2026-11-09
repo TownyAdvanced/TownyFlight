@@ -5,6 +5,7 @@ import com.gmail.llmdlio.townyflight.TownyFlightAPI;
 import com.palmergames.bukkit.towny.TownyUniverse;
 import com.palmergames.bukkit.towny.object.Resident;
 import io.canvasmc.canvas.event.EntityPostPortalAsyncEvent;
+import io.canvasmc.canvas.event.EntityPostTeleportAsyncEvent;
 import io.canvasmc.canvas.event.EntityTeleportAsyncEvent;
 import io.canvasmc.canvas.event.PlayerRespawnAsyncEvent;
 import org.bukkit.Location;
@@ -31,18 +32,27 @@ public class ExternalCanvasListener implements Listener {
         }
     }
 
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void vehicleTeleport(EntityPostTeleportAsyncEvent event) {
+        if (!(event.getEntity() instanceof Player)) {
+            delegate.handleVehicleTeleportation(event.getCause(), event.getEntity());
+        }
+    }
+
     // Flight will persist through portals if this isn't called.
     @EventHandler
     public void playerPortalTeleport(EntityPostPortalAsyncEvent event) {
+        PlayerTeleportEvent.TeleportCause cause;
+        switch (event.getPortalType()) {
+            case NETHER -> cause = PlayerTeleportEvent.TeleportCause.NETHER_PORTAL;
+            case ENDER -> cause = PlayerTeleportEvent.TeleportCause.END_PORTAL;
+            case END_GATEWAY -> cause = PlayerTeleportEvent.TeleportCause.END_GATEWAY;
+            default -> cause = PlayerTeleportEvent.TeleportCause.PLUGIN;
+        }
         if (event.getEntity() instanceof Player player) {
-            PlayerTeleportEvent.TeleportCause cause;
-            switch (event.getPortalType()) {
-                case NETHER -> cause = PlayerTeleportEvent.TeleportCause.NETHER_PORTAL;
-                case ENDER -> cause = PlayerTeleportEvent.TeleportCause.END_PORTAL;
-                case END_GATEWAY -> cause = PlayerTeleportEvent.TeleportCause.END_GATEWAY;
-                default -> cause = PlayerTeleportEvent.TeleportCause.PLUGIN;
-            }
             plugin.getScheduler().runLater(player, () -> delegate.handlePlayerTeleportation(cause, player, player.getLocation()), 1);
+        } else {
+            delegate.handleVehicleTeleportation(cause, event.getEntity());
         }
     }
 
