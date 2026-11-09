@@ -1,6 +1,5 @@
 package com.gmail.llmdlio.townyflight;
 
-import com.gmail.llmdlio.townyflight.listeners.ExternalCanvasListener;
 import com.palmergames.bukkit.towny.scheduling.TaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.BukkitTaskScheduler;
 import com.palmergames.bukkit.towny.scheduling.impl.FoliaTaskScheduler;
@@ -11,13 +10,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import com.gmail.llmdlio.townyflight.command.TownToggleFlightCommandAddon;
-import com.gmail.llmdlio.townyflight.command.TownyFlightCommand;
-import com.gmail.llmdlio.townyflight.config.Settings;
-import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
-import com.gmail.llmdlio.townyflight.integrations.EssentialsIntegration;
-import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
 import com.gmail.llmdlio.townyflight.listeners.PlayerEnterTownListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerFallListener;
 import com.gmail.llmdlio.townyflight.listeners.PlayerJoinListener;
@@ -28,6 +20,13 @@ import com.gmail.llmdlio.townyflight.listeners.PlayerTeleportListener;
 import com.gmail.llmdlio.townyflight.listeners.TownRemoveResidentListener;
 import com.gmail.llmdlio.townyflight.listeners.TownStatusScreenListener;
 import com.gmail.llmdlio.townyflight.listeners.TownUnclaimListener;
+import com.gmail.llmdlio.townyflight.listeners.ExternalCanvasListener;
+import com.gmail.llmdlio.townyflight.command.TownToggleFlightCommandAddon;
+import com.gmail.llmdlio.townyflight.command.TownyFlightCommand;
+import com.gmail.llmdlio.townyflight.config.Settings;
+import com.gmail.llmdlio.townyflight.config.TownyFlightConfig;
+import com.gmail.llmdlio.townyflight.integrations.EssentialsIntegration;
+import com.gmail.llmdlio.townyflight.integrations.TownyFlightPlaceholderExpansion;
 import com.gmail.llmdlio.townyflight.tasks.TaskHandler;
 import com.gmail.llmdlio.townyflight.tasks.TempFlightTask;
 import com.gmail.llmdlio.townyflight.util.MetaData;
@@ -68,7 +67,7 @@ public class TownyFlight extends JavaPlugin {
 		registerCommands();
 		getLogger().info("Towny version " + townyVersion + " found.");
 		getLogger().info(this.getPluginMeta().getDisplayName() + " by LlmDl Enabled.");
-		
+
 		cycleTimerTasksOn();
 		reGrantTempFlightToOnlinePlayer();
 	}
@@ -124,7 +123,7 @@ public class TownyFlight extends JavaPlugin {
 	public void registerEvents() {
 		final PluginManager pm = getServer().getPluginManager();
 
-		PlayerTeleportListener playerTeleportListener = new PlayerTeleportListener();
+		PlayerTeleportListener playerTeleportListener = new PlayerTeleportListener(this);
 
 		pm.registerEvents(new PlayerJoinListener(this), this);
 		pm.registerEvents(new PlayerLogOutListener(), this);
@@ -138,7 +137,7 @@ public class TownyFlight extends JavaPlugin {
 
 		try {
 			Class.forName("io.canvasmc.canvas.event.EntityTeleportAsyncEvent");
-			pm.registerEvents(new ExternalCanvasListener(playerTeleportListener), this);
+			pm.registerEvents(new ExternalCanvasListener(playerTeleportListener, this), this);
 		} catch (ClassNotFoundException ignored) {
 			// Not a Canvas server
 		}
